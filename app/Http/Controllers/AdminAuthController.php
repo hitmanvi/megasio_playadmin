@@ -6,7 +6,7 @@ use App\Enums\Err;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdminAuthController extends Controller
 {
@@ -22,14 +22,13 @@ class AdminAuthController extends Controller
 
         $credentials = $request->only('name', 'password');
 
-        if (!Auth::guard('sanctum')->attempt($credentials)) {
+        $admin = Admin::where('name', $credentials['name'])->first();
+
+        if (!$admin || !Hash::check($credentials['password'], $admin->password)) {
             return $this->error(Err::INVALID_PARAMS);
         }
 
-        $admin = Auth::guard('sanctum')->user();
-        
         // 使用Sanctum创建token
-        /** @var Admin $admin */
         $token = $admin->createToken('admin-token')->plainTextToken;
 
         return $this->responseItem([
