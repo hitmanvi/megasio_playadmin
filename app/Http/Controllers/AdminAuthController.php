@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Err;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
-use Laravel\Sanctum\HasApiTokens;
 
 class AdminAuthController extends Controller
 {
@@ -25,9 +23,7 @@ class AdminAuthController extends Controller
         $credentials = $request->only('name', 'password');
 
         if (!Auth::guard('sanctum')->attempt($credentials)) {
-            throw ValidationException::withMessages([
-                'name' => ['The provided credentials are incorrect.'],
-            ]);
+            return $this->error(Err::INVALID_PARAMS);
         }
 
         $admin = Auth::guard('sanctum')->user();
@@ -36,26 +32,8 @@ class AdminAuthController extends Controller
         /** @var Admin $admin */
         $token = $admin->createToken('admin-token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'Login successful',
-            'admin' => [
-                'id' => $admin->id,
-                'name' => $admin->name,
-            ],
+        return $this->responseItem([
             'token' => $token,
-        ]);
-    }
-
-    /**
-     * Admin logout
-     */
-    public function logout(Request $request): JsonResponse
-    {
-        // 删除当前token
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'message' => 'Logout successful',
         ]);
     }
 
@@ -64,11 +42,9 @@ class AdminAuthController extends Controller
      */
     public function mine(Request $request): JsonResponse
     {
-        return response()->json([
-            'admin' => [
-                'id' => $request->user()->id,
-                'name' => $request->user()->name,
-            ],
+        return $this->responseItem([
+            'id' => $request->user()->id,
+            'name' => $request->user()->name,
         ]);
     }
 }

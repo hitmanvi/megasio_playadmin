@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-abstract class Controller
+use App\Traits\ResponseTrait;
+
+class Controller
 {
-    //
+    use ResponseTrait;
 }

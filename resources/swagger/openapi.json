@@ -12,7 +12,7 @@
     }
   ],
   "paths": {
-    "/admin/login": {
+    "/login": {
       "post": {
         "tags": ["Admin Authentication"],
         "summary": "Admin login",
@@ -106,7 +106,7 @@
         }
       }
     },
-    "/admin/logout": {
+    "/logout": {
       "post": {
         "tags": ["Admin Authentication"],
         "summary": "Admin logout",
@@ -152,7 +152,7 @@
         }
       }
     },
-    "/admin/mine": {
+    "/mine": {
       "get": {
         "tags": ["Admin Authentication"],
         "summary": "Get current admin info",
