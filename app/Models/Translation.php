@@ -4,7 +4,7 @@ namespace App\Models;
 
 class Translation extends Model
 {
-    protected $table = 'megasio_play_api.tag_translations';
+    protected $table = 'megasio_play_api.translations';
     /**
      * The attributes that are mass assignable.
      *
