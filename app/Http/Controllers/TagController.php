@@ -55,27 +55,12 @@ class TagController extends Controller
     public function update(Request $request, Tag $tag): JsonResponse
     {
         $request->validate([
-            'name' => 'nullable|string|max:255',
-            'type' => 'nullable|string|max:255',
-            'translations' => 'nullable|array',
+            'translations' => 'required|array',
             'translations.*' => 'string|max:255',
         ]);
 
-        // Update basic fields
-        if ($request->has('name')) {
-            $tag->name = $request->name;
-        }
-
-        if ($request->has('type')) {
-            $tag->type = $request->type;
-        }
-
-        $tag->save();
-
-        // Update translations if provided
-        if ($request->has('translations')) {
-            $tag->setNames($request->translations);
-        }
+        // Update translations only
+        $tag->setNames($request->translations);
 
         // Reload with translations
         $tag->load('translations');

@@ -295,17 +295,8 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["translations"],
                 "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Tag name",
-                    "maxLength": 255
-                  },
-                  "type": {
-                    "type": "string",
-                    "description": "Tag type",
-                    "maxLength": 255
-                  },
                   "translations": {
                     "type": "object",
                     "description": "Translations for the tag name",
