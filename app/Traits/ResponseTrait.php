@@ -61,7 +61,6 @@ trait ResponseTrait
             'last_page',
             'total',
         ]);
-        $data['data']['meta'] = $data['meta'];
         $data['extra']         = $extra;
 
         return response()->json($data);
