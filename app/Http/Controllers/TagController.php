@@ -16,6 +16,7 @@ class TagController extends Controller
     {
         $request->validate([
             'type' => 'nullable|string',
+            'status' => 'nullable|string|in:active,inactive',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
             'locale' => 'nullable|string',
@@ -26,6 +27,11 @@ class TagController extends Controller
         // Filter by type if provided
         if ($request->has('type') && $request->type) {
             $query->where('type', $request->type);
+        }
+
+        // Filter by status if provided
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
         }
 
         // Pagination
@@ -41,6 +47,7 @@ class TagController extends Controller
                 'name' => $tag->getName($locale),
                 'type' => $tag->type,
                 'icon' => $tag->icon,
+                'status' => $tag->status,
                 'translations' => $tag->getAllNames(),
                 'created_at' => $tag->created_at,
                 'updated_at' => $tag->updated_at,
@@ -69,6 +76,7 @@ class TagController extends Controller
             'name' => $tag->getName($locale),
             'type' => $tag->type,
             'icon' => $tag->icon,
+            'status' => $tag->status,
             'translations' => $tag->getAllNames(),
             'created_at' => $tag->created_at,
             'updated_at' => $tag->updated_at,
@@ -82,6 +90,7 @@ class TagController extends Controller
     {
         $request->validate([
             'icon' => 'nullable|string|max:255',
+            'status' => 'nullable|string|in:active,inactive',
             'translations' => 'required|array',
             'translations.*' => 'string|max:255',
         ]);
@@ -89,6 +98,12 @@ class TagController extends Controller
         // Update icon if provided
         if ($request->has('icon')) {
             $tag->icon = $request->icon;
+            $tag->save();
+        }
+
+        // Update status if provided
+        if ($request->has('status')) {
+            $tag->status = $request->status;
             $tag->save();
         }
 
@@ -103,6 +118,7 @@ class TagController extends Controller
             'name' => $tag->name,
             'type' => $tag->type,
             'icon' => $tag->icon,
+            'status' => $tag->status,
             'translations' => $tag->getAllNames(),
             'created_at' => $tag->created_at,
             'updated_at' => $tag->updated_at,

@@ -154,6 +154,16 @@
             }
           },
           {
+            "name": "status",
+            "in": "query",
+            "description": "Filter tags by status (active or inactive)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive"]
+            }
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number",
@@ -378,6 +388,12 @@
                     "type": "string",
                     "description": "Tag icon",
                     "maxLength": 255,
+                    "nullable": true
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "Tag status",
+                    "enum": ["active", "inactive"],
                     "nullable": true
                   },
                   "translations": {
@@ -1329,6 +1345,12 @@
             "maxLength": 255,
             "nullable": true,
             "example": "fas fa-gamepad"
+          },
+          "status": {
+            "type": "string",
+            "description": "Tag status",
+            "enum": ["active", "inactive"],
+            "example": "active"
           },
           "translations": {
             "type": "object",
