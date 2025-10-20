@@ -146,10 +146,11 @@
           {
             "name": "type",
             "in": "query",
-            "description": "Filter tags by type",
+            "description": "Filter tags by type (theme or category)",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": ["theme", "category"]
             }
           },
           {
@@ -409,7 +410,9 @@
           },
           "type": {
             "type": "string",
-            "description": "Tag type"
+            "description": "Tag type",
+            "enum": ["theme", "category"],
+            "example": "theme"
           },
           "translations": {
             "type": "object",
