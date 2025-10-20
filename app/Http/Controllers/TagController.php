@@ -16,7 +16,7 @@ class TagController extends Controller
     {
         $request->validate([
             'type' => 'nullable|string',
-            'status' => 'nullable|string|in:active,inactive',
+            'enabled' => 'nullable|boolean',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
             'locale' => 'nullable|string',
@@ -29,9 +29,9 @@ class TagController extends Controller
             $query->where('type', $request->type);
         }
 
-        // Filter by status if provided
-        if ($request->has('status') && $request->status) {
-            $query->where('status', $request->status);
+        // Filter by enabled status if provided
+        if ($request->has('enabled')) {
+            $query->where('enabled', $request->boolean('enabled'));
         }
 
         // Pagination
@@ -47,7 +47,7 @@ class TagController extends Controller
                 'name' => $tag->getName($locale),
                 'type' => $tag->type,
                 'icon' => $tag->icon,
-                'status' => $tag->status,
+                'enabled' => $tag->enabled,
                 'translations' => $tag->getAllNames(),
                 'created_at' => $tag->created_at,
                 'updated_at' => $tag->updated_at,
@@ -76,7 +76,7 @@ class TagController extends Controller
             'name' => $tag->getName($locale),
             'type' => $tag->type,
             'icon' => $tag->icon,
-            'status' => $tag->status,
+            'enabled' => $tag->enabled,
             'translations' => $tag->getAllNames(),
             'created_at' => $tag->created_at,
             'updated_at' => $tag->updated_at,
@@ -90,7 +90,7 @@ class TagController extends Controller
     {
         $request->validate([
             'icon' => 'nullable|string|max:255',
-            'status' => 'nullable|string|in:active,inactive',
+            'enabled' => 'nullable|boolean',
             'translations' => 'required|array',
             'translations.*' => 'string|max:255',
         ]);
@@ -101,9 +101,9 @@ class TagController extends Controller
             $tag->save();
         }
 
-        // Update status if provided
-        if ($request->has('status')) {
-            $tag->status = $request->status;
+        // Update enabled status if provided
+        if ($request->has('enabled')) {
+            $tag->enabled = $request->boolean('enabled');
             $tag->save();
         }
 
@@ -118,7 +118,7 @@ class TagController extends Controller
             'name' => $tag->name,
             'type' => $tag->type,
             'icon' => $tag->icon,
-            'status' => $tag->status,
+            'enabled' => $tag->enabled,
             'translations' => $tag->getAllNames(),
             'created_at' => $tag->created_at,
             'updated_at' => $tag->updated_at,

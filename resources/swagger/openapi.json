@@ -154,13 +154,12 @@
             }
           },
           {
-            "name": "status",
+            "name": "enabled",
             "in": "query",
-            "description": "Filter tags by status (active or inactive)",
+            "description": "Filter tags by enabled status (true or false)",
             "required": false,
             "schema": {
-              "type": "string",
-              "enum": ["active", "inactive"]
+              "type": "boolean"
             }
           },
           {
@@ -390,10 +389,9 @@
                     "maxLength": 255,
                     "nullable": true
                   },
-                  "status": {
-                    "type": "string",
-                    "description": "Tag status",
-                    "enum": ["active", "inactive"],
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether tag is enabled",
                     "nullable": true
                   },
                   "translations": {
@@ -1346,11 +1344,10 @@
             "nullable": true,
             "example": "fas fa-gamepad"
           },
-          "status": {
-            "type": "string",
-            "description": "Tag status",
-            "enum": ["active", "inactive"],
-            "example": "active"
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether tag is enabled",
+            "example": true
           },
           "translations": {
             "type": "object",

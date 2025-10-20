@@ -18,7 +18,7 @@ class Tag extends Model
         'name',
         'type',
         'icon',
-        'status',
+        'enabled',
     ];
 
     /**
@@ -66,26 +66,26 @@ class Tag extends Model
     }
 
     /**
-     * Scope to filter by status.
+     * Scope to filter by enabled status.
      */
-    public function scopeByStatus($query, $status)
+    public function scopeByEnabled($query, $enabled)
     {
-        return $query->where('status', $status);
+        return $query->where('enabled', $enabled);
     }
 
     /**
-     * Scope to filter by active status.
+     * Scope to filter by enabled tags.
      */
-    public function scopeActive($query)
+    public function scopeEnabled($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('enabled', true);
     }
 
     /**
-     * Scope to filter by inactive status.
+     * Scope to filter by disabled tags.
      */
-    public function scopeInactive($query)
+    public function scopeDisabled($query)
     {
-        return $query->where('status', 'inactive');
+        return $query->where('enabled', false);
     }
 }
