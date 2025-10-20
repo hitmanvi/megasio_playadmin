@@ -44,7 +44,7 @@ class TagController extends Controller
             
             return [
                 'id' => $tag->id,
-                'name' => $tag->getName($locale),
+                'name' => $tag->name,
                 'type' => $tag->type,
                 'icon' => $tag->icon,
                 'enabled' => $tag->enabled,
@@ -73,7 +73,7 @@ class TagController extends Controller
 
         return $this->responseItem([
             'id' => $tag->id,
-            'name' => $tag->getName($locale),
+            'name' => $tag->name,
             'type' => $tag->type,
             'icon' => $tag->icon,
             'enabled' => $tag->enabled,
