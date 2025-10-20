@@ -15,6 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Tags routes
     Route::get('tags', [TagController::class, 'index']);
+    Route::post('tags', [TagController::class, 'store']);
     Route::get('tags/{tag}', [TagController::class, 'show']);
     Route::put('tags/{tag}', [TagController::class, 'update']);
     

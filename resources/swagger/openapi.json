@@ -276,6 +276,91 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": ["Tags"],
+        "summary": "Create tag",
+        "description": "Create a new tag with translations",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["type", "translations"],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["theme", "category"],
+                    "description": "Tag type"
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Tag icon",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether tag is enabled",
+                    "nullable": true
+                  },
+                  "translations": {
+                    "type": "object",
+                    "description": "Translations for the tag name",
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 255
+                    },
+                    "example": {
+                      "en": "Action",
+                      "zh-CN": "动作",
+                      "ja": "アクション"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tag created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": { "type": "integer", "example": 0 },
+                    "errmsg": { "type": "string", "example": "" },
+                    "data": { "$ref": "#/components/schemas/Tag" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
       }
     },
     "/tags/{id}": {

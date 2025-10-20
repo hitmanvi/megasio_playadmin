@@ -10,6 +10,44 @@ use Illuminate\Validation\Rule;
 class TagController extends Controller
 {
     /**
+     * Create a new tag with translations
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'type' => ['required', 'string', Rule::in(['theme', 'category'])],
+            'icon' => 'nullable|string|max:255',
+            'enabled' => 'nullable|boolean',
+            'translations' => 'required|array',
+            'translations.*' => 'string|max:255',
+        ]);
+
+        $tag = new Tag();
+        $tag->type = $validated['type'];
+        if (array_key_exists('icon', $validated)) {
+            $tag->icon = $validated['icon'];
+        }
+        if (array_key_exists('enabled', $validated)) {
+            $tag->enabled = (bool)$validated['enabled'];
+        }
+        $tag->save();
+
+        // Set translations
+        $tag->setNames($validated['translations']);
+        $tag->load('translations');
+
+        return $this->responseItem([
+            'id' => $tag->id,
+            'name' => $tag->name,
+            'type' => $tag->type,
+            'icon' => $tag->icon,
+            'enabled' => $tag->enabled,
+            'translations' => $tag->getAllNames(),
+            'created_at' => $tag->created_at,
+            'updated_at' => $tag->updated_at,
+        ]);
+    }
+    /**
      * Get tags list with type filter and pagination
      */
     public function index(Request $request): JsonResponse
