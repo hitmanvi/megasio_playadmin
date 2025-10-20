@@ -50,6 +50,30 @@ class TagController extends Controller
     }
 
     /**
+     * Get tag details
+     */
+    public function show(Request $request, Tag $tag): JsonResponse
+    {
+        $request->validate([
+            'locale' => 'nullable|string',
+        ]);
+
+        // Load translations
+        $tag->load('translations');
+
+        $locale = $request->get('locale', app()->getLocale());
+
+        return $this->responseItem([
+            'id' => $tag->id,
+            'name' => $tag->getName($locale),
+            'type' => $tag->type,
+            'translations' => $tag->getAllNames(),
+            'created_at' => $tag->created_at,
+            'updated_at' => $tag->updated_at,
+        ]);
+    }
+
+    /**
      * Update tag with translations support
      */
     public function update(Request $request, Tag $tag): JsonResponse
