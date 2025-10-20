@@ -107,8 +107,6 @@ class TagController extends Controller
         // Load translations
         $tag->load('translations');
 
-        $locale = $request->get('locale', app()->getLocale());
-
         return $this->responseItem([
             'id' => $tag->id,
             'name' => $tag->name,
