@@ -448,6 +448,517 @@
           }
         }
       }
+    },
+    "/brands": {
+      "get": {
+        "tags": ["Brands"],
+        "summary": "Get brands list",
+        "description": "Get paginated list of brands with optional filtering",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "query",
+            "description": "Filter brands by provider",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "enabled",
+            "in": "query",
+            "description": "Filter brands by enabled status",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Brands list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Brand"
+                          }
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "current_page": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "last_page": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "total": {
+                              "type": "integer",
+                              "example": 100
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 100
+                        }
+                      }
+                    },
+                    "extra": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Brands"],
+        "summary": "Create brand",
+        "description": "Create a new brand",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "provider"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Brand name",
+                    "maxLength": 255
+                  },
+                  "provider": {
+                    "type": "string",
+                    "description": "Brand provider",
+                    "maxLength": 255
+                  },
+                  "restricted_region": {
+                    "type": "array",
+                    "description": "Restricted regions list",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether brand is enabled"
+                  },
+                  "maintain_start": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Maintenance start time"
+                  },
+                  "maintain_end": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Maintenance end time"
+                  },
+                  "maintain_auto": {
+                    "type": "boolean",
+                    "description": "Whether maintenance is automatic"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Brand created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Brand"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands/{id}": {
+      "get": {
+        "tags": ["Brands"],
+        "summary": "Get brand details",
+        "description": "Get detailed information about a specific brand",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Brand ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Brand details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Brand"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Brand not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Brands"],
+        "summary": "Update brand",
+        "description": "Update brand information",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Brand ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Brand name",
+                    "maxLength": 255
+                  },
+                  "provider": {
+                    "type": "string",
+                    "description": "Brand provider",
+                    "maxLength": 255
+                  },
+                  "restricted_region": {
+                    "type": "array",
+                    "description": "Restricted regions list",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether brand is enabled"
+                  },
+                  "maintain_start": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Maintenance start time"
+                  },
+                  "maintain_end": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Maintenance end time"
+                  },
+                  "maintain_auto": {
+                    "type": "boolean",
+                    "description": "Whether maintenance is automatic"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Brand updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Brand"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Brand not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Brands"],
+        "summary": "Delete brand",
+        "description": "Delete a brand",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Brand ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Brand deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Brand deleted successfully"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Brand not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -501,6 +1012,120 @@
               "zh-CN": "动作",
               "ja": "アクション"
             }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        }
+      },
+      "Brand": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Brand ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Brand name"
+          },
+          "provider": {
+            "type": "string",
+            "description": "Brand provider"
+          },
+          "restricted_region": {
+            "type": "array",
+            "description": "Restricted regions list",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "sort_id": {
+            "type": "integer",
+            "description": "Sort order"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether brand is enabled"
+          },
+          "maintain_start": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Maintenance start time",
+            "nullable": true
+          },
+          "maintain_end": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Maintenance end time",
+            "nullable": true
+          },
+          "maintain_auto": {
+            "type": "boolean",
+            "description": "Whether maintenance is automatic"
+          },
+          "is_in_maintenance": {
+            "type": "boolean",
+            "description": "Whether brand is currently in maintenance"
+          },
+          "details": {
+            "type": "array",
+            "description": "Brand details",
+            "items": {
+              "$ref": "#/components/schemas/BrandDetail"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        }
+      },
+      "BrandDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Brand detail ID"
+          },
+          "brand_id": {
+            "type": "integer",
+            "description": "Brand ID"
+          },
+          "coin": {
+            "type": "string",
+            "description": "Currency type",
+            "nullable": true
+          },
+          "support": {
+            "type": "boolean",
+            "description": "Whether supported"
+          },
+          "configured": {
+            "type": "boolean",
+            "description": "Whether configured"
+          },
+          "game_count": {
+            "type": "integer",
+            "description": "Number of games"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether enabled"
           },
           "created_at": {
             "type": "string",
@@ -620,6 +1245,10 @@
     {
       "name": "Tags",
       "description": "Tag management endpoints"
+    },
+    {
+      "name": "Brands",
+      "description": "Brand management endpoints"
     }
   ]
 }
