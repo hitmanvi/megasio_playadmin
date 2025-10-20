@@ -40,6 +40,7 @@ class TagController extends Controller
                 'id' => $tag->id,
                 'name' => $tag->getName($locale),
                 'type' => $tag->type,
+                'icon' => $tag->icon,
                 'translations' => $tag->getAllNames(),
                 'created_at' => $tag->created_at,
                 'updated_at' => $tag->updated_at,
@@ -67,6 +68,7 @@ class TagController extends Controller
             'id' => $tag->id,
             'name' => $tag->getName($locale),
             'type' => $tag->type,
+            'icon' => $tag->icon,
             'translations' => $tag->getAllNames(),
             'created_at' => $tag->created_at,
             'updated_at' => $tag->updated_at,
@@ -79,11 +81,18 @@ class TagController extends Controller
     public function update(Request $request, Tag $tag): JsonResponse
     {
         $request->validate([
+            'icon' => 'nullable|string|max:255',
             'translations' => 'required|array',
             'translations.*' => 'string|max:255',
         ]);
 
-        // Update translations only
+        // Update icon if provided
+        if ($request->has('icon')) {
+            $tag->icon = $request->icon;
+            $tag->save();
+        }
+
+        // Update translations
         $tag->setNames($request->translations);
 
         // Reload with translations
@@ -93,6 +102,7 @@ class TagController extends Controller
             'id' => $tag->id,
             'name' => $tag->name,
             'type' => $tag->type,
+            'icon' => $tag->icon,
             'translations' => $tag->getAllNames(),
             'created_at' => $tag->created_at,
             'updated_at' => $tag->updated_at,

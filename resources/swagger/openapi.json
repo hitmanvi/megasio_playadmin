@@ -374,6 +374,12 @@
                 "type": "object",
                 "required": ["translations"],
                 "properties": {
+                  "icon": {
+                    "type": "string",
+                    "description": "Tag icon",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
                   "translations": {
                     "type": "object",
                     "description": "Translations for the tag name",
@@ -1316,6 +1322,13 @@
             "description": "Tag type",
             "enum": ["theme", "category"],
             "example": "theme"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Tag icon",
+            "maxLength": 255,
+            "nullable": true,
+            "example": "fas fa-gamepad"
           },
           "translations": {
             "type": "object",
