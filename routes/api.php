@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\UploadController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,8 +25,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('brands/{brand}', [BrandController::class, 'update']);
     Route::delete('brands/{brand}', [BrandController::class, 'destroy']);
     
-    // Brand details routes
-    Route::post('brands/{brand}/details', [BrandController::class, 'storeDetail']);
-    Route::put('brands/{brand}/details/{detail}', [BrandController::class, 'updateDetail']);
-    Route::delete('brands/{brand}/details/{detail}', [BrandController::class, 'destroyDetail']);
-});
+           // Brand details routes
+           Route::post('brands/{brand}/details', [BrandController::class, 'storeDetail']);
+           Route::put('brands/{brand}/details/{detail}', [BrandController::class, 'updateDetail']);
+           Route::delete('brands/{brand}/details/{detail}', [BrandController::class, 'destroyDetail']);
+
+           // Upload routes
+           Route::post('upload', [UploadController::class, 'file']);
+       });
