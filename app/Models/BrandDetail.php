@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BrandDetail extends Model
 {
-    protected $table = 'brand_details';
+    protected $table = 'megasio_play_api.brand_details';
 
     /**
      * The attributes that are mass assignable.

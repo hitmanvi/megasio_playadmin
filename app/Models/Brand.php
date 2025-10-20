@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Brand extends Model
 {
-    protected $table = 'brands';
+    protected $table = 'megasio_play_api.brands';
 
     /**
      * The attributes that are mass assignable.
