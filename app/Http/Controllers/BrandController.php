@@ -41,34 +41,8 @@ class BrandController extends Controller
         $perPage = $request->get('per_page', 15);
         $brands = $query->paginate($perPage);
 
-        // Transform the data
-        $brands->getCollection()->transform(function ($brand) {
-            return [
-                'id' => $brand->id,
-                'name' => $brand->name,
-                'provider' => $brand->provider,
-                'restricted_region' => $brand->restricted_region,
-                'sort_id' => $brand->sort_id,
-                'enabled' => $brand->enabled,
-                'maintain_start' => $brand->maintain_start,
-                'maintain_end' => $brand->maintain_end,
-                'maintain_auto' => $brand->maintain_auto,
-                'is_in_maintenance' => $brand->isInMaintenance(),
-                'details' => $brand->details->map(function ($detail) {
-                    return [
-                        'id' => $detail->id,
-                        'coin' => $detail->coin,
-                        'support' => $detail->support,
-                        'configured' => $detail->configured,
-                        'game_count' => $detail->game_count,
-                        'enabled' => $detail->enabled,
-                    ];
-                }),
-                'created_at' => $brand->created_at,
-                'updated_at' => $brand->updated_at,
-            ];
-        });
-
+        // 直接load出来就好了
+        // 返回brands及其details，无需二次transform
         return $this->responseListWithPaginator($brands, null);
     }
 
@@ -77,32 +51,10 @@ class BrandController extends Controller
      */
     public function show(Brand $brand): JsonResponse
     {
+        // 直接load details出来，无需额外结构
         $brand->load('details');
 
-        return $this->responseItem([
-            'id' => $brand->id,
-            'name' => $brand->name,
-            'provider' => $brand->provider,
-            'restricted_region' => $brand->restricted_region,
-            'sort_id' => $brand->sort_id,
-            'enabled' => $brand->enabled,
-            'maintain_start' => $brand->maintain_start,
-            'maintain_end' => $brand->maintain_end,
-            'maintain_auto' => $brand->maintain_auto,
-            'is_in_maintenance' => $brand->isInMaintenance(),
-            'details' => $brand->details->map(function ($detail) {
-                return [
-                    'id' => $detail->id,
-                    'coin' => $detail->coin,
-                    'support' => $detail->support,
-                    'configured' => $detail->configured,
-                    'game_count' => $detail->game_count,
-                    'enabled' => $detail->enabled,
-                ];
-            }),
-            'created_at' => $brand->created_at,
-            'updated_at' => $brand->updated_at,
-        ]);
+        return $this->responseItem($brand);
     }
 
     /**
@@ -125,21 +77,7 @@ class BrandController extends Controller
         $brand = Brand::create($request->all());
         $brand->load('details');
 
-        return $this->responseItem([
-            'id' => $brand->id,
-            'name' => $brand->name,
-            'provider' => $brand->provider,
-            'restricted_region' => $brand->restricted_region,
-            'sort_id' => $brand->sort_id,
-            'enabled' => $brand->enabled,
-            'maintain_start' => $brand->maintain_start,
-            'maintain_end' => $brand->maintain_end,
-            'maintain_auto' => $brand->maintain_auto,
-            'is_in_maintenance' => $brand->isInMaintenance(),
-            'details' => [],
-            'created_at' => $brand->created_at,
-            'updated_at' => $brand->updated_at,
-        ]);
+        return $this->responseItem($brand);
     }
 
     /**
@@ -162,30 +100,7 @@ class BrandController extends Controller
         $brand->update($request->all());
         $brand->load('details');
 
-        return $this->responseItem([
-            'id' => $brand->id,
-            'name' => $brand->name,
-            'provider' => $brand->provider,
-            'restricted_region' => $brand->restricted_region,
-            'sort_id' => $brand->sort_id,
-            'enabled' => $brand->enabled,
-            'maintain_start' => $brand->maintain_start,
-            'maintain_end' => $brand->maintain_end,
-            'maintain_auto' => $brand->maintain_auto,
-            'is_in_maintenance' => $brand->isInMaintenance(),
-            'details' => $brand->details->map(function ($detail) {
-                return [
-                    'id' => $detail->id,
-                    'coin' => $detail->coin,
-                    'support' => $detail->support,
-                    'configured' => $detail->configured,
-                    'game_count' => $detail->game_count,
-                    'enabled' => $detail->enabled,
-                ];
-            }),
-            'created_at' => $brand->created_at,
-            'updated_at' => $brand->updated_at,
-        ]);
+        return $this->responseItem($brand);
     }
 
     /**
@@ -215,17 +130,7 @@ class BrandController extends Controller
 
         $detail = $brand->details()->create($request->all());
 
-        return $this->responseItem([
-            'id' => $detail->id,
-            'brand_id' => $detail->brand_id,
-            'coin' => $detail->coin,
-            'support' => $detail->support,
-            'configured' => $detail->configured,
-            'game_count' => $detail->game_count,
-            'enabled' => $detail->enabled,
-            'created_at' => $detail->created_at,
-            'updated_at' => $detail->updated_at,
-        ]);
+        return $this->responseItem($detail);
     }
 
     /**
@@ -243,17 +148,7 @@ class BrandController extends Controller
 
         $detail->update($request->all());
 
-        return $this->responseItem([
-            'id' => $detail->id,
-            'brand_id' => $detail->brand_id,
-            'coin' => $detail->coin,
-            'support' => $detail->support,
-            'configured' => $detail->configured,
-            'game_count' => $detail->game_count,
-            'enabled' => $detail->enabled,
-            'created_at' => $detail->created_at,
-            'updated_at' => $detail->updated_at,
-        ]);
+        return $this->responseItem($detail);
     }
 
     /**
