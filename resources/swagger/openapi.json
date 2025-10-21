@@ -797,6 +797,69 @@
         }
       }
     },
+    "/brands/options": {
+      "get": {
+        "tags": ["Brands"],
+        "summary": "Get brand options",
+        "description": "Get brand options by type (coin, language, region)",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Type of options to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["coin", "language", "region"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Brand options retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "array",
+                      "description": "Array of options for the specified type",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/brands/{id}": {
       "get": {
         "tags": ["Brands"],

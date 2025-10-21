@@ -162,4 +162,17 @@ class BrandController extends Controller
             'message' => 'Brand detail deleted successfully'
         ]);
     }
+
+    public function options(Request $request)
+    {
+        $options = [
+            'coin' => [],
+            'language' => [],
+            'region' => [],
+        ];
+
+        $type = $request->input('type');
+
+        return $this->responseItem($options[$type] ?? []);
+    }
 }

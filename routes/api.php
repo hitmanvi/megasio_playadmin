@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Brands routes
     Route::get('brands', [BrandController::class, 'index']);
+    Route::get('brands/options', [BrandController::class, 'options']);
     Route::get('brands/{brand}', [BrandController::class, 'show']);
     Route::post('brands', [BrandController::class, 'store']);
     Route::put('brands/{brand}', [BrandController::class, 'update']);
