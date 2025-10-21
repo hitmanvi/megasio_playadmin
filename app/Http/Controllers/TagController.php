@@ -134,7 +134,7 @@ class TagController extends Controller
      */
     protected function withExtraTranslations(Tag $tag)
     {
-        $tag->translations = $tag->getAllNames();
+        $tag->setAttribute('translations', $tag->getAllNames());
         return $tag;
     }
 }
