@@ -24,7 +24,6 @@ class TagController extends Controller
             'translations.*' => 'string|max:255',
         ]);
 
-
         $tag = Tag::where('name', $validated['name'])->first();
         if ($tag) {
             return $this->error(Err::RECORD_ALREADY_EXISTS);
@@ -44,17 +43,10 @@ class TagController extends Controller
         $tag->setNames($validated['translations']);
         $tag->load('translations');
 
-        return $this->responseItem([
-            'id' => $tag->id,
-            'name' => $tag->name,
-            'type' => $tag->type,
-            'icon' => $tag->icon,
-            'enabled' => $tag->enabled,
-            'translations' => $tag->getAllNames(),
-            'created_at' => $tag->created_at,
-            'updated_at' => $tag->updated_at,
-        ]);
+        // 直接返回tag资源（增加translations虚拟属性），更简洁
+        return $this->responseItem($this->withExtraTranslations($tag));
     }
+
     /**
      * Get tags list with type filter and pagination
      */
@@ -84,19 +76,9 @@ class TagController extends Controller
         $perPage = $request->get('per_page', 15);
         $tags = $query->paginate($perPage);
 
-        // Transform the data to include translations
-        $tags->getCollection()->transform(function ($tag) use ($request) {
-            
-            return [
-                'id' => $tag->id,
-                'name' => $tag->name,
-                'type' => $tag->type,
-                'icon' => $tag->icon,
-                'enabled' => $tag->enabled,
-                'translations' => $tag->getAllNames(),
-                'created_at' => $tag->created_at,
-                'updated_at' => $tag->updated_at,
-            ];
+        // 将每个tag都增加translations属性
+        $tags->getCollection()->transform(function ($tag) {
+            return $this->withExtraTranslations($tag);
         });
 
         return $this->responseListWithPaginator($tags, null);
@@ -110,20 +92,8 @@ class TagController extends Controller
         $request->validate([
             'locale' => 'nullable|string',
         ]);
-
-        // Load translations
         $tag->load('translations');
-
-        return $this->responseItem([
-            'id' => $tag->id,
-            'name' => $tag->name,
-            'type' => $tag->type,
-            'icon' => $tag->icon,
-            'enabled' => $tag->enabled,
-            'translations' => $tag->getAllNames(),
-            'created_at' => $tag->created_at,
-            'updated_at' => $tag->updated_at,
-        ]);
+        return $this->responseItem($this->withExtraTranslations($tag));
     }
 
     /**
@@ -156,15 +126,15 @@ class TagController extends Controller
         // Reload with translations
         $tag->load('translations');
 
-        return $this->responseItem([
-            'id' => $tag->id,
-            'name' => $tag->name,
-            'type' => $tag->type,
-            'icon' => $tag->icon,
-            'enabled' => $tag->enabled,
-            'translations' => $tag->getAllNames(),
-            'created_at' => $tag->created_at,
-            'updated_at' => $tag->updated_at,
-        ]);
+        return $this->responseItem($this->withExtraTranslations($tag));
+    }
+
+    /**
+     * 给tag增加translations属性用于简洁响应
+     */
+    protected function withExtraTranslations(Tag $tag)
+    {
+        $tag->translations = $tag->getAllNames();
+        return $tag;
     }
 }
