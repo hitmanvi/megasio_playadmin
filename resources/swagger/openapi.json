@@ -1560,6 +1560,16 @@
             }
           },
           {
+            "name": "locale",
+            "in": "query",
+            "description": "Locale for translated name",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "en"
+            }
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number",
@@ -1684,6 +1694,16 @@
             "schema": {
               "type": "integer"
             }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "description": "Locale for translated name",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "en"
+            }
           }
         ],
         "responses": {
@@ -1806,6 +1826,20 @@
                   "memo": {
                     "type": "string",
                     "description": "Memo text",
+                    "nullable": true
+                  },
+                  "translations": {
+                    "type": "object",
+                    "description": "Translations for the game name",
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 255
+                    },
+                    "example": {
+                      "en": "Game Name",
+                      "zh-CN": "游戏名称",
+                      "ja": "ゲーム名"
+                    },
                     "nullable": true
                   }
                 }
@@ -2086,7 +2120,7 @@
           },
           "name": {
             "type": "string",
-            "description": "Game name"
+            "description": "Game name (translated for specified locale)"
           },
           "thumbnail": {
             "type": "string",
@@ -2105,6 +2139,18 @@
             "type": "string",
             "description": "Memo text",
             "nullable": true
+          },
+          "name_translations": {
+            "type": "object",
+            "description": "All translations for the game name",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "en": "Game Name",
+              "zh-CN": "游戏名称",
+              "ja": "ゲーム名"
+            }
           },
           "brand": {
             "type": "object",

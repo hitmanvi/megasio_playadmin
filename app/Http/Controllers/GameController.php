@@ -29,9 +29,10 @@ class GameController extends Controller
             'memo_present' => 'nullable|boolean',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
+            'locale' => 'nullable|string',
         ]);
 
-        $query = Game::with(['brand', 'category', 'theme']);
+        $query = Game::with(['brand', 'category', 'theme', 'translations']);
 
         // Apply filters
         if ($request->has('name') && $request->name) {
@@ -82,8 +83,8 @@ class GameController extends Controller
         $games = $query->paginate($perPage);
 
         // Transform the data
-        $games->getCollection()->transform(function ($game) {
-            return $this->formatGameResponse($game);
+        $games->getCollection()->transform(function ($game) use ($request) {
+            return $this->formatGameResponse($game, $request->get('locale'));
         });
 
         return $this->responseListWithPaginator($games, null);
@@ -94,9 +95,13 @@ class GameController extends Controller
      */
     public function show(Request $request, Game $game): JsonResponse
     {
-        $game->load(['brand', 'category', 'theme']);
+        $request->validate([
+            'locale' => 'nullable|string',
+        ]);
 
-        return $this->responseItem($this->formatGameResponse($game));
+        $game->load(['brand', 'category', 'theme', 'translations']);
+
+        return $this->responseItem($this->formatGameResponse($game, $request->get('locale')));
     }
 
     /**
@@ -114,6 +119,8 @@ class GameController extends Controller
             'sort_id' => 'nullable|integer|min:0',
             'enabled' => 'nullable|boolean',
             'memo' => 'nullable|string',
+            'translations' => 'nullable|array',
+            'translations.*' => 'string|max:255',
         ]);
 
         // Update fields if provided
@@ -136,8 +143,13 @@ class GameController extends Controller
 
         $game->update($updateData);
 
+        // Update translations if provided
+        if ($request->has('translations')) {
+            $game->setNames($request->translations);
+        }
+
         // Reload with relationships
-        $game->load(['brand', 'category', 'theme']);
+        $game->load(['brand', 'category', 'theme', 'translations']);
 
         return $this->responseItem($this->formatGameResponse($game));
     }
@@ -145,19 +157,22 @@ class GameController extends Controller
     /**
      * Format game response with related data
      */
-    protected function formatGameResponse(Game $game): array
+    protected function formatGameResponse(Game $game, ?string $locale = null): array
     {
+        $locale = $locale ?? app()->getLocale();
+
         return [
             'id' => $game->id,
             'brand_id' => $game->brand_id,
             'category_id' => $game->category_id,
             'theme_id' => $game->theme_id,
             'out_id' => $game->out_id,
-            'name' => $game->name,
+            'name' => $game->getName($locale),
             'thumbnail' => $game->thumbnail,
             'sort_id' => $game->sort_id,
             'enabled' => $game->enabled,
             'memo' => $game->memo,
+            'name_translations' => $game->getAllNames(),
             'brand' => $game->brand ? [
                 'id' => $game->brand->id,
                 'name' => $game->brand->name,
