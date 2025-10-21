@@ -157,17 +157,15 @@ class GameController extends Controller
     /**
      * Format game response with related data
      */
-    protected function formatGameResponse(Game $game, ?string $locale = null): array
+    protected function formatGameResponse(Game $game): array
     {
-        $locale = $locale ?? app()->getLocale();
-
         return [
             'id' => $game->id,
             'brand_id' => $game->brand_id,
             'category_id' => $game->category_id,
             'theme_id' => $game->theme_id,
             'out_id' => $game->out_id,
-            'name' => $game->getName($locale),
+            'name' => $game->name,
             'thumbnail' => $game->thumbnail,
             'sort_id' => $game->sort_id,
             'enabled' => $game->enabled,
