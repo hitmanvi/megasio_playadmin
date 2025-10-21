@@ -134,10 +134,7 @@ class TagController extends Controller
      */
     protected function withExtraTranslations(Tag $tag)
     {
-        // 如果还是想用translations，避免load覆盖，这里直接从属性获取
-        $translations = $tag->getAllNames();
-        $array = $tag->toArray();
-        $array['translations'] = $translations;
-        return $array;
+        $tag->name_translations = $tag->getAllNames();
+        return $tag;
     }
 }
