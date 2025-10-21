@@ -9,5 +9,6 @@ class Err
     const ACCESS_DENIED = ['403', 'access denied'];
     const ACCOUNT_NOT_FOUND = ['404', 'account not found'];
     const ERROR = ['500', 'error'];
+    const RECORD_ALREADY_EXISTS = ['400', 'record already exists'];
 
 }

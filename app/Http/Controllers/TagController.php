@@ -27,7 +27,7 @@ class TagController extends Controller
 
         $tag = Tag::where('name', $validated['name'])->first();
         if ($tag) {
-            return $this->error(Err::INVALID_PARAMS, 'Tag already exists');
+            return $this->error(Err::RECORD_ALREADY_EXISTS);
         }
         $tag = new Tag();
         $tag->name = $validated['name'];
