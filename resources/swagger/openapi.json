@@ -1457,6 +1457,418 @@
           }
         }
       }
+    },
+    "/games": {
+      "get": {
+        "tags": ["Games"],
+        "summary": "Get games list",
+        "description": "Get paginated list of games with various filters",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filter games by name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "out_id",
+            "in": "query",
+            "description": "Filter games by external ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "enabled",
+            "in": "query",
+            "description": "Filter games by enabled status",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "brand_name",
+            "in": "query",
+            "description": "Filter games by brand name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category_id",
+            "in": "query",
+            "description": "Filter games by category ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "theme_id",
+            "in": "query",
+            "description": "Filter games by theme ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "theme_ready",
+            "in": "query",
+            "description": "Filter games by theme readiness",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "localization_set",
+            "in": "query",
+            "description": "Filter games by localization setup",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "thumbnail_uploaded",
+            "in": "query",
+            "description": "Filter games by thumbnail upload status",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "memo_present",
+            "in": "query",
+            "description": "Filter games by memo presence",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Games list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Game"
+                          }
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "current_page": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "last_page": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "total": {
+                              "type": "integer",
+                              "example": 100
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 100
+                        }
+                      }
+                    },
+                    "extra": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/{id}": {
+      "get": {
+        "tags": ["Games"],
+        "summary": "Get game details",
+        "description": "Get detailed information about a specific game",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Game ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Game"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Games"],
+        "summary": "Update game",
+        "description": "Update game information",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Game ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "brand_id": {
+                    "type": "integer",
+                    "description": "Brand ID",
+                    "nullable": true
+                  },
+                  "category_id": {
+                    "type": "integer",
+                    "description": "Category ID",
+                    "nullable": true
+                  },
+                  "theme_id": {
+                    "type": "integer",
+                    "description": "Theme ID",
+                    "nullable": true
+                  },
+                  "out_id": {
+                    "type": "string",
+                    "description": "External ID",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Game name",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "thumbnail": {
+                    "type": "string",
+                    "description": "Thumbnail URL",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0,
+                    "nullable": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether game is enabled",
+                    "nullable": true
+                  },
+                  "memo": {
+                    "type": "string",
+                    "description": "Memo text",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Game updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Game"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1649,6 +2061,114 @@
           }
         }
       },
+      "Game": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Game ID"
+          },
+          "brand_id": {
+            "type": "integer",
+            "description": "Brand ID"
+          },
+          "category_id": {
+            "type": "integer",
+            "description": "Category ID"
+          },
+          "theme_id": {
+            "type": "integer",
+            "description": "Theme ID"
+          },
+          "out_id": {
+            "type": "string",
+            "description": "External ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Game name"
+          },
+          "thumbnail": {
+            "type": "string",
+            "description": "Thumbnail URL",
+            "nullable": true
+          },
+          "sort_id": {
+            "type": "integer",
+            "description": "Sort order"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether game is enabled"
+          },
+          "memo": {
+            "type": "string",
+            "description": "Memo text",
+            "nullable": true
+          },
+          "brand": {
+            "type": "object",
+            "description": "Brand information",
+            "nullable": true,
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "provider": {
+                "type": "string"
+              }
+            }
+          },
+          "category": {
+            "type": "object",
+            "description": "Category information",
+            "nullable": true,
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            }
+          },
+          "theme": {
+            "type": "object",
+            "description": "Theme information",
+            "nullable": true,
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "enabled": {
+                "type": "boolean"
+              }
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        }
+      },
       "LoginRequest": {
         "type": "object",
         "required": ["name", "password"],
@@ -1763,6 +2283,10 @@
     {
       "name": "Upload",
       "description": "File upload endpoints"
+    },
+    {
+      "name": "Games",
+      "description": "Game management endpoints"
     }
   ]
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\GameController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,4 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
            // Upload routes
            Route::post('upload', [UploadController::class, 'file']);
+
+           // Games routes
+           Route::get('games', [GameController::class, 'index']);
+           Route::get('games/{game}', [GameController::class, 'show']);
+           Route::put('games/{game}', [GameController::class, 'update']);
        });

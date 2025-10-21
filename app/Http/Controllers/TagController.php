@@ -134,7 +134,8 @@ class TagController extends Controller
      */
     protected function withExtraTranslations(Tag $tag)
     {
-        $tag->name_translations = $tag->getAllNames();
+        // 注意：直接设置属性可能会在序列化时被模型已有的 translations 覆盖
+        $tag->setRelation('translations', $tag->getAllNames());
         return $tag;
     }
 }
