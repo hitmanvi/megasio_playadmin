@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Err;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -15,7 +16,7 @@ class TagController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:megasio_play_api.tags,name',
+            'name' => 'required|string|max:255',
             'type' => ['required', 'string', Rule::in(['theme', 'category'])],
             'icon' => 'nullable|string|max:255',
             'enabled' => 'nullable|boolean',
@@ -23,6 +24,11 @@ class TagController extends Controller
             'translations.*' => 'string|max:255',
         ]);
 
+
+        $tag = Tag::where('name', $validated['name'])->first();
+        if ($tag) {
+            return $this->error(Err::INVALID_PARAMS, 'Tag already exists');
+        }
         $tag = new Tag();
         $tag->name = $validated['name'];
         $tag->type = $validated['type'];
@@ -80,7 +86,6 @@ class TagController extends Controller
 
         // Transform the data to include translations
         $tags->getCollection()->transform(function ($tag) use ($request) {
-            $locale = $request->get('locale', app()->getLocale());
             
             return [
                 'id' => $tag->id,
