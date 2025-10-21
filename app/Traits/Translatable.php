@@ -134,25 +134,6 @@ trait Translatable
         return null;
     }
 
-    /**
-     * Magic method to get translated attributes.
-     * Usage: $model->name_en, $model->name_zh_cn
-     *
-     * @param string $name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        // Check if it's a translated attribute (field_locale format)
-        if (preg_match('/^(.+)_([a-z]{2}(?:-[A-Z]{2})?)$/', $name, $matches)) {
-            $field = $matches[1];
-            $locale = str_replace('_', '-', $matches[2]);
-            
-            return $this->getTranslation($field, $locale);
-        }
-        
-        return parent::__get($name);
-    }
 
     /**
      * Get all available locales for a field.

@@ -162,16 +162,16 @@ class GameController extends Controller
         $locale = $locale ?? app()->getLocale();
 
         return [
-            'id' => $game->getAttribute('id'),
-            'brand_id' => $game->getAttribute('brand_id'),
-            'category_id' => $game->getAttribute('category_id'),
-            'theme_id' => $game->getAttribute('theme_id'),
-            'out_id' => $game->getAttribute('out_id'),
+            'id' => $game->id,
+            'brand_id' => $game->brand_id,
+            'category_id' => $game->category_id,
+            'theme_id' => $game->theme_id,
+            'out_id' => $game->out_id,
             'name' => $game->getName($locale),
-            'thumbnail' => $game->getAttribute('thumbnail'),
-            'sort_id' => $game->getAttribute('sort_id'),
-            'enabled' => $game->getAttribute('enabled'),
-            'memo' => $game->getAttribute('memo'),
+            'thumbnail' => $game->thumbnail,
+            'sort_id' => $game->sort_id,
+            'enabled' => $game->enabled,
+            'memo' => $game->memo,
             'name_translations' => $game->getAllNames(),
             'brand' => $game->brand ? [
                 'id' => $game->brand->id,
@@ -189,8 +189,8 @@ class GameController extends Controller
                 'type' => $game->theme->type,
                 'enabled' => $game->theme->enabled,
             ] : null,
-            'created_at' => $game->getAttribute('created_at'),
-            'updated_at' => $game->getAttribute('updated_at'),
+            'created_at' => $game->created_at,
+            'updated_at' => $game->updated_at,
         ];
     }
 }
