@@ -24,6 +24,7 @@ class TagController extends Controller
         ]);
 
         $tag = new Tag();
+        $tag->name = $validated['name'];
         $tag->type = $validated['type'];
         if (array_key_exists('icon', $validated)) {
             $tag->icon = $validated['icon'];
