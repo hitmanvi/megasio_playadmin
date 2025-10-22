@@ -35,6 +35,7 @@ class BrandDetailSeeder extends Seeder
                     'configured' => $isConfigured,
                     'game_count' => $gameCount,
                     'enabled' => $isEnabled,
+                    'rate' => $isSupported ? round(rand(80, 120) / 100, 2) : null, // 0.8-1.2 的随机费率
                 ]);
             }
             
@@ -47,6 +48,7 @@ class BrandDetailSeeder extends Seeder
                     'configured' => rand(0, 1) == 1,
                     'game_count' => rand(50, 200),
                     'enabled' => true,
+                    'rate' => round(rand(90, 110) / 100, 2), // 0.9-1.1 的随机费率
                 ]);
             }
         }
@@ -76,6 +78,7 @@ class BrandDetailSeeder extends Seeder
                 'configured' => true,
                 'game_count' => 150,
                 'enabled' => true,
+                'rate' => 1.0, // 标准费率
             ]);
             
             BrandDetail::create([
@@ -85,6 +88,7 @@ class BrandDetailSeeder extends Seeder
                 'configured' => true,
                 'game_count' => 120,
                 'enabled' => true,
+                'rate' => 0.95, // 略低的费率
             ]);
             
             BrandDetail::create([
@@ -94,6 +98,7 @@ class BrandDetailSeeder extends Seeder
                 'configured' => false,
                 'game_count' => 0,
                 'enabled' => false,
+                'rate' => null, // 未配置时无费率
             ]);
         }
 
@@ -111,6 +116,7 @@ class BrandDetailSeeder extends Seeder
                     'configured' => true,
                     'game_count' => rand(80, 200),
                     'enabled' => true,
+                    'rate' => round(rand(85, 115) / 100, 2), // 0.85-1.15 的随机费率
                 ]);
             }
         }
@@ -127,6 +133,7 @@ class BrandDetailSeeder extends Seeder
                 'configured' => true,
                 'game_count' => 300,
                 'enabled' => true,
+                'rate' => 1.05, // 略高的费率
             ]);
             
             BrandDetail::create([
@@ -136,6 +143,7 @@ class BrandDetailSeeder extends Seeder
                 'configured' => false,
                 'game_count' => 0,
                 'enabled' => false,
+                'rate' => null, // 未配置时无费率
             ]);
         }
 

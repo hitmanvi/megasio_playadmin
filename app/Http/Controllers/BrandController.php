@@ -130,6 +130,7 @@ class BrandController extends Controller
             'configured' => 'nullable|boolean',
             'game_count' => 'nullable|integer|min:0',
             'enabled' => 'nullable|boolean',
+            'rate' => 'nullable|numeric|min:0',
         ]);
 
         $detail = $brand->details()->create($request->all());
@@ -148,6 +149,7 @@ class BrandController extends Controller
             'configured' => 'nullable|boolean',
             'game_count' => 'nullable|integer|min:0',
             'enabled' => 'nullable|boolean',
+            'rate' => 'nullable|numeric|min:0',
         ]);
 
         $detail->update($request->all());

@@ -1204,6 +1204,11 @@
                   "enabled": {
                     "type": "boolean",
                     "description": "Whether enabled"
+                  },
+                  "rate": {
+                    "type": "number",
+                    "description": "Rate value",
+                    "minimum": 0
                   }
                 }
               }
@@ -1326,6 +1331,11 @@
                   "enabled": {
                     "type": "boolean",
                     "description": "Whether enabled"
+                  },
+                  "rate": {
+                    "type": "number",
+                    "description": "Rate value",
+                    "minimum": 0
                   }
                 }
               }
@@ -2186,6 +2196,12 @@
           "enabled": {
             "type": "boolean",
             "description": "Whether enabled"
+          },
+          "rate": {
+            "type": "number",
+            "description": "Rate value",
+            "minimum": 0,
+            "nullable": true
           },
           "created_at": {
             "type": "string",
