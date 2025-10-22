@@ -1209,6 +1209,11 @@
                     "type": "number",
                     "description": "Rate value",
                     "minimum": 0
+                  },
+                  "provider": {
+                    "type": "string",
+                    "description": "Provider name",
+                    "maxLength": 255
                   }
                 }
               }
@@ -1336,6 +1341,11 @@
                     "type": "number",
                     "description": "Rate value",
                     "minimum": 0
+                  },
+                  "provider": {
+                    "type": "string",
+                    "description": "Provider name",
+                    "maxLength": 255
                   }
                 }
               }
@@ -2201,6 +2211,12 @@
             "type": "number",
             "description": "Rate value",
             "minimum": 0,
+            "nullable": true
+          },
+          "provider": {
+            "type": "string",
+            "description": "Provider name",
+            "maxLength": 255,
             "nullable": true
           },
           "created_at": {
