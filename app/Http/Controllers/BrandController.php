@@ -72,6 +72,7 @@ class BrandController extends Controller
             'maintain_start' => 'nullable|date',
             'maintain_end' => 'nullable|date|after:maintain_start',
             'maintain_auto' => 'nullable|boolean',
+            'maintain_week_day' => 'nullable|integer|min:0|max:6',
         ]);
 
         $brand = Brand::create($request->all());
@@ -95,6 +96,7 @@ class BrandController extends Controller
             'maintain_start' => 'nullable|date',
             'maintain_end' => 'nullable|date|after:maintain_start',
             'maintain_auto' => 'nullable|boolean',
+            'maintain_week_day' => 'nullable|integer|min:0|max:6',
         ]);
 
         $brand->update($request->all());

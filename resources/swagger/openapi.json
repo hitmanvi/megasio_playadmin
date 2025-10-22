@@ -744,6 +744,12 @@
                   "maintain_auto": {
                     "type": "boolean",
                     "description": "Whether maintenance is automatic"
+                  },
+                  "maintain_week_day": {
+                    "type": "integer",
+                    "description": "Maintenance day of week (0=Sunday, 1=Monday, ..., 6=Saturday)",
+                    "minimum": 0,
+                    "maximum": 6
                   }
                 }
               }
@@ -993,6 +999,12 @@
                   "maintain_auto": {
                     "type": "boolean",
                     "description": "Whether maintenance is automatic"
+                  },
+                  "maintain_week_day": {
+                    "type": "integer",
+                    "description": "Maintenance day of week (0=Sunday, 1=Monday, ..., 6=Saturday)",
+                    "minimum": 0,
+                    "maximum": 6
                   }
                 }
               }
@@ -2090,6 +2102,13 @@
           "maintain_auto": {
             "type": "boolean",
             "description": "Whether maintenance is automatic"
+          },
+          "maintain_week_day": {
+            "type": "integer",
+            "description": "Maintenance day of week (0=Sunday, 1=Monday, ..., 6=Saturday)",
+            "minimum": 0,
+            "maximum": 6,
+            "nullable": true
           },
           "is_in_maintenance": {
             "type": "boolean",

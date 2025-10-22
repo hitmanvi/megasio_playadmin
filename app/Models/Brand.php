@@ -22,6 +22,7 @@ class Brand extends Model
         'maintain_start',
         'maintain_end',
         'maintain_auto',
+        'maintain_week_day',
     ];
 
     /**
