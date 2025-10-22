@@ -175,6 +175,6 @@ class BrandController extends Controller
 
         $type = $request->input('type');
 
-        return $this->responseItem($options[$type] ?? []);
+        return $this->responseList($options[$type] ?? []);
     }
 }
