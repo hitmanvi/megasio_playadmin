@@ -733,13 +733,15 @@
                   },
                   "maintain_start": {
                     "type": "string",
-                    "format": "date-time",
-                    "description": "Maintenance start time"
+                    "format": "time",
+                    "description": "Maintenance start time (HH:MM format)",
+                    "example": "14:30"
                   },
                   "maintain_end": {
                     "type": "string",
-                    "format": "date-time",
-                    "description": "Maintenance end time"
+                    "format": "time",
+                    "description": "Maintenance end time (HH:MM format)",
+                    "example": "16:00"
                   },
                   "maintain_auto": {
                     "type": "boolean",
@@ -750,6 +752,11 @@
                     "description": "Maintenance day of week (0=Sunday, 1=Monday, ..., 6=Saturday)",
                     "minimum": 0,
                     "maximum": 6
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Brand icon",
+                    "maxLength": 255
                   }
                 }
               }
@@ -988,13 +995,15 @@
                   },
                   "maintain_start": {
                     "type": "string",
-                    "format": "date-time",
-                    "description": "Maintenance start time"
+                    "format": "time",
+                    "description": "Maintenance start time (HH:MM format)",
+                    "example": "14:30"
                   },
                   "maintain_end": {
                     "type": "string",
-                    "format": "date-time",
-                    "description": "Maintenance end time"
+                    "format": "time",
+                    "description": "Maintenance end time (HH:MM format)",
+                    "example": "16:00"
                   },
                   "maintain_auto": {
                     "type": "boolean",
@@ -1005,6 +1014,11 @@
                     "description": "Maintenance day of week (0=Sunday, 1=Monday, ..., 6=Saturday)",
                     "minimum": 0,
                     "maximum": 6
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Brand icon",
+                    "maxLength": 255
                   }
                 }
               }
@@ -2089,14 +2103,16 @@
           },
           "maintain_start": {
             "type": "string",
-            "format": "date-time",
-            "description": "Maintenance start time",
+            "format": "time",
+            "description": "Maintenance start time (HH:MM format)",
+            "example": "14:30",
             "nullable": true
           },
           "maintain_end": {
             "type": "string",
-            "format": "date-time",
-            "description": "Maintenance end time",
+            "format": "time",
+            "description": "Maintenance end time (HH:MM format)",
+            "example": "16:00",
             "nullable": true
           },
           "maintain_auto": {
@@ -2108,6 +2124,12 @@
             "description": "Maintenance day of week (0=Sunday, 1=Monday, ..., 6=Saturday)",
             "minimum": 0,
             "maximum": 6,
+            "nullable": true
+          },
+          "icon": {
+            "type": "string",
+            "description": "Brand icon",
+            "maxLength": 255,
             "nullable": true
           },
           "is_in_maintenance": {

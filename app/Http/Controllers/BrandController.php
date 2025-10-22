@@ -69,10 +69,11 @@ class BrandController extends Controller
             'restricted_region.*' => 'string',
             'sort_id' => 'nullable|integer|min:0',
             'enabled' => 'nullable|boolean',
-            'maintain_start' => 'nullable|date',
-            'maintain_end' => 'nullable|date|after:maintain_start',
+            'maintain_start' => 'nullable|date_format:H:i',
+            'maintain_end' => 'nullable|date_format:H:i|after:maintain_start',
             'maintain_auto' => 'nullable|boolean',
             'maintain_week_day' => 'nullable|integer|min:0|max:6',
+            'icon' => 'nullable|string|max:255',
         ]);
 
         $brand = Brand::create($request->all());
@@ -93,10 +94,11 @@ class BrandController extends Controller
             'restricted_region.*' => 'string',
             'sort_id' => 'nullable|integer|min:0',
             'enabled' => 'nullable|boolean',
-            'maintain_start' => 'nullable|date',
-            'maintain_end' => 'nullable|date|after:maintain_start',
+            'maintain_start' => 'nullable|date_format:H:i',
+            'maintain_end' => 'nullable|date_format:H:i|after:maintain_start',
             'maintain_auto' => 'nullable|boolean',
             'maintain_week_day' => 'nullable|integer|min:0|max:6',
+            'icon' => 'nullable|string|max:255',
         ]);
 
         $brand->update($request->all());

@@ -23,6 +23,7 @@ class Brand extends Model
         'maintain_end',
         'maintain_auto',
         'maintain_week_day',
+        'icon',
     ];
 
     /**
@@ -36,8 +37,6 @@ class Brand extends Model
             'restricted_region' => 'array',
             'enabled' => 'boolean',
             'maintain_auto' => 'boolean',
-            'maintain_start' => 'datetime',
-            'maintain_end' => 'datetime',
         ];
     }
 
@@ -82,8 +81,8 @@ class Brand extends Model
             return false;
         }
 
-        $now = now();
-        return $now->between($this->maintain_start, $this->maintain_end);
+        $now = now()->format('H:i');
+        return $now >= $this->maintain_start && $now <= $this->maintain_end;
     }
 
     /**
