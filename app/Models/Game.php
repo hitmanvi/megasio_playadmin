@@ -114,6 +114,14 @@ class Game extends Model
     }
 
     /**
+     * Scope to filter by multiple brand IDs.
+     */
+    public function scopeByBrandIds($query, $brandIds)
+    {
+        return $query->whereIn('brand_id', $brandIds);
+    }
+
+    /**
      * Scope to filter by category.
      */
     public function scopeByCategory($query, $categoryId)
@@ -122,11 +130,27 @@ class Game extends Model
     }
 
     /**
+     * Scope to filter by multiple categories.
+     */
+    public function scopeByCategories($query, $categoryIds)
+    {
+        return $query->whereIn('category_id', $categoryIds);
+    }
+
+    /**
      * Scope to filter by theme.
      */
     public function scopeByTheme($query, $themeId)
     {
         return $query->where('theme_id', $themeId);
+    }
+
+    /**
+     * Scope to filter by multiple themes.
+     */
+    public function scopeByThemes($query, $themeIds)
+    {
+        return $query->whereIn('theme_id', $themeIds);
     }
 
     /**

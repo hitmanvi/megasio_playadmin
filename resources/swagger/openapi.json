@@ -1606,14 +1606,14 @@
             }
           },
           {
-            "name": "brand_name",
+            "name": "brand_id",
             "in": "query",
-            "description": "Filter games by exact brand names (supports multiple values)",
+            "description": "Filter games by brand IDs (supports multiple values)",
             "required": false,
             "schema": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "integer"
               }
             },
             "style": "form",
@@ -1622,20 +1622,30 @@
           {
             "name": "category_id",
             "in": "query",
-            "description": "Filter games by category ID",
+            "description": "Filter games by category IDs (supports multiple values)",
             "required": false,
             "schema": {
-              "type": "integer"
-            }
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": true
           },
           {
             "name": "theme_id",
             "in": "query",
-            "description": "Filter games by theme ID",
+            "description": "Filter games by theme IDs (supports multiple values)",
             "required": false,
             "schema": {
-              "type": "integer"
-            }
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": true
           },
           {
             "name": "theme_ready",

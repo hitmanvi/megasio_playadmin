@@ -20,10 +20,12 @@ class GameController extends Controller
             'name' => 'nullable|string',
             'out_id' => 'nullable|string',
             'enabled' => 'nullable|boolean',
-            'brand_name' => 'nullable|array',
-            'brand_name.*' => 'string',
-            'category_id' => 'nullable|integer',
-            'theme_id' => 'nullable|integer',
+            'brand_id' => 'nullable|array',
+            'brand_id.*' => 'integer',
+            'category_id' => 'nullable|array',
+            'category_id.*' => 'integer',
+            'theme_id' => 'nullable|array',
+            'theme_id.*' => 'integer',
             'theme_ready' => 'nullable|boolean',
             'localization_set' => 'nullable|boolean',
             'thumbnail_uploaded' => 'nullable|boolean',
@@ -48,16 +50,16 @@ class GameController extends Controller
             $query->byEnabled($request->boolean('enabled'));
         }
 
-        if ($request->has('brand_name') && $request->brand_name) {
-            $query->byBrandNames($request->brand_name);
+        if ($request->has('brand_id') && $request->brand_id) {
+            $query->byBrandIds($request->brand_id);
         }
 
         if ($request->has('category_id') && $request->category_id) {
-            $query->byCategory($request->category_id);
+            $query->byCategories($request->category_id);
         }
 
         if ($request->has('theme_id') && $request->theme_id) {
-            $query->byTheme($request->theme_id);
+            $query->byThemes($request->theme_id);
         }
 
         if ($request->has('theme_ready')) {
