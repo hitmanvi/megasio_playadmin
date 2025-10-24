@@ -53,6 +53,7 @@ class TagController extends Controller
     public function index(Request $request): JsonResponse
     {
         $request->validate([
+            'id' => 'nullable',
             'name' => 'nullable|string',
             'type' => 'nullable|string',
             'enabled' => 'nullable|boolean',
@@ -62,6 +63,11 @@ class TagController extends Controller
         ]);
 
         $query = Tag::with('translations');
+
+        // Filter by id if provided
+        if ($request->has('id') && $request->id) {
+            $query->where('id', $request->id);
+        }
 
         // Filter by name if provided
         if ($request->has('name') && $request->name) {
