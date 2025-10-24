@@ -144,6 +144,15 @@
         ],
         "parameters": [
           {
+            "name": "name",
+            "in": "query",
+            "description": "Filter tags by name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "type",
             "in": "query",
             "description": "Filter tags by type (theme or category)",
@@ -565,6 +574,15 @@
           }
         ],
         "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filter brands by name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "provider",
             "in": "query",

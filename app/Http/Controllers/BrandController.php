@@ -16,6 +16,7 @@ class BrandController extends Controller
     public function index(Request $request): JsonResponse
     {
         $request->validate([
+            'name' => 'nullable|string',
             'provider' => 'nullable|string',
             'enabled' => 'nullable|boolean',
             'page' => 'nullable|integer|min:1',
@@ -23,6 +24,11 @@ class BrandController extends Controller
         ]);
 
         $query = Brand::with('details');
+
+        // Filter by name if provided
+        if ($request->has('name') && $request->name) {
+            $query->byName($request->name);
+        }
 
         // Filter by provider if provided
         if ($request->has('provider') && $request->provider) {

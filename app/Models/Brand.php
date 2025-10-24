@@ -57,6 +57,14 @@ class Brand extends Model
     }
 
     /**
+     * Scope to filter by name.
+     */
+    public function scopeByName($query, $name)
+    {
+        return $query->where('name', 'like', "%{$name}%");
+    }
+
+    /**
      * Scope to filter by provider.
      */
     public function scopeByProvider($query, $provider)
