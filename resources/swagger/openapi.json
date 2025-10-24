@@ -1608,11 +1608,16 @@
           {
             "name": "brand_name",
             "in": "query",
-            "description": "Filter games by brand name",
+            "description": "Filter games by exact brand names (supports multiple values)",
             "required": false,
             "schema": {
-              "type": "string"
-            }
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true
           },
           {
             "name": "category_id",

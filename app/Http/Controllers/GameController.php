@@ -20,7 +20,8 @@ class GameController extends Controller
             'name' => 'nullable|string',
             'out_id' => 'nullable|string',
             'enabled' => 'nullable|boolean',
-            'brand_name' => 'nullable|string',
+            'brand_name' => 'nullable|array',
+            'brand_name.*' => 'string',
             'category_id' => 'nullable|integer',
             'theme_id' => 'nullable|integer',
             'theme_ready' => 'nullable|boolean',
@@ -48,7 +49,7 @@ class GameController extends Controller
         }
 
         if ($request->has('brand_name') && $request->brand_name) {
-            $query->byBrandName($request->brand_name);
+            $query->byBrandNames($request->brand_name);
         }
 
         if ($request->has('category_id') && $request->category_id) {

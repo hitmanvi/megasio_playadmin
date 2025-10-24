@@ -104,6 +104,16 @@ class Game extends Model
     }
 
     /**
+     * Scope to filter by multiple brand names.
+     */
+    public function scopeByBrandNames($query, $brandNames)
+    {
+        return $query->whereHas('brand', function ($q) use ($brandNames) {
+            $q->whereIn('name', $brandNames);
+        });
+    }
+
+    /**
      * Scope to filter by category.
      */
     public function scopeByCategory($query, $categoryId)
