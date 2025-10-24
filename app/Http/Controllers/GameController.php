@@ -111,9 +111,9 @@ class GameController extends Controller
     public function update(Request $request, Game $game): JsonResponse
     {
         $request->validate([
-            'brand_id' => 'nullable|integer|exists:brands,id',
-            'category_id' => 'nullable|integer|exists:tags,id',
-            'theme_id' => 'nullable|integer|exists:tags,id',
+            'brand_id' => 'nullable|integer',
+            'category_id' => 'nullable|integer',
+            'theme_id' => 'nullable|integer',
             'out_id' => 'nullable|string|max:255',
             'name' => 'nullable|string|max:255',
             'thumbnail' => 'nullable|string|max:255',
