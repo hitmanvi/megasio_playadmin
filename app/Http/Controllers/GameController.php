@@ -170,7 +170,7 @@ class GameController extends Controller
             'category_id' => $game->category_id,
             'theme_id' => $game->theme_id,
             'out_id' => $game->out_id,
-            'name' => $game->getName($locale),
+            'name' => $game->name,
             'thumbnail' => $game->thumbnail,
             'sort_id' => $game->sort_id,
             'enabled' => $game->enabled,
