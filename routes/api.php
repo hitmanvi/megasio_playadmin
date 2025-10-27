@@ -5,6 +5,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\BannerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -40,4 +41,11 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('games', [GameController::class, 'index']);
            Route::get('games/{game}', [GameController::class, 'show']);
            Route::put('games/{game}', [GameController::class, 'update']);
+           
+           // Banners routes
+           Route::get('banners', [BannerController::class, 'index']);
+           Route::post('banners', [BannerController::class, 'store']);
+           Route::get('banners/{banner}', [BannerController::class, 'show']);
+           Route::put('banners/{banner}', [BannerController::class, 'update']);
+           Route::delete('banners/{banner}', [BannerController::class, 'destroy']);
        });
