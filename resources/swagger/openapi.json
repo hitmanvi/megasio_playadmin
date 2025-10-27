@@ -1970,6 +1970,14 @@
                     "description": "Memo text",
                     "nullable": true
                   },
+                  "languages": {
+                    "type": "array",
+                    "description": "Supported languages",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true
+                  },
                   "translations": {
                     "type": "object",
                     "description": "Translations for the game name",
@@ -2307,6 +2315,14 @@
           "memo": {
             "type": "string",
             "description": "Memo text",
+            "nullable": true
+          },
+          "languages": {
+            "type": "array",
+            "description": "Supported languages",
+            "items": {
+              "type": "string"
+            },
             "nullable": true
           },
           "name_translations": {

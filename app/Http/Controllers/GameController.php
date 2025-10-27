@@ -124,6 +124,8 @@ class GameController extends Controller
             'memo' => 'nullable|string',
             'name_translations' => 'nullable|array',
             'name_translations.*' => 'string|max:255',
+            'languages' => 'nullable|array',
+            'languages.*' => 'string',
         ]);
 
         // Update fields if provided
@@ -137,6 +139,7 @@ class GameController extends Controller
             'sort_id',
             'enabled',
             'memo',
+            'languages',
         ]);
 
         // Remove null values
@@ -175,6 +178,7 @@ class GameController extends Controller
             'sort_id' => $game->sort_id,
             'enabled' => $game->enabled,
             'memo' => $game->memo,
+            'languages' => $game->languages,
             'name_translations' => $game->getAllNames(),
             'brand' => $game->brand ? [
                 'id' => $game->brand->id,

@@ -22,11 +22,13 @@ class Game extends Model
         'sort_id',
         'enabled',
         'memo',
+        'languages',
     ];
 
     protected $casts = [
         'enabled' => 'boolean',
         'sort_id' => 'integer',
+        'languages' => 'array',
     ];
 
     /**
