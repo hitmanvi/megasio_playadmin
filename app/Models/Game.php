@@ -56,6 +56,17 @@ class Game extends Model
     }
 
     /**
+     * Get the game groups for the game.
+     */
+    public function gameGroups()
+    {
+        return $this->belongsToMany(GameGroup::class, 'megasio_play_api.game_group_game', 'game_id', 'game_group_id')
+            ->withPivot('sort_id')
+            ->withTimestamps()
+            ->orderBy('game_group_game.sort_id');
+    }
+
+    /**
      * Scope to filter by name.
      */
     public function scopeByName($query, $name)

@@ -2594,6 +2594,876 @@
           }
         }
       }
+    },
+    "/game-groups": {
+      "get": {
+        "tags": ["Game Groups"],
+        "summary": "Get game groups list",
+        "description": "Get paginated list of game groups with optional filtering",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Filter game groups by category (Event, System)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "enabled",
+            "in": "query",
+            "description": "Filter game groups by enabled status",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game groups list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/GameGroup"
+                          }
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "current_page": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "last_page": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "total": {
+                              "type": "integer",
+                              "example": 100
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 100
+                        }
+                      }
+                    },
+                    "extra": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Game Groups"],
+        "summary": "Create game group",
+        "description": "Create a new game group",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["category"],
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "description": "Category (Event, System)",
+                    "maxLength": 255
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0
+                  },
+                  "app_limit": {
+                    "type": "integer",
+                    "description": "App display limit",
+                    "minimum": 0,
+                    "nullable": true
+                  },
+                  "web_limit": {
+                    "type": "integer",
+                    "description": "Web display limit",
+                    "minimum": 0,
+                    "nullable": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether game group is enabled"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Game group created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GameGroup"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/game-groups/{id}": {
+      "get": {
+        "tags": ["Game Groups"],
+        "summary": "Get game group details",
+        "description": "Get detailed information about a specific game group",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Game group ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game group details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GameGroup"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Game Groups"],
+        "summary": "Update game group",
+        "description": "Update game group information",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Game group ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "description": "Category (Event, System)",
+                    "maxLength": 255
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0
+                  },
+                  "app_limit": {
+                    "type": "integer",
+                    "description": "App display limit",
+                    "minimum": 0,
+                    "nullable": true
+                  },
+                  "web_limit": {
+                    "type": "integer",
+                    "description": "Web display limit",
+                    "minimum": 0,
+                    "nullable": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether game group is enabled"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Game group updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GameGroup"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Game Groups"],
+        "summary": "Delete game group",
+        "description": "Delete a game group",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Game group ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game group deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Game group deleted successfully"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/game-groups/{game_group_id}/games": {
+      "post": {
+        "tags": ["Game Groups"],
+        "summary": "Attach game to game group",
+        "description": "Attach a game to a game group",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "game_group_id",
+            "in": "path",
+            "description": "Game group ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["game_id"],
+                "properties": {
+                  "game_id": {
+                    "type": "integer",
+                    "description": "Game ID"
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Game attached successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GameGroup"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error or game already attached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/game-groups/{game_group_id}/games/bulk": {
+      "post": {
+        "tags": ["Game Groups"],
+        "summary": "Attach multiple games to game group",
+        "description": "Bulk attach multiple games to a game group in one request",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "game_group_id",
+            "in": "path",
+            "description": "Game group ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["games"],
+                "properties": {
+                  "games": {
+                    "type": "array",
+                    "description": "Array of game IDs to attach",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 1,
+                    "example": [1, 2, 3, 4, 5]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Games attached successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GameGroup"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error or all games already attached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/game-groups/{game_group_id}/games/{game_id}": {
+      "delete": {
+        "tags": ["Game Groups"],
+        "summary": "Detach game from game group",
+        "description": "Detach a game from a game group",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "game_group_id",
+            "in": "path",
+            "description": "Game group ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "game_id",
+            "in": "path",
+            "description": "Game ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game detached successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GameGroup"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game group or game not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/game-groups/{game_group_id}/games/order": {
+      "put": {
+        "tags": ["Game Groups"],
+        "summary": "Update game order in game group",
+        "description": "Update the sort order of games in a game group",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "game_group_id",
+            "in": "path",
+            "description": "Game group ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["games"],
+                "properties": {
+                  "games": {
+                    "type": "array",
+                    "description": "Array of games with their sort IDs",
+                    "items": {
+                      "type": "object",
+                      "required": ["game_id", "sort_id"],
+                      "properties": {
+                        "game_id": {
+                          "type": "integer",
+                          "description": "Game ID"
+                        },
+                        "sort_id": {
+                          "type": "integer",
+                          "description": "Sort order",
+                          "minimum": 0
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Game order updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GameGroup"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3009,6 +3879,74 @@
           }
         }
       },
+      "GameGroup": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Game group ID"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category (Event, System)"
+          },
+          "sort_id": {
+            "type": "integer",
+            "description": "Sort order"
+          },
+          "app_limit": {
+            "type": "integer",
+            "description": "App display limit",
+            "nullable": true
+          },
+          "web_limit": {
+            "type": "integer",
+            "description": "Web display limit",
+            "nullable": true
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether game group is enabled"
+          },
+          "games": {
+            "type": "array",
+            "description": "Games in the group",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "Game ID"
+                },
+                "pivot": {
+                  "type": "object",
+                  "properties": {
+                    "game_group_id": {
+                      "type": "integer"
+                    },
+                    "game_id": {
+                      "type": "integer"
+                    },
+                    "sort_id": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        }
+      },
       "LoginRequest": {
         "type": "object",
         "required": ["name", "password"],
@@ -3131,6 +4069,10 @@
     {
       "name": "Banners",
       "description": "Banner management endpoints"
+    },
+    {
+      "name": "Game Groups",
+      "description": "Game group management endpoints"
     }
   ]
 }
