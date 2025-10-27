@@ -2771,6 +2771,20 @@
                   "enabled": {
                     "type": "boolean",
                     "description": "Whether game group is enabled"
+                  },
+                  "translations": {
+                    "type": "object",
+                    "description": "Translations for the game group name in {locale: value} format",
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 255
+                    },
+                    "example": {
+                      "en": "New Games",
+                      "zh-CN": "新游戏",
+                      "ja": "新規ゲーム"
+                    },
+                    "nullable": true
                   }
                 }
               }
@@ -2943,6 +2957,20 @@
                   "enabled": {
                     "type": "boolean",
                     "description": "Whether game group is enabled"
+                  },
+                  "translations": {
+                    "type": "object",
+                    "description": "Translations for the game group name in {locale: value} format",
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 255
+                    },
+                    "example": {
+                      "en": "New Games",
+                      "zh-CN": "新游戏",
+                      "ja": "新規ゲーム"
+                    },
+                    "nullable": true
                   }
                 }
               }
@@ -3907,6 +3935,18 @@
           "enabled": {
             "type": "boolean",
             "description": "Whether game group is enabled"
+          },
+          "translations": {
+            "type": "object",
+            "description": "All translations for the game group name in {locale: value} format",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "en": "New Games",
+              "zh-CN": "新游戏",
+              "ja": "新規ゲーム"
+            }
           },
           "games": {
             "type": "array",

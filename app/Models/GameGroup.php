@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Translatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class GameGroup extends Model
 {
+    use Translatable;
+
     protected $table = 'megasio_play_api.game_groups';
 
     protected $fillable = [
@@ -35,6 +38,50 @@ class GameGroup extends Model
             ->withPivot('sort_id')
             ->withTimestamps()
             ->orderBy('game_group_game.sort_id');
+    }
+
+    /**
+     * Get the translated name for the current locale.
+     *
+     * @param string|null $locale
+     * @return string|null
+     */
+    public function getName(?string $locale = null): ?string
+    {
+        return $this->getTranslatedAttribute('name', $locale);
+    }
+
+    /**
+     * Set the translated name for a specific locale.
+     *
+     * @param string $name
+     * @param string|null $locale
+     * @return void
+     */
+    public function setName(string $name, ?string $locale = null): void
+    {
+        $this->setTranslation('name', $name, $locale);
+    }
+
+    /**
+     * Get all translated names.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAllNames()
+    {
+        return $this->getTranslations('name');
+    }
+
+    /**
+     * Set multiple translated names.
+     *
+     * @param array $names ['en' => 'New Games', 'zh-CN' => '新游戏']
+     * @return void
+     */
+    public function setNames(array $names): void
+    {
+        $this->setTranslations('name', $names);
     }
 
     /**

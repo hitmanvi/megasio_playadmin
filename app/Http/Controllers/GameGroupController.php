@@ -23,7 +23,7 @@ class GameGroupController extends Controller
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
 
-        $query = GameGroup::with('games');
+        $query = GameGroup::with(['games', 'translations']);
 
         // Apply filters
         if ($request->has('category') && $request->category) {
@@ -41,6 +41,11 @@ class GameGroupController extends Controller
         $perPage = $request->get('per_page', 15);
         $gameGroups = $query->paginate($perPage);
 
+        // Transform translations to {locale: value} format
+        $gameGroups->getCollection()->transform(function ($gameGroup) {
+            return $this->formatTranslations($gameGroup);
+        });
+
         return $this->responseListWithPaginator($gameGroups, null);
     }
 
@@ -49,8 +54,8 @@ class GameGroupController extends Controller
      */
     public function show(GameGroup $gameGroup): JsonResponse
     {
-        $gameGroup->load('games');
-        return $this->responseItem($gameGroup);
+        $gameGroup->load(['games', 'translations']);
+        return $this->responseItem($this->formatTranslations($gameGroup));
     }
 
     /**
@@ -64,11 +69,26 @@ class GameGroupController extends Controller
             'app_limit' => 'nullable|integer|min:0',
             'web_limit' => 'nullable|integer|min:0',
             'enabled' => 'nullable|boolean',
+            'translations' => 'nullable|array',
+            'translations.*' => 'string|max:255',
         ]);
 
-        $gameGroup = GameGroup::create($request->all());
+        $gameGroup = GameGroup::create($request->only([
+            'category',
+            'sort_id',
+            'app_limit',
+            'web_limit',
+            'enabled',
+        ]));
 
-        return $this->responseItem($gameGroup);
+        // Set translations if provided
+        if ($request->has('translations')) {
+            $gameGroup->setNames($request->translations);
+        }
+
+        $gameGroup->load(['games', 'translations']);
+
+        return $this->responseItem($this->formatTranslations($gameGroup));
     }
 
     /**
@@ -82,11 +102,36 @@ class GameGroupController extends Controller
             'app_limit' => 'nullable|integer|min:0',
             'web_limit' => 'nullable|integer|min:0',
             'enabled' => 'nullable|boolean',
+            'translations' => 'nullable|array',
+            'translations.*' => 'string|max:255',
         ]);
 
-        $gameGroup->update($request->all());
+        // Update fields if provided
+        $updateData = $request->only([
+            'category',
+            'sort_id',
+            'app_limit',
+            'web_limit',
+            'enabled',
+        ]);
 
-        return $this->responseItem($gameGroup);
+        // Remove null values
+        $updateData = array_filter($updateData, function ($value) {
+            return $value !== null;
+        });
+
+        if (!empty($updateData)) {
+            $gameGroup->update($updateData);
+        }
+
+        // Update translations if provided
+        if ($request->has('translations')) {
+            $gameGroup->setNames($request->translations);
+        }
+
+        $gameGroup->load(['games', 'translations']);
+
+        return $this->responseItem($this->formatTranslations($gameGroup));
     }
 
     /**
@@ -125,9 +170,9 @@ class GameGroupController extends Controller
             'sort_id' => $sortId
         ]);
 
-        $gameGroup->load('games');
+        $gameGroup->load(['games', 'translations']);
 
-        return $this->responseItem($gameGroup);
+        return $this->responseItem($this->formatTranslations($gameGroup));
     }
 
     /**
@@ -161,9 +206,9 @@ class GameGroupController extends Controller
         // Attach multiple games with pivot data
         $gameGroup->games()->attach($pivotData);
 
-        $gameGroup->load('games');
+        $gameGroup->load(['games', 'translations']);
 
-        return $this->responseItem($gameGroup);
+        return $this->responseItem($this->formatTranslations($gameGroup));
     }
 
     /**
@@ -173,9 +218,9 @@ class GameGroupController extends Controller
     {
         $gameGroup->games()->detach($game->id);
 
-        $gameGroup->load('games');
+        $gameGroup->load(['games', 'translations']);
 
-        return $this->responseItem($gameGroup);
+        return $this->responseItem($this->formatTranslations($gameGroup));
     }
 
     /**
@@ -197,9 +242,23 @@ class GameGroupController extends Controller
             }
         });
 
-        $gameGroup->load('games');
+        $gameGroup->load(['games', 'translations']);
 
-        return $this->responseItem($gameGroup);
+        return $this->responseItem($this->formatTranslations($gameGroup));
+    }
+
+    /**
+     * Format translations to {locale: value} format
+     */
+    protected function formatTranslations(GameGroup $gameGroup)
+    {
+        // Get all name translations
+        $nameTranslations = $gameGroup->getAllNames();
+        
+        // Set the translations as an attribute
+        $gameGroup->setAttribute('translations', $nameTranslations);
+        
+        return $gameGroup;
     }
 }
 
