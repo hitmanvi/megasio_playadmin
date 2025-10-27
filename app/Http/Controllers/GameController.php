@@ -122,8 +122,8 @@ class GameController extends Controller
             'sort_id' => 'nullable|integer|min:0',
             'enabled' => 'nullable|boolean',
             'memo' => 'nullable|string',
-            'translations' => 'nullable|array',
-            'translations.*' => 'string|max:255',
+            'name_translations' => 'nullable|array',
+            'name_translations.*' => 'string|max:255',
         ]);
 
         // Update fields if provided
@@ -147,8 +147,8 @@ class GameController extends Controller
         $game->update($updateData);
 
         // Update translations if provided
-        if ($request->has('translations')) {
-            $game->setNames($request->translations);
+        if ($request->has('name_translations')) {
+            $game->setNames($request->name_translations);
         }
 
         // Reload with relationships
