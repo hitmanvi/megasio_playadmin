@@ -12,6 +12,7 @@ class GameGroup extends Model
     protected $table = 'megasio_play_api.game_groups';
 
     protected $fillable = [
+        'name',
         'category',
         'sort_id',
         'app_limit',

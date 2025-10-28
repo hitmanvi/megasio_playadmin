@@ -64,6 +64,7 @@ class GameGroupController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
+            'name' => 'nullable|string|max:255',
             'category' => 'required|string|max:255',
             'sort_id' => 'nullable|integer|min:0',
             'app_limit' => 'nullable|integer|min:0',
@@ -74,6 +75,7 @@ class GameGroupController extends Controller
         ]);
 
         $gameGroup = GameGroup::create($request->only([
+            'name',
             'category',
             'sort_id',
             'app_limit',
@@ -97,6 +99,7 @@ class GameGroupController extends Controller
     public function update(Request $request, GameGroup $gameGroup): JsonResponse
     {
         $request->validate([
+            'name' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:255',
             'sort_id' => 'nullable|integer|min:0',
             'app_limit' => 'nullable|integer|min:0',
@@ -108,6 +111,7 @@ class GameGroupController extends Controller
 
         // Update fields if provided
         $updateData = $request->only([
+            'name',
             'category',
             'sort_id',
             'app_limit',
