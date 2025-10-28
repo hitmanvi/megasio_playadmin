@@ -260,7 +260,7 @@ class GameGroupController extends Controller
         $nameTranslations = $gameGroup->getAllNames();
         
         // Set the translations as an attribute
-        $gameGroup->setAttribute('translations', $nameTranslations);
+        $gameGroup->setRelation('translations', $nameTranslations);
         
         return $gameGroup;
     }
