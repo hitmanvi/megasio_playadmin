@@ -7,6 +7,7 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\GameGroupController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -62,4 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::post('game-groups/{gameGroup}/games/bulk', [GameGroupController::class, 'attachGames']);
            Route::delete('game-groups/{gameGroup}/games/{game}', [GameGroupController::class, 'detachGame']);
            Route::put('game-groups/{gameGroup}/games/order', [GameGroupController::class, 'updateGameOrder']);
+           
+           // Orders routes
+           Route::get('orders', [OrderController::class, 'index']);
        });
