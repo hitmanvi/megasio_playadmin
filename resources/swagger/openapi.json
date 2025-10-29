@@ -4467,6 +4467,11 @@
             "type": "integer",
             "description": "Game category ID"
           },
+          "name": {
+            "type": "string",
+            "description": "Category name (translated for specified locale)",
+            "nullable": true
+          },
           "icon": {
             "type": "string",
             "description": "Category icon",

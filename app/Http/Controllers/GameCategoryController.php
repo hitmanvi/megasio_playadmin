@@ -41,8 +41,9 @@ class GameCategoryController extends Controller
         $categories = $query->paginate($perPage);
 
         // Transform to add translations
-        $categories->getCollection()->transform(function ($category) {
-            return $this->withExtraTranslations($category);
+        $locale = $request->get('locale');
+        $categories->getCollection()->transform(function ($category) use ($locale) {
+            return $this->withExtraTranslations($category, $locale);
         });
 
         return $this->responseListWithPaginator($categories, null);
@@ -58,7 +59,8 @@ class GameCategoryController extends Controller
         ]);
         
         $gameCategory->load('translations');
-        return $this->responseItem($this->withExtraTranslations($gameCategory));
+        $locale = $request->get('locale');
+        return $this->responseItem($this->withExtraTranslations($gameCategory, $locale));
     }
 
     /**
@@ -84,7 +86,8 @@ class GameCategoryController extends Controller
         $category->setNames($request->translations);
         $category->load('translations');
 
-        return $this->responseItem($this->withExtraTranslations($category));
+        $locale = $request->get('locale');
+        return $this->responseItem($this->withExtraTranslations($category, $locale));
     }
 
     /**
@@ -122,13 +125,14 @@ class GameCategoryController extends Controller
         // Reload with translations
         $gameCategory->load('translations');
 
-        return $this->responseItem($this->withExtraTranslations($gameCategory));
+        $locale = $request->get('locale');
+        return $this->responseItem($this->withExtraTranslations($gameCategory, $locale));
     }
 
     /**
-     * Add translations attribute for cleaner response
+     * Add translations attribute and name for cleaner response
      */
-    protected function withExtraTranslations(GameCategory $category)
+    protected function withExtraTranslations(GameCategory $category, ?string $locale = null)
     {
         $category->setRelation('translations', $category->getAllNames());
         return $category;
