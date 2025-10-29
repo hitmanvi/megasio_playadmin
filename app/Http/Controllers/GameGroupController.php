@@ -88,7 +88,7 @@ class GameGroupController extends Controller
             $gameGroup->setNames($request->translations);
         }
 
-        $gameGroup->load(['games', 'translations']);
+        $gameGroup->load(['games', 'translations', 'games.brand', 'games.category', 'games.theme']);
 
         return $this->responseItem($this->formatTranslations($gameGroup));
     }

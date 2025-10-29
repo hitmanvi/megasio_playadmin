@@ -44,7 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('games', [GameController::class, 'index']);
            Route::get('games/{game}', [GameController::class, 'show']);
            Route::put('games/{game}', [GameController::class, 'update']);
-           
+            
            // Banners routes
            Route::get('banners', [BannerController::class, 'index']);
            Route::post('banners', [BannerController::class, 'store']);
