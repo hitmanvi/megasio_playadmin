@@ -52,7 +52,7 @@ class Game extends Model
      */
     public function themes()
     {
-        return $this->belongsToMany(Theme::class, 'game_theme')
+        return $this->belongsToMany(Theme::class, 'megasio_play_api.game_theme')
                     ->withTimestamps();
     }
 
