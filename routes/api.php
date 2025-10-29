@@ -61,7 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
            
            // Game group games routes
            Route::post('game-groups/{gameGroup}/games', [GameGroupController::class, 'attachGame']);
-           Route::post('game-groups/{gameGroup}/games/bulk', [GameGroupController::class, 'attachGames']);
+           Route::post('game-groups/{gameGroup}/games/attach', [GameGroupController::class, 'attachGames']);
            Route::delete('game-groups/{gameGroup}/games/{game}', [GameGroupController::class, 'detachGame']);
            Route::post('game-groups/{gameGroup}/games/detach', [GameGroupController::class, 'detachGames']);
            Route::put('game-groups/{gameGroup}/games/order', [GameGroupController::class, 'updateGameOrder']);

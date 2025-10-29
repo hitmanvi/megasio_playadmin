@@ -3218,7 +3218,7 @@
         }
       }
     },
-    "/game-groups/{game_group_id}/games/bulk": {
+    "/game-groups/{game_group_id}/games/attach": {
       "post": {
         "tags": ["Game Groups"],
         "summary": "Attach multiple games to game group",
