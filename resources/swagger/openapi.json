@@ -3395,6 +3395,106 @@
         }
       }
     },
+    "/game-groups/{game_group_id}/games/detach": {
+      "post": {
+        "tags": ["Game Groups"],
+        "summary": "Detach multiple games from game group",
+        "description": "Detach multiple games from a game group at once",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "game_group_id",
+            "in": "path",
+            "description": "Game group ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["games"],
+                "properties": {
+                  "games": {
+                    "type": "array",
+                    "description": "Array of game IDs to detach",
+                    "minItems": 1,
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [1, 2, 3]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Games detached successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GameGroup"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error or no games to detach",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/game-groups/{game_group_id}/games/order": {
       "put": {
         "tags": ["Game Groups"],

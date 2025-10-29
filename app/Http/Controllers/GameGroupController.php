@@ -228,6 +228,36 @@ class GameGroupController extends Controller
     }
 
     /**
+     * Detach multiple games from a game group
+     */
+    public function detachGames(Request $request, GameGroup $gameGroup): JsonResponse
+    {
+        $request->validate([
+            'games' => 'required|array|min:1',
+            'games.*' => 'required|integer',
+        ]);
+
+        $gameIds = $request->games;
+
+        // Get existing game IDs
+        $existingGameIds = $gameGroup->games()->pluck('games.id')->toArray();
+        
+        // Filter to only detach games that are actually attached
+        $gameIdsToDetach = array_intersect($gameIds, $existingGameIds);
+
+        if (empty($gameIdsToDetach)) {
+            return $this->error(['code' => 422, 'message' => 'No games are attached to this group to detach']);
+        }
+
+        // Detach multiple games
+        $gameGroup->games()->detach($gameIdsToDetach);
+
+        $gameGroup->load(['games', 'translations']);
+
+        return $this->responseItem($this->formatTranslations($gameGroup));
+    }
+
+    /**
      * Update the game order in a game group
      */
     public function updateGameOrder(Request $request, GameGroup $gameGroup): JsonResponse
