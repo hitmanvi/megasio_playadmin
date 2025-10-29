@@ -166,7 +166,7 @@ class GameGroupController extends Controller
         $exists = $gameGroup->games()->where('game_id', $request->game_id)->exists();
         
         if ($exists) {
-            return $this->error(['code' => 422, 'message' => 'Game is already attached to this group']);
+            return $this->error([422, 'Game is already attached to this group']);
         }
 
         // Attach game with pivot data
@@ -198,7 +198,7 @@ class GameGroupController extends Controller
         $newGameIds = array_diff($gameIds, $existingGameIds);
 
         if (empty($newGameIds)) {
-            return $this->error(['code' => 422, 'message' => 'All games are already attached to this group']);
+            return $this->error([422, 'All games are already attached to this group']);
         }
 
         // Prepare pivot data with default sort_id
@@ -246,7 +246,7 @@ class GameGroupController extends Controller
         $gameIdsToDetach = array_intersect($gameIds, $existingGameIds);
 
         if (empty($gameIdsToDetach)) {
-            return $this->error(['code' => 422, 'message' => 'No games are attached to this group to detach']);
+            return $this->error([422, 'No games are attached to this group to detach']);
         }
 
         // Detach multiple games
