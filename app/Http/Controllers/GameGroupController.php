@@ -41,7 +41,6 @@ class GameGroupController extends Controller
         $perPage = $request->get('per_page', 15);
         $gameGroups = $query->paginate($perPage);
 
-        $gameGroups->load(['games', 'translations', 'games.brand', 'games.category', 'games.theme']);
         // Transform translations to {locale: value} format
         $gameGroups->getCollection()->transform(function ($gameGroup) {
             return $this->formatTranslations($gameGroup);
@@ -55,7 +54,7 @@ class GameGroupController extends Controller
      */
     public function show(GameGroup $gameGroup): JsonResponse
     {
-        $gameGroup->load(['games', 'translations']);
+        $gameGroup->load(['games', 'translations', 'games.brand', 'games.category', 'games.theme']);
         return $this->responseItem($this->formatTranslations($gameGroup));
     }
 
