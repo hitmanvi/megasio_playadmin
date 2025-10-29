@@ -3695,6 +3695,174 @@
           }
         }
       }
+    },
+    "/payment-methods": {
+      "get": {
+        "tags": ["Payment Methods"],
+        "summary": "Get all payment methods",
+        "description": "Get list of all payment methods",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment methods list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/PaymentMethod"
+                          }
+                        },
+                        "meta": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payment-methods/{paymentMethod}": {
+      "put": {
+        "tags": ["Payment Methods"],
+        "summary": "Update payment method",
+        "description": "Update payment method information",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "paymentMethod",
+            "in": "path",
+            "description": "Payment method ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "display_name": {
+                    "type": "string",
+                    "description": "Display name",
+                    "maxLength": 255
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Icon URL or path",
+                    "maxLength": 255
+                  },
+                  "max_amount": {
+                    "type": "number",
+                    "description": "Maximum amount supported",
+                    "minimum": 0
+                  },
+                  "min_amount": {
+                    "type": "number",
+                    "description": "Minimum amount supported",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment method updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/PaymentMethod"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Payment method not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4371,6 +4539,87 @@
                 "example": "admin"
               }
             }
+          }
+        }
+      },
+      "PaymentMethod": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Payment method ID"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Icon URL or path",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Payment method name"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Display name"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency type",
+            "maxLength": 10
+          },
+          "type": {
+            "type": "string",
+            "description": "Payment type",
+            "enum": ["deposit", "withdraw"]
+          },
+          "amounts": {
+            "type": "array",
+            "description": "Supported amounts array",
+            "nullable": true,
+            "items": {
+              "type": "number"
+            }
+          },
+          "max_amount": {
+            "type": "string",
+            "description": "Maximum amount supported",
+            "nullable": true,
+            "format": "decimal"
+          },
+          "min_amount": {
+            "type": "string",
+            "description": "Minimum amount supported",
+            "nullable": true,
+            "format": "decimal"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the payment method is enabled"
+          },
+          "synced_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Synchronization time",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes",
+            "nullable": true
+          },
+          "sort_id": {
+            "type": "integer",
+            "description": "Sort order"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Created timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Updated timestamp"
           }
         }
       },

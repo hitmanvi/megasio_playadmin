@@ -15,9 +15,9 @@ tag_translations	translation_id	PK, 翻译记录的 ID
 ### 多币种余额
 #### 表设计
 balances
-id	BIGINT	PK	Primary Key
-user_id	BIGINT	FK	关联到用户表
-currency	CHAR(3)	币种代码	例如：USD, CNY, JPY
+id 
+user_id	BIGINT	
+currency	
 balance	DECIMAL(20, 8)	当前余额	关键：高精度 DECIMAL
 version	INT	乐观锁版本号	用于并发控制
 created_at	TIMESTAMP	创建时间	
@@ -26,13 +26,15 @@ updated_at	TIMESTAMP	更新时间
 transactions
 id	BIGINT	PK	Primary Key
 user_id	BIGINT	交易涉及用户	索引
-currency	CHAR(3)	交易币种	
+currency	
 amount	DECIMAL(20, 8)	交易金额	正数：收入，负数：支出
 type	VARCHAR	交易类型	例如：DEPOSIT, WITHDRAWAL, FEE, TRANSFER_IN
 status	VARCHAR	交易状态	例如：PENDING, COMPLETED, FAILED, REVERSED
 related_entity_id	BIGINT	关联的业务 ID	例如：订单 ID, 充值批次 ID
 notes	TEXT	交易附注	
 transaction_time	TIMESTAMP	交易发生时间	索引
+created_at	TIMESTAMP	创建时间	
+updated_at	TIMESTAMP	更新时间	
 
 #### 分析
 - 乐观锁
