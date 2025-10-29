@@ -15,10 +15,10 @@ class GameCategoryController extends Controller
     {
         $request->validate([
             'id' => 'nullable|integer',
+            'name' => 'nullable|string',
             'enabled' => 'nullable|boolean',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
-            'locale' => 'nullable|string',
         ]);
 
         $query = GameCategory::with('translations');
@@ -26,6 +26,11 @@ class GameCategoryController extends Controller
         // Filter by id if provided
         if ($request->has('id') && $request->id) {
             $query->where('id', $request->id);
+        }
+
+        // Filter by name if provided
+        if ($request->has('name') && $request->name) {
+            $query->byName($request->name);
         }
 
         // Filter by enabled status if provided
@@ -40,10 +45,9 @@ class GameCategoryController extends Controller
         $perPage = $request->get('per_page', 15);
         $categories = $query->paginate($perPage);
 
-        // Transform to add translations
-        $locale = $request->get('locale');
-        $categories->getCollection()->transform(function ($category) use ($locale) {
-            return $this->withExtraTranslations($category, $locale);
+        // Transform to add translations and name
+        $categories->getCollection()->transform(function ($category) {
+            return $this->withExtraTranslations($category);
         });
 
         return $this->responseListWithPaginator($categories, null);
@@ -52,15 +56,10 @@ class GameCategoryController extends Controller
     /**
      * Get game category details
      */
-    public function show(Request $request, GameCategory $gameCategory): JsonResponse
+    public function show(GameCategory $gameCategory): JsonResponse
     {
-        $request->validate([
-            'locale' => 'nullable|string',
-        ]);
-        
         $gameCategory->load('translations');
-        $locale = $request->get('locale');
-        return $this->responseItem($this->withExtraTranslations($gameCategory, $locale));
+        return $this->responseItem($this->withExtraTranslations($gameCategory));
     }
 
     /**
@@ -69,6 +68,7 @@ class GameCategoryController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
+            'name' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:255',
             'enabled' => 'nullable|boolean',
             'sort_id' => 'nullable|integer|min:0',
@@ -77,6 +77,7 @@ class GameCategoryController extends Controller
         ]);
 
         $category = GameCategory::create($request->only([
+            'name',
             'icon',
             'enabled',
             'sort_id',
@@ -86,8 +87,7 @@ class GameCategoryController extends Controller
         $category->setNames($request->translations);
         $category->load('translations');
 
-        $locale = $request->get('locale');
-        return $this->responseItem($this->withExtraTranslations($category, $locale));
+        return $this->responseItem($this->withExtraTranslations($category));
     }
 
     /**
@@ -96,6 +96,7 @@ class GameCategoryController extends Controller
     public function update(Request $request, GameCategory $gameCategory): JsonResponse
     {
         $request->validate([
+            'name' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:255',
             'enabled' => 'nullable|boolean',
             'sort_id' => 'nullable|integer|min:0',
@@ -105,6 +106,7 @@ class GameCategoryController extends Controller
 
         // Update fields if provided
         $updateData = $request->only([
+            'name',
             'icon',
             'enabled',
             'sort_id',
@@ -125,15 +127,17 @@ class GameCategoryController extends Controller
         // Reload with translations
         $gameCategory->load('translations');
 
-        $locale = $request->get('locale');
-        return $this->responseItem($this->withExtraTranslations($gameCategory, $locale));
+        return $this->responseItem($this->withExtraTranslations($gameCategory));
     }
 
     /**
      * Add translations attribute and name for cleaner response
      */
-    protected function withExtraTranslations(GameCategory $category, ?string $locale = null)
+    protected function withExtraTranslations(GameCategory $category)
     {
+        // Set name attribute (from database field, translated name is in translations)
+        // If name field exists in database, it will be automatically included
+        // Set translations relation
         $category->setRelation('translations', $category->getAllNames());
         return $category;
     }

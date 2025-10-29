@@ -582,6 +582,15 @@
             }
           },
           {
+            "name": "name",
+            "in": "query",
+            "description": "Filter categories by name (searches in translations)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "enabled",
             "in": "query",
             "description": "Filter categories by enabled status",
@@ -611,16 +620,6 @@
               "minimum": 1,
               "maximum": 100,
               "default": 15
-            }
-          },
-          {
-            "name": "locale",
-            "in": "query",
-            "description": "Locale for translated name",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "en"
             }
           }
         ],
@@ -722,6 +721,12 @@
                 "type": "object",
                 "required": ["translations"],
                 "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Category name",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
                   "icon": {
                     "type": "string",
                     "description": "Category icon",
@@ -823,16 +828,6 @@
             "schema": {
               "type": "integer"
             }
-          },
-          {
-            "name": "locale",
-            "in": "query",
-            "description": "Locale for translated name",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "en"
-            }
           }
         ],
         "responses": {
@@ -908,6 +903,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Category name",
+                    "maxLength": 255
+                  },
                   "icon": {
                     "type": "string",
                     "description": "Category icon",

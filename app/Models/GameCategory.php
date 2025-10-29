@@ -17,6 +17,7 @@ class GameCategory extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'name',
         'icon',
         'enabled',
         'sort_id',
@@ -62,6 +63,14 @@ class GameCategory extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_id', 'asc')->orderBy('id', 'asc');
+    }
+
+    /**
+     * Scope to filter by name (searches in translations).
+     */
+    public function scopeByName($query, $name)
+    {
+        return $query->where('name', 'like', "%{$name}%");
     }
 
     /**
