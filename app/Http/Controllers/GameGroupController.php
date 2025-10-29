@@ -54,7 +54,7 @@ class GameGroupController extends Controller
      */
     public function show(GameGroup $gameGroup): JsonResponse
     {
-        $gameGroup->load(['games', 'translations', 'games.brand', 'games.category', 'games.theme']);
+        $gameGroup->load(['games', 'translations', 'games.brand', 'games.category', 'games.themes']);
         return $this->responseItem($this->formatTranslations($gameGroup));
     }
 
