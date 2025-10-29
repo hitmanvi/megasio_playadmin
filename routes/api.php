@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AdminAuthController;
-use App\Http\Controllers\TagController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\GameController;
@@ -9,6 +8,8 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\GameGroupController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\ThemeController;
+use App\Http\Controllers\GameCategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,11 +19,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AdminAuthController::class, 'logout']);
     Route::get('mine', [AdminAuthController::class, 'mine']);
     
-    // Tags routes
-    Route::get('tags', [TagController::class, 'index']);
-    Route::post('tags', [TagController::class, 'store']);
-    Route::get('tags/{tag}', [TagController::class, 'show']);
-    Route::put('tags/{tag}', [TagController::class, 'update']);
+    // Themes routes
+    Route::get('themes', [ThemeController::class, 'index']);
+    Route::post('themes', [ThemeController::class, 'store']);
+    Route::get('themes/{theme}', [ThemeController::class, 'show']);
+    Route::put('themes/{theme}', [ThemeController::class, 'update']);
+    
+    // Game categories routes
+    Route::get('game-categories', [GameCategoryController::class, 'index']);
+    Route::post('game-categories', [GameCategoryController::class, 'store']);
+    Route::get('game-categories/{gameCategory}', [GameCategoryController::class, 'show']);
+    Route::put('game-categories/{gameCategory}', [GameCategoryController::class, 'update']);
     
     // Brands routes
     Route::get('brands', [BrandController::class, 'index']);

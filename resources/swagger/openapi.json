@@ -132,11 +132,11 @@
         }
       }
     },
-    "/tags": {
+    "/themes": {
       "get": {
-        "tags": ["Tags"],
-        "summary": "Get tags list",
-        "description": "Get paginated list of tags with optional type filtering and translations",
+        "tags": ["Themes"],
+        "summary": "Get themes list",
+        "description": "Get paginated list of themes with optional filtering",
         "security": [
           {
             "sanctum": []
@@ -144,28 +144,27 @@
         ],
         "parameters": [
           {
+            "name": "id",
+            "in": "query",
+            "description": "Filter themes by ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
             "name": "name",
             "in": "query",
-            "description": "Filter tags by name",
+            "description": "Filter themes by name",
             "required": false,
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "type",
-            "in": "query",
-            "description": "Filter tags by type (theme or category)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["theme", "category"]
-            }
-          },
-          {
             "name": "enabled",
             "in": "query",
-            "description": "Filter tags by enabled status (true or false)",
+            "description": "Filter themes by enabled status",
             "required": false,
             "schema": {
               "type": "boolean"
@@ -193,21 +192,11 @@
               "maximum": 100,
               "default": 15
             }
-          },
-          {
-            "name": "locale",
-            "in": "query",
-            "description": "Locale for translated name",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "en"
-            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Tags list retrieved successfully",
+            "description": "Themes list retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -227,7 +216,7 @@
                         "items": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/components/schemas/Tag"
+                            "$ref": "#/components/schemas/Theme"
                           }
                         },
                         "meta": {
@@ -287,9 +276,9 @@
         }
       },
       "post": {
-        "tags": ["Tags"],
-        "summary": "Create tag",
-        "description": "Create a new tag with translations",
+        "tags": ["Themes"],
+        "summary": "Create theme",
+        "description": "Create a new theme",
         "security": [
           {
             "sanctum": []
@@ -301,27 +290,458 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["type", "translations"],
+                "required": ["name"],
                 "properties": {
-                  "type": {
+                  "name": {
                     "type": "string",
-                    "enum": ["theme", "category"],
-                    "description": "Tag type"
+                    "description": "Theme name",
+                    "maxLength": 255
                   },
                   "icon": {
                     "type": "string",
-                    "description": "Tag icon",
+                    "description": "Theme icon",
                     "maxLength": 255,
                     "nullable": true
                   },
                   "enabled": {
                     "type": "boolean",
-                    "description": "Whether tag is enabled",
+                    "description": "Whether theme is enabled",
+                    "nullable": true
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0,
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Theme created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Theme"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Theme with this name already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/themes/{id}": {
+      "get": {
+        "tags": ["Themes"],
+        "summary": "Get theme details",
+        "description": "Get detailed information about a specific theme",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Theme ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Theme details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Theme"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Theme not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Themes"],
+        "summary": "Update theme",
+        "description": "Update theme information",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Theme ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Theme name",
+                    "maxLength": 255
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Theme icon",
+                    "maxLength": 255
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether theme is enabled"
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Theme updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Theme"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Theme with this name already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Theme not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/game-categories": {
+      "get": {
+        "tags": ["Game Categories"],
+        "summary": "Get game categories list",
+        "description": "Get paginated list of game categories with optional filtering and translations",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Filter categories by ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "enabled",
+            "in": "query",
+            "description": "Filter categories by enabled status",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "description": "Locale for translated name",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game categories list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/GameCategory"
+                          }
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "current_page": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "last_page": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "total": {
+                              "type": "integer",
+                              "example": 100
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 100
+                        }
+                      }
+                    },
+                    "extra": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Game Categories"],
+        "summary": "Create game category",
+        "description": "Create a new game category with translations",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["translations"],
+                "properties": {
+                  "icon": {
+                    "type": "string",
+                    "description": "Category icon",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether category is enabled",
+                    "nullable": true
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0,
                     "nullable": true
                   },
                   "translations": {
                     "type": "object",
-                    "description": "Translations for the tag name",
+                    "description": "Translations for the category name",
                     "additionalProperties": {
                       "type": "string",
                       "maxLength": 255
@@ -339,15 +759,23 @@
         },
         "responses": {
           "200": {
-            "description": "Tag created successfully",
+            "description": "Game category created successfully",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "code": { "type": "integer", "example": 0 },
-                    "errmsg": { "type": "string", "example": "" },
-                    "data": { "$ref": "#/components/schemas/Tag" }
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GameCategory"
+                    }
                   }
                 }
               }
@@ -357,7 +785,9 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           },
@@ -365,18 +795,20 @@
             "description": "Validation error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           }
         }
       }
     },
-    "/tags/{id}": {
+    "/game-categories/{id}": {
       "get": {
-        "tags": ["Tags"],
-        "summary": "Get tag details",
-        "description": "Get detailed information about a specific tag",
+        "tags": ["Game Categories"],
+        "summary": "Get game category details",
+        "description": "Get detailed information about a specific game category",
         "security": [
           {
             "sanctum": []
@@ -386,7 +818,7 @@
           {
             "name": "id",
             "in": "path",
-            "description": "Tag ID",
+            "description": "Game category ID",
             "required": true,
             "schema": {
               "type": "integer"
@@ -405,7 +837,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Tag details retrieved successfully",
+            "description": "Game category details retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -420,7 +852,7 @@
                       "example": ""
                     },
                     "data": {
-                      "$ref": "#/components/schemas/Tag"
+                      "$ref": "#/components/schemas/GameCategory"
                     }
                   }
                 }
@@ -438,7 +870,7 @@
             }
           },
           "404": {
-            "description": "Tag not found",
+            "description": "Game category not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -450,9 +882,9 @@
         }
       },
       "put": {
-        "tags": ["Tags"],
-        "summary": "Update tag",
-        "description": "Update tag with translations support",
+        "tags": ["Game Categories"],
+        "summary": "Update game category",
+        "description": "Update game category information with translations",
         "security": [
           {
             "sanctum": []
@@ -462,7 +894,7 @@
           {
             "name": "id",
             "in": "path",
-            "description": "Tag ID",
+            "description": "Game category ID",
             "required": true,
             "schema": {
               "type": "integer"
@@ -470,27 +902,29 @@
           }
         ],
         "requestBody": {
-          "required": true,
+          "required": false,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["translations"],
                 "properties": {
                   "icon": {
                     "type": "string",
-                    "description": "Tag icon",
-                    "maxLength": 255,
-                    "nullable": true
+                    "description": "Category icon",
+                    "maxLength": 255
                   },
                   "enabled": {
                     "type": "boolean",
-                    "description": "Whether tag is enabled",
-                    "nullable": true
+                    "description": "Whether category is enabled"
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0
                   },
                   "translations": {
                     "type": "object",
-                    "description": "Translations for the tag name",
+                    "description": "Translations for the category name",
                     "additionalProperties": {
                       "type": "string",
                       "maxLength": 255
@@ -508,7 +942,7 @@
         },
         "responses": {
           "200": {
-            "description": "Tag updated successfully",
+            "description": "Game category updated successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -523,7 +957,7 @@
                       "example": ""
                     },
                     "data": {
-                      "$ref": "#/components/schemas/Tag"
+                      "$ref": "#/components/schemas/GameCategory"
                     }
                   }
                 }
@@ -541,7 +975,7 @@
             }
           },
           "404": {
-            "description": "Tag not found",
+            "description": "Game category not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3988,38 +4422,68 @@
           }
         }
       },
-      "Tag": {
+      "Theme": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
-            "description": "Tag ID"
+            "description": "Theme ID"
           },
           "name": {
             "type": "string",
-            "description": "Tag name (translated for specified locale)"
-          },
-          "type": {
-            "type": "string",
-            "description": "Tag type",
-            "enum": ["theme", "category"],
-            "example": "theme"
+            "description": "Theme name",
+            "maxLength": 255
           },
           "icon": {
             "type": "string",
-            "description": "Tag icon",
+            "description": "Theme icon",
             "maxLength": 255,
-            "nullable": true,
-            "example": "fas fa-gamepad"
+            "nullable": true
           },
           "enabled": {
             "type": "boolean",
-            "description": "Whether tag is enabled",
-            "example": true
+            "description": "Whether theme is enabled"
+          },
+          "sort_id": {
+            "type": "integer",
+            "description": "Sort order"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        }
+      },
+      "GameCategory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Game category ID"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Category icon",
+            "maxLength": 255,
+            "nullable": true
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether category is enabled"
+          },
+          "sort_id": {
+            "type": "integer",
+            "description": "Sort order"
           },
           "translations": {
             "type": "object",
-            "description": "All translations for the tag name",
+            "description": "All translations for the category name",
             "additionalProperties": {
               "type": "string"
             },

@@ -40,19 +40,20 @@ class Game extends Model
     }
 
     /**
-     * Get the category that owns the game.
+     * Get the category for the game.
      */
     public function category()
     {
-        return $this->belongsTo(Tag::class)->where('type', 'category');
+        return $this->belongsTo(GameCategory::class);
     }
 
     /**
-     * Get the theme that owns the game.
+     * Get the themes for the game.
      */
-    public function theme()
+    public function themes()
     {
-        return $this->belongsTo(Tag::class)->where('type', 'theme');
+        return $this->belongsToMany(Theme::class, 'game_theme')
+                    ->withTimestamps();
     }
 
     /**
