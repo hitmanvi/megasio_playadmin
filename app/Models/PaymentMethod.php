@@ -4,6 +4,7 @@ namespace App\Models;
 
 class PaymentMethod extends Model
 {
+    protected $table = 'megasio_play_api.payment_methods';
     /**
      * The attributes that are mass assignable.
      *
