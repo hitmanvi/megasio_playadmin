@@ -156,7 +156,7 @@ class GameGroupController extends Controller
     public function attachGame(Request $request, GameGroup $gameGroup): JsonResponse
     {
         $request->validate([
-            'game_id' => 'required|integer|exists:megasio_play_api.games,id',
+            'game_id' => 'required|integer',
             'sort_id' => 'nullable|integer|min:0',
         ]);
 
@@ -186,7 +186,7 @@ class GameGroupController extends Controller
     {
         $request->validate([
             'games' => 'required|array|min:1',
-            'games.*' => 'required|integer|exists:megasio_play_api.games,id',
+            'games.*' => 'required|integer',
         ]);
 
         $gameIds = $request->games;
@@ -234,7 +234,7 @@ class GameGroupController extends Controller
     {
         $request->validate([
             'games' => 'required|array',
-            'games.*.game_id' => 'required|integer|exists:megasio_play_api.games,id',
+            'games.*.game_id' => 'required|integer',
             'games.*.sort_id' => 'required|integer|min:0',
         ]);
 
