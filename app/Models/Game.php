@@ -152,19 +152,13 @@ class Game extends Model
     }
 
     /**
-     * Scope to filter by theme.
-     */
-    public function scopeByTheme($query, $themeId)
-    {
-        return $query->where('theme_id', $themeId);
-    }
-
-    /**
      * Scope to filter by multiple themes.
      */
     public function scopeByThemes($query, $themeIds)
     {
-        return $query->whereIn('theme_id', $themeIds);
+        return $query->whereHas('themes', function ($q) use ($themeIds) {
+            $q->whereIn('themes.id', $themeIds);
+        });
     }
 
     /**
@@ -172,9 +166,15 @@ class Game extends Model
      */
     public function scopeByThemeReady($query, $ready)
     {
-        return $query->whereHas('theme', function ($q) use ($ready) {
-            $q->where('enabled', $ready);
-        });
+        if ($ready) {
+            return $query->whereHas('themes', function ($q) {
+                $q->where('enabled', true);
+            });
+        } else {
+            return $query->whereDoesntHave('themes')->orWhereHas('themes', function ($q) {
+                $q->where('enabled', false);
+            });
+        }
     }
 
     /**

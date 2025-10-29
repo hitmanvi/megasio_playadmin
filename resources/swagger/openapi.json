@@ -2365,11 +2365,6 @@
                     "description": "Category ID",
                     "nullable": true
                   },
-                  "theme_id": {
-                    "type": "integer",
-                    "description": "Theme ID",
-                    "nullable": true
-                  },
                   "out_id": {
                     "type": "string",
                     "description": "External ID",
@@ -4666,10 +4661,6 @@
             "type": "integer",
             "description": "Category ID"
           },
-          "theme_id": {
-            "type": "integer",
-            "description": "Theme ID"
-          },
           "out_id": {
             "type": "string",
             "description": "External ID"
@@ -4743,28 +4734,30 @@
               "name": {
                 "type": "string"
               },
-              "type": {
-                "type": "string"
-              }
-            }
-          },
-          "theme": {
-            "type": "object",
-            "description": "Theme information",
-            "nullable": true,
-            "properties": {
-              "id": {
-                "type": "integer"
-              },
-              "name": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string"
+              "icon": {
+                "type": "string",
+                "nullable": true
               },
               "enabled": {
                 "type": "boolean"
+              },
+              "sort_id": {
+                "type": "integer"
+              },
+              "translations": {
+                "type": "object",
+                "description": "All translations for the category name",
+                "additionalProperties": {
+                  "type": "string"
+                }
               }
+            }
+          },
+          "themes": {
+            "type": "array",
+            "description": "Themes associated with the game",
+            "items": {
+              "$ref": "#/components/schemas/Theme"
             }
           },
           "created_at": {

@@ -35,7 +35,7 @@ class GameController extends Controller
             'locale' => 'nullable|string',
         ]);
 
-        $query = Game::with(['brand', 'category', 'theme', 'translations']);
+        $query = Game::with(['brand', 'category.translations', 'themes', 'translations']);
 
         // Apply filters
         if ($request->has('name') && $request->name) {
@@ -102,7 +102,7 @@ class GameController extends Controller
             'locale' => 'nullable|string',
         ]);
 
-        $game->load(['brand', 'category', 'theme', 'translations']);
+        $game->load(['brand', 'category.translations', 'themes', 'translations']);
 
         return $this->responseItem($this->formatGameResponse($game, $request->get('locale')));
     }
@@ -115,7 +115,6 @@ class GameController extends Controller
         $request->validate([
             'brand_id' => 'nullable|integer',
             'category_id' => 'nullable|integer',
-            'theme_id' => 'nullable|integer',
             'out_id' => 'nullable|string|max:255',
             'name' => 'nullable|string|max:255',
             'thumbnail' => 'nullable|string|max:255',
@@ -132,7 +131,6 @@ class GameController extends Controller
         $updateData = $request->only([
             'brand_id',
             'category_id',
-            'theme_id',
             'out_id',
             'name',
             'thumbnail',
@@ -155,7 +153,7 @@ class GameController extends Controller
         }
 
         // Reload with relationships
-        $game->load(['brand', 'category', 'theme', 'translations']);
+        $game->load(['brand', 'category.translations', 'themes', 'translations']);
 
         return $this->responseItem($this->formatGameResponse($game, $request->get('locale')));
     }
@@ -171,7 +169,6 @@ class GameController extends Controller
             'id' => $game->id,
             'brand_id' => $game->brand_id,
             'category_id' => $game->category_id,
-            'theme_id' => $game->theme_id,
             'out_id' => $game->out_id,
             'name' => $game->name,
             'thumbnail' => $game->thumbnail,
@@ -188,14 +185,20 @@ class GameController extends Controller
             'category' => $game->category ? [
                 'id' => $game->category->id,
                 'name' => $game->category->name,
-                'type' => $game->category->type,
+                'icon' => $game->category->icon,
+                'enabled' => $game->category->enabled,
+                'sort_id' => $game->category->sort_id,
+                'translations' => $game->category->getAllNames(),
             ] : null,
-            'theme' => $game->theme ? [
-                'id' => $game->theme->id,
-                'name' => $game->theme->name,
-                'type' => $game->theme->type,
-                'enabled' => $game->theme->enabled,
-            ] : null,
+            'themes' => $game->themes->map(function ($theme) {
+                return [
+                    'id' => $theme->id,
+                    'name' => $theme->name,
+                    'icon' => $theme->icon,
+                    'enabled' => $theme->enabled,
+                    'sort_id' => $theme->sort_id,
+                ];
+            }),
             'created_at' => $game->created_at,
             'updated_at' => $game->updated_at,
         ];
