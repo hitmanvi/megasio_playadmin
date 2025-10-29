@@ -41,6 +41,7 @@ class GameGroupController extends Controller
         $perPage = $request->get('per_page', 15);
         $gameGroups = $query->paginate($perPage);
 
+        $gameGroups->load(['games', 'translations', 'games.brand', 'games.category', 'games.theme']);
         // Transform translations to {locale: value} format
         $gameGroups->getCollection()->transform(function ($gameGroup) {
             return $this->formatTranslations($gameGroup);
@@ -88,7 +89,7 @@ class GameGroupController extends Controller
             $gameGroup->setNames($request->translations);
         }
 
-        $gameGroup->load(['games', 'translations', 'games.brand', 'games.category', 'games.theme']);
+        $gameGroup->load(['games', 'translations']);
 
         return $this->responseItem($this->formatTranslations($gameGroup));
     }
