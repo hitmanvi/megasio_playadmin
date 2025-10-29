@@ -44,7 +44,7 @@ class Game extends Model
      */
     public function category()
     {
-        return $this->belongsTo(Tag::class, 'category_id');
+        return $this->belongsTo(Tag::class)->where('type', 'category');
     }
 
     /**
@@ -52,7 +52,7 @@ class Game extends Model
      */
     public function theme()
     {
-        return $this->belongsTo(Tag::class, 'theme_id');
+        return $this->belongsTo(Tag::class)->where('type', 'theme');
     }
 
     /**
