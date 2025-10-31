@@ -125,6 +125,8 @@ class GameController extends Controller
             'name_translations.*' => 'string|max:255',
             'languages' => 'nullable|array',
             'languages.*' => 'string',
+            'theme_ids' => 'nullable|array',
+            'theme_ids.*' => 'required|integer',
         ]);
 
         // Update fields if provided
@@ -150,6 +152,11 @@ class GameController extends Controller
         // Update translations if provided
         if ($request->has('name_translations')) {
             $game->setNames($request->name_translations);
+        }
+
+        // Update themes if provided
+        if ($request->has('theme_ids')) {
+            $game->themes()->sync($request->theme_ids);
         }
 
         // Reload with relationships

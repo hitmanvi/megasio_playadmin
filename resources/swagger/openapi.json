@@ -2414,10 +2414,18 @@
                       "type": "string",
                       "maxLength": 255
                     },
+                    "nullable": true,
                     "example": {
                       "en": "Game Name",
                       "zh-CN": "游戏名称",
                       "ja": "ゲーム名"
+                    }
+                  },
+                  "theme_ids": {
+                    "type": "array",
+                    "description": "Theme IDs to associate with the game",
+                    "items": {
+                      "type": "integer"
                     },
                     "nullable": true
                   }
