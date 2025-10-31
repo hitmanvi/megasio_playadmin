@@ -14,7 +14,8 @@ class ThemeController extends Controller
     public function index(Request $request): JsonResponse
     {
         $request->validate([
-            'id' => 'nullable|integer',
+            'ids' => 'nullable|array',
+            'ids.*' => 'required|integer',
             'name' => 'nullable|string',
             'enabled' => 'nullable|boolean',
             'page' => 'nullable|integer|min:1',
@@ -23,9 +24,9 @@ class ThemeController extends Controller
 
         $query = Theme::query();
 
-        // Filter by id if provided
-        if ($request->has('id') && $request->id) {
-            $query->where('id', $request->id);
+        // Filter by ids if provided
+        if ($request->has('ids') && $request->ids) {
+            $query->whereIn('id', $request->ids);
         }
 
         // Filter by name if provided

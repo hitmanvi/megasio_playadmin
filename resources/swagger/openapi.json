@@ -144,13 +144,18 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "ids",
             "in": "query",
-            "description": "Filter themes by ID",
+            "description": "Filter themes by IDs (supports multiple values)",
             "required": false,
             "schema": {
-              "type": "integer"
-            }
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": true
           },
           {
             "name": "name",
@@ -573,13 +578,18 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "ids",
             "in": "query",
-            "description": "Filter categories by ID",
+            "description": "Filter categories by IDs (supports multiple values)",
             "required": false,
             "schema": {
-              "type": "integer"
-            }
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "style": "form",
+            "explode": true
           },
           {
             "name": "name",
