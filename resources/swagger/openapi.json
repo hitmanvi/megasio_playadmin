@@ -4423,7 +4423,7 @@
         ],
         "parameters": [
           {
-            "name": "user_email_or_phone",
+            "name": "account",
             "in": "query",
             "description": "Filter deposits by user email or phone",
             "required": false,

@@ -14,7 +14,7 @@ class DepositController extends Controller
     public function index(Request $request): JsonResponse
     {
         $request->validate([
-            'user_email_or_phone' => 'nullable|string',
+            'account' => 'nullable|string',
             'order_no' => 'nullable|string',
             'out_trade_no' => 'nullable|string',
             'payment_method_id' => 'nullable|integer',
@@ -27,8 +27,8 @@ class DepositController extends Controller
         $query = Deposit::with(['paymentMethod', 'user']);
 
         // Apply filters
-        if ($request->has('user_email_or_phone') && $request->user_email_or_phone) {
-            $query->byUserEmailOrPhone($request->user_email_or_phone);
+        if ($request->has('account') && $request->account) {
+            $query->byUserEmailOrPhone($request->account);
         }
 
         if ($request->has('order_no') && $request->order_no) {
