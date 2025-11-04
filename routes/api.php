@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\GameCategoryController;
+use App\Http\Controllers\DepositController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -79,4 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
            // Payment methods routes
            Route::get('payment-methods', [PaymentMethodController::class, 'index']);
            Route::put('payment-methods/{paymentMethod}', [PaymentMethodController::class, 'update']);
+           
+           // Deposits routes
+           Route::get('deposits', [DepositController::class, 'index']);
        });
