@@ -4581,6 +4581,186 @@
           }
         }
       }
+    },
+    "/withdraws": {
+      "get": {
+        "tags": ["Withdraws"],
+        "summary": "Get withdraws list",
+        "description": "Get paginated list of withdraws with optional filtering",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "in": "query",
+            "description": "Filter withdraws by user email or phone",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_no",
+            "in": "query",
+            "description": "Filter withdraws by order number",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "out_trade_no",
+            "in": "query",
+            "description": "Filter withdraws by external trade number",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "payment_method_id",
+            "in": "query",
+            "description": "Filter withdraws by payment method ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pay_status",
+            "in": "query",
+            "description": "Filter withdraws by pay status",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter withdraws by status",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "approved",
+            "in": "query",
+            "description": "Filter withdraws by approved status",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Withdraws list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Withdraw"
+                          }
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "current_page": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "last_page": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "total": {
+                              "type": "integer",
+                              "example": 100
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 100
+                        }
+                      }
+                    },
+                    "extra": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -5480,6 +5660,115 @@
           }
         }
       },
+      "Withdraw": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Withdraw ID"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "User ID"
+          },
+          "order_no": {
+            "type": "string",
+            "description": "Order number"
+          },
+          "out_trade_no": {
+            "type": "string",
+            "description": "External trade number",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency type",
+            "maxLength": 10
+          },
+          "amount": {
+            "type": "string",
+            "description": "Withdraw amount",
+            "example": "100.00000000",
+            "format": "decimal"
+          },
+          "actual_amount": {
+            "type": "string",
+            "description": "Actual received amount",
+            "nullable": true,
+            "example": "100.00000000",
+            "format": "decimal"
+          },
+          "payment_method_id": {
+            "type": "integer",
+            "description": "Payment method ID"
+          },
+          "withdraw_info": {
+            "type": "object",
+            "description": "Withdraw information",
+            "nullable": true
+          },
+          "extra_info": {
+            "type": "object",
+            "description": "Extra information",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Withdraw status"
+          },
+          "pay_status": {
+            "type": "string",
+            "description": "Payment status"
+          },
+          "fee": {
+            "type": "string",
+            "description": "Transaction fee",
+            "nullable": true,
+            "example": "1.00000000",
+            "format": "decimal"
+          },
+          "approved": {
+            "type": "boolean",
+            "description": "Whether the withdraw is approved"
+          },
+          "user_ip": {
+            "type": "string",
+            "description": "User IP address",
+            "nullable": true
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Completion time",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "description": "Notes",
+            "nullable": true
+          },
+          "payment_method": {
+            "type": "object",
+            "description": "Payment method information",
+            "nullable": true
+          },
+          "user": {
+            "type": "object",
+            "description": "User information",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        }
+      },
       "ErrorResponse": {
         "type": "object",
         "properties": {
@@ -5540,6 +5829,10 @@
     {
       "name": "Deposits",
       "description": "Deposit management endpoints"
+    },
+    {
+      "name": "Withdraws",
+      "description": "Withdraw management endpoints"
     }
   ]
 }
