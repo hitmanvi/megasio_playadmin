@@ -65,5 +65,45 @@ class WithdrawController extends Controller
 
         return $this->responseListWithPaginator($withdraws, null);
     }
+
+    /**
+     * Approve a withdraw request
+     */
+    public function pass(Request $request, Withdraw $withdraw): JsonResponse
+    {
+        $request->validate([
+            'note' => 'nullable|string',
+        ]);
+
+        $withdraw->update([
+            'approved' => true,
+            'status' => Withdraw::STATUS_PROCESSING,
+            'note' => $request->note ?? $withdraw->note,
+        ]);
+
+        $withdraw->load(['paymentMethod', 'user']);
+
+        return $this->responseItem($withdraw);
+    }
+
+    /**
+     * Reject a withdraw request
+     */
+    public function reject(Request $request, Withdraw $withdraw): JsonResponse
+    {
+        $request->validate([
+            'note' => 'nullable|string',
+        ]);
+
+        $withdraw->update([
+            'approved' => false,
+            'status' => Withdraw::STATUS_REJECTED,
+            'note' => $request->note ?? $withdraw->note,
+        ]);
+
+        $withdraw->load(['paymentMethod', 'user']);
+
+        return $this->responseItem($withdraw);
+    }
 }
 

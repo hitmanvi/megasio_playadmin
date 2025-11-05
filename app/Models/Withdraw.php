@@ -27,6 +27,24 @@ class Withdraw extends Model
         'note',
     ];
 
+        /**
+     * Withdraw status constants.
+     */
+    const STATUS_PENDING = 'PENDING';
+    const STATUS_PROCESSING = 'PROCESSING';
+    const STATUS_COMPLETED = 'COMPLETED';
+    const STATUS_FAILED = 'FAILED';
+    const STATUS_CANCELLED = 'CANCELLED';
+    const STATUS_REJECTED = 'REJECTED';
+
+    /**
+     * Pay status constants.
+     */
+    const PAY_STATUS_PENDING = 'PENDING';
+    const PAY_STATUS_PAID = 'PAID';
+    const PAY_STATUS_FAILED = 'FAILED';
+    const PAY_STATUS_CANCELLED = 'CANCELLED';
+
     protected function casts(): array
     {
         return [
