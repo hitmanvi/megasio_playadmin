@@ -97,4 +97,6 @@ Route::middleware('auth:sanctum')->group(function () {
            
            // Users routes
            Route::get('users', [UserController::class, 'index']);
+           Route::post('users/{user}/ban', [UserController::class, 'ban']);
+           Route::post('users/{user}/unban', [UserController::class, 'unban']);
        });

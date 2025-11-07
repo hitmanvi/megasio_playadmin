@@ -5124,21 +5124,22 @@
         ],
         "parameters": [
           {
-            "name": "uid",
-            "in": "query",
-            "description": "Filter users by UID",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "account",
             "in": "query",
             "description": "Filter users by email or phone",
             "required": false,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter users by status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["active", "banned"]
             }
           },
           {
@@ -5246,6 +5247,158 @@
           }
         }
       }
+    },
+    "/users/{user}/ban": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Ban a user",
+        "description": "Ban a user by setting banned status to true",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "description": "Optional reason for banning the user"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User banned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user}/unban": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Unban a user",
+        "description": "Unban a user by setting banned status to false",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User unbanned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -5278,10 +5431,9 @@
             "type": "integer",
             "description": "User ID"
           },
-          "uid": {
+          "name": {
             "type": "string",
-            "description": "User UID",
-            "nullable": true
+            "description": "User name"
           },
           "email": {
             "type": "string",
@@ -5291,6 +5443,17 @@
           "phone": {
             "type": "string",
             "description": "User phone",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "User status",
+            "enum": ["active", "banned"],
+            "default": "active"
+          },
+          "ban_reason": {
+            "type": "string",
+            "description": "Reason for banning the user",
             "nullable": true
           },
           "created_at": {
