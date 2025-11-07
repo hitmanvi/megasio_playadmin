@@ -12,6 +12,7 @@ use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\GameCategoryController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\WithdrawController;
+use App\Http\Controllers\UserActivityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -89,4 +90,7 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('withdraws', [WithdrawController::class, 'index']);
            Route::post('withdraws/{withdraw}/pass', [WithdrawController::class, 'pass']);
            Route::post('withdraws/{withdraw}/reject', [WithdrawController::class, 'reject']);
+           
+           // User activities routes
+           Route::get('user-activities', [UserActivityController::class, 'index']);
        });
