@@ -13,6 +13,7 @@ use App\Http\Controllers\GameCategoryController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\WithdrawController;
 use App\Http\Controllers\UserActivityController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -93,4 +94,7 @@ Route::middleware('auth:sanctum')->group(function () {
            
            // User activities routes
            Route::get('user-activities', [UserActivityController::class, 'index']);
+           
+           // Users routes
+           Route::get('users', [UserController::class, 'index']);
        });
