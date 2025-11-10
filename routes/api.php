@@ -14,6 +14,7 @@ use App\Http\Controllers\DepositController;
 use App\Http\Controllers\WithdrawController;
 use App\Http\Controllers\UserActivityController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CurrencyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -99,4 +100,11 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('users', [UserController::class, 'index']);
            Route::post('users/{user}/ban', [UserController::class, 'ban']);
            Route::post('users/{user}/unban', [UserController::class, 'unban']);
+           
+           // Currencies routes
+           Route::get('currencies', [CurrencyController::class, 'index']);
+           Route::post('currencies', [CurrencyController::class, 'store']);
+           Route::get('currencies/{currency}', [CurrencyController::class, 'show']);
+           Route::put('currencies/{currency}', [CurrencyController::class, 'update']);
+           Route::delete('currencies/{currency}', [CurrencyController::class, 'destroy']);
        });
