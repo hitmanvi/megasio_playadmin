@@ -11,11 +11,14 @@ class PaymentMethod extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'key',
         'icon',
         'name',
         'display_name',
         'currency',
+        'currency_type',
         'type',
+        'is_fiat',
         'amounts',
         'max_amount',
         'min_amount',
@@ -23,6 +26,7 @@ class PaymentMethod extends Model
         'synced_at',
         'notes',
         'sort_id',
+        'crypto_info',
     ];
 
     /**
@@ -37,7 +41,9 @@ class PaymentMethod extends Model
             'max_amount' => 'decimal:8',
             'min_amount' => 'decimal:8',
             'enabled' => 'boolean',
+            'is_fiat' => 'boolean',
             'synced_at' => 'datetime',
+            'crypto_info' => 'array',
         ];
     }
 

@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
-use App\Enums\ErrorCode;
-use App\Exceptions\Exception;
 
 class SopayService
 {
@@ -41,6 +39,16 @@ class SopayService
         $resp   = Http::get($url, $params);
         $res    = $resp->json();
 
+        return $res;
+    }
+
+    public function getCoins()
+    {
+        $params = ['method'=> 'coins'];
+        $params = $this->sign($params);
+        $url    = $this->endpoint . '/api/coins';
+        $resp   = Http::get($url, $params);
+        $res    = $resp->json();
         return $res;
     }
 
