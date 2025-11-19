@@ -155,6 +155,7 @@ class SyncPaymentMethodsCommand extends Command
             // Find existing payment method by key and type
             $paymentMethod = PaymentMethod::where('key', $paymentData['id'])
                 ->where('type', $type)
+                ->where('is_fiat', true)
                 ->first();
 
             // Prepare data
@@ -276,6 +277,7 @@ class SyncPaymentMethodsCommand extends Command
             // Find existing payment method by key and type
             $paymentMethod = PaymentMethod::where('key', $coinData['id'])
                 ->where('type', $type)
+                ->where('is_fiat', false)
                 ->first();
 
             // Prepare data
