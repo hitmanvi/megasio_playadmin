@@ -82,6 +82,7 @@ class CurrencyController extends Controller
             'code',
             'symbol',
             'icon',
+            'name',
             'sort_id',
         ]);
 
