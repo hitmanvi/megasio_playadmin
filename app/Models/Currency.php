@@ -6,12 +6,7 @@ class Currency extends Model
 {
     protected $table = 'megasio_play_api.currencies';
 
-    protected $fillable = [
-        'code',
-        'symbol',
-        'icon',
-        'sort_id',
-    ];
+    protected $guarded = [];
 
     protected function casts(): array
     {
