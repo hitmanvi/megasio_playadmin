@@ -50,7 +50,7 @@ class CurrencyController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'code' => 'required|string|max:10|unique:megasio_play_api.currencies,code',
+            'code' => 'required|string|max:10',
             'symbol' => 'required|string|max:10',
             'icon' => 'nullable|string|max:255',
             'sort_id' => 'nullable|integer|min:0',
