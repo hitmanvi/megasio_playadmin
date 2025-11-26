@@ -84,6 +84,7 @@ class CurrencyController extends Controller
             'icon',
             'name',
             'sort_id',
+            'type',
         ]);
 
         // Remove null values
