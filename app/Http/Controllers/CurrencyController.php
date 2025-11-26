@@ -54,6 +54,8 @@ class CurrencyController extends Controller
             'symbol' => 'required|string|max:10',
             'icon' => 'nullable|string|max:255',
             'sort_id' => 'nullable|integer|min:0',
+            'type' => 'string|max:255',
+            'name' => 'string|max:255',
         ]);
 
         $currency = Currency::create($request->all());
@@ -67,10 +69,12 @@ class CurrencyController extends Controller
     public function update(Request $request, Currency $currency): JsonResponse
     {
         $request->validate([
-            'code' => 'nullable|string|max:10|unique:megasio_play_api.currencies,code,' . $currency->id,
+            'code' => 'nullable|string|max:10',
             'symbol' => 'nullable|string|max:10',
             'icon' => 'nullable|string|max:255',
             'sort_id' => 'nullable|integer|min:0',
+            'name' => 'string|max:255',
+            'type' => 'string|max:255',
         ]);
 
         // Update fields if provided
