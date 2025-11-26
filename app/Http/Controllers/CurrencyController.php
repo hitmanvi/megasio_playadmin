@@ -56,6 +56,7 @@ class CurrencyController extends Controller
             'sort_id' => 'nullable|integer|min:0',
             'type' => 'string|max:255',
             'name' => 'string|max:255',
+            'enabled' => 'nullable|boolean',
         ]);
 
         $currency = Currency::create($request->all());
@@ -75,6 +76,7 @@ class CurrencyController extends Controller
             'sort_id' => 'nullable|integer|min:0',
             'name' => 'string|max:255',
             'type' => 'string|max:255',
+            'enabled' => 'nullable|boolean',
         ]);
 
         // Update fields if provided
@@ -85,6 +87,7 @@ class CurrencyController extends Controller
             'name',
             'sort_id',
             'type',
+            'enabled',
         ]);
 
         // Remove null values
