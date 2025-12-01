@@ -26,6 +26,14 @@ class PaymentMethodController extends Controller
     }
 
     /**
+     * Display the specified payment method.
+     */
+    public function show(PaymentMethod $paymentMethod): JsonResponse
+    {
+        return $this->responseItem($paymentMethod);
+    }
+
+    /**
      * Update payment method
      */
     public function update(Request $request, PaymentMethod $paymentMethod): JsonResponse

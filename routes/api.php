@@ -83,6 +83,7 @@ Route::middleware('auth:sanctum')->group(function () {
            
            // Payment methods routes
            Route::get('payment-methods', [PaymentMethodController::class, 'index']);
+           Route::get('payment-methods/{paymentMethod}', [PaymentMethodController::class, 'show']);
            Route::put('payment-methods/{paymentMethod}', [PaymentMethodController::class, 'update']);
            Route::post('payment-methods/sync', [PaymentMethodController::class, 'sync']);
            
