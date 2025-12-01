@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class PaymentMethodController extends Controller
 {
@@ -38,6 +39,31 @@ class PaymentMethodController extends Controller
         ]));
 
         return $this->responseItem($paymentMethod);
+    }
+
+    /**
+     * Sync payment methods from Sopay service
+     */
+    public function sync(Request $request): JsonResponse
+    {
+        try {
+            // Run the sync command
+            $exitCode = \Illuminate\Support\Facades\Artisan::call('payment-methods:sync');
+            
+            if ($exitCode === 0) {
+                return $this->responseItem([
+                    'message' => 'Payment methods synced successfully',
+                ]);
+            } else {
+                return $this->error([500, 'Failed to sync payment methods']);
+            }
+        } catch (\Exception $e) {
+            Log::error('Sync payment methods API error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return $this->error([500, 'Failed to sync payment methods: ' . $e->getMessage()]);
+        }
     }
 }
 
