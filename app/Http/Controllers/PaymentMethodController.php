@@ -14,9 +14,15 @@ class PaymentMethodController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $paymentMethods = PaymentMethod::ordered()->get();
+        $request->validate([
+            'page' => 'nullable|integer|min:1',
+            'per_page' => 'nullable|integer|min:1|max:100',
+        ]);
 
-        return $this->responseList($paymentMethods);
+        $perPage = $request->get('per_page', 15);
+        $paymentMethods = PaymentMethod::ordered()->paginate($perPage);
+
+        return $this->responseListWithPaginator($paymentMethods);
     }
 
     /**

@@ -45,7 +45,6 @@ trait ResponseTrait
         $data['errmsg'] = '';
         $data['data']   = [
             'items' => $listItem,
-            'meta' => $meta,
         ];
 
         return response()->json($data);
