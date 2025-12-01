@@ -43,6 +43,10 @@ class PaymentMethodController extends Controller
             'icon' => 'nullable|string|max:255',
             'max_amount' => 'nullable|numeric|min:0',
             'min_amount' => 'nullable|numeric|min:0',
+            'amounts' => 'nullable|array',
+            'amounts.*' => 'nullable|numeric|min:0',
+            'sort_id' => 'nullable|integer|min:0',
+            'enabled' => 'nullable|boolean',
         ]);
 
         $paymentMethod->update($request->only([
@@ -50,6 +54,9 @@ class PaymentMethodController extends Controller
             'icon',
             'max_amount',
             'min_amount',
+            'amounts',
+            'sort_id',
+            'enabled',
         ]));
 
         return $this->responseItem($paymentMethod);
