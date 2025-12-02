@@ -34,6 +34,53 @@ class PaymentMethodController extends Controller
     }
 
     /**
+     * Store a newly created payment method.
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $request->validate([
+            'key' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'display_name' => 'nullable|string|max:255',
+            'icon' => 'nullable|string|max:255',
+            'currency' => 'nullable|string|max:10',
+            'currency_type' => 'nullable|string|max:255',
+            'type' => 'required|string|in:deposit,withdraw',
+            'is_fiat' => 'nullable|boolean',
+            'max_amount' => 'nullable|numeric|min:0',
+            'min_amount' => 'nullable|numeric|min:0',
+            'amounts' => 'nullable|array',
+            'amounts.*' => 'nullable|numeric|min:0',
+            'sort_id' => 'nullable|integer|min:0',
+            'enabled' => 'nullable|boolean',
+            'notes' => 'nullable|string',
+            'crypto_info' => 'nullable|array',
+            'fields' => 'nullable|array',
+        ]);
+
+        $paymentMethod = PaymentMethod::create($request->only([
+            'key',
+            'name',
+            'display_name',
+            'icon',
+            'currency',
+            'currency_type',
+            'type',
+            'is_fiat',
+            'max_amount',
+            'min_amount',
+            'amounts',
+            'sort_id',
+            'enabled',
+            'notes',
+            'crypto_info',
+            'fields',
+        ]));
+
+        return $this->responseItem($paymentMethod);
+    }
+
+    /**
      * Update payment method
      */
     public function update(Request $request, PaymentMethod $paymentMethod): JsonResponse

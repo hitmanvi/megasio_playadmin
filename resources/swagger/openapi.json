@@ -4341,6 +4341,172 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": ["Payment Methods"],
+        "summary": "Create a new payment method",
+        "description": "Create a new payment method",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "type"],
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "description": "Payment method key/ID",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Payment method name",
+                    "maxLength": 255,
+                    "example": "Alipay"
+                  },
+                  "display_name": {
+                    "type": "string",
+                    "description": "Display name",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Icon URL or path",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "currency": {
+                    "type": "string",
+                    "description": "Currency type",
+                    "maxLength": 10,
+                    "nullable": true
+                  },
+                  "currency_type": {
+                    "type": "string",
+                    "description": "Currency type",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Payment type",
+                    "enum": ["deposit", "withdraw"],
+                    "example": "deposit"
+                  },
+                  "is_fiat": {
+                    "type": "boolean",
+                    "description": "Whether it's a fiat currency",
+                    "nullable": true
+                  },
+                  "max_amount": {
+                    "type": "number",
+                    "description": "Maximum amount supported",
+                    "minimum": 0,
+                    "nullable": true
+                  },
+                  "min_amount": {
+                    "type": "number",
+                    "description": "Minimum amount supported",
+                    "minimum": 0,
+                    "nullable": true
+                  },
+                  "amounts": {
+                    "type": "array",
+                    "description": "Supported amounts array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "nullable": true
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0,
+                    "nullable": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the payment method is enabled",
+                    "nullable": true
+                  },
+                  "notes": {
+                    "type": "string",
+                    "description": "Notes",
+                    "nullable": true
+                  },
+                  "crypto_info": {
+                    "type": "object",
+                    "description": "Cryptocurrency information",
+                    "nullable": true,
+                    "additionalProperties": true
+                  },
+                  "fields": {
+                    "type": "array",
+                    "description": "Additional fields array",
+                    "nullable": true,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment method created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/PaymentMethod"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/payment-methods/sync": {
