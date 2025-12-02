@@ -47,6 +47,7 @@ class PaymentMethodController extends Controller
             'amounts.*' => 'nullable|numeric|min:0',
             'sort_id' => 'nullable|integer|min:0',
             'enabled' => 'nullable|boolean',
+            'fields' => 'nullable|array',
         ]);
 
         $paymentMethod->update($request->only([
@@ -57,6 +58,7 @@ class PaymentMethodController extends Controller
             'amounts',
             'sort_id',
             'enabled',
+            'fields',
         ]));
 
         return $this->responseItem($paymentMethod);

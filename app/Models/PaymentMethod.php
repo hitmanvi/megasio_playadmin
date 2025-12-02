@@ -27,6 +27,7 @@ class PaymentMethod extends Model
         'notes',
         'sort_id',
         'crypto_info',
+        'fields',
     ];
 
     /**
@@ -44,6 +45,7 @@ class PaymentMethod extends Model
             'is_fiat' => 'boolean',
             'synced_at' => 'datetime',
             'crypto_info' => 'array',
+            'fields' => 'array',
         ];
     }
 

@@ -4519,6 +4519,27 @@
                     "type": "number",
                     "description": "Minimum amount supported",
                     "minimum": 0
+                  },
+                  "amounts": {
+                    "type": "array",
+                    "description": "Supported amounts array",
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the payment method is enabled"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "description": "Additional fields (key-value pairs)",
+                    "additionalProperties": true
                   }
                 }
               }
@@ -6905,6 +6926,18 @@
           "sort_id": {
             "type": "integer",
             "description": "Sort order"
+          },
+          "crypto_info": {
+            "type": "object",
+            "description": "Cryptocurrency information",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "fields": {
+            "type": "object",
+            "description": "Additional fields (key-value pairs)",
+            "nullable": true,
+            "additionalProperties": true
           },
           "created_at": {
             "type": "string",
