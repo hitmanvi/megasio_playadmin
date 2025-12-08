@@ -21,13 +21,14 @@ class SopayService
     protected $appKey;
     protected $appId;
     protected $callbackUrl;
-
+    protected $returnUrl;
     public function __construct()
     {
         $this->endpoint    = config('services.sopay.endpoint');
         $this->appId       = config('services.sopay.app_id');
         $this->appKey      = config('services.sopay.app_key');
         $this->callbackUrl = config('services.sopay.callback_url');
+        $this->returnUrl   = config('services.sopay.return_url');
     }
 
     public function getPayments()
@@ -64,6 +65,7 @@ class SopayService
             'out_trade_no' => $withdrawData['out_trade_no'],
             'user_ip'      => $withdrawData['user_ip'],
             'callback_url' => $this->callbackUrl,
+            'return_url'   => $this->returnUrl,
             'method'       => 'withdraw',
         ];
         if ($type == 2) {
