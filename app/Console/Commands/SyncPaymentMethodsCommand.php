@@ -178,7 +178,8 @@ class SyncPaymentMethodsCommand extends Command
             // Extract fields based on type (deposit_fields or withdraw_fields)
             $fieldsKey = $type === 'deposit' ? 'deposit_fields' : 'withdraw_fields';
             if (!empty($paymentData['payment_info'][$fieldsKey])) {
-                $data['fields'] = $paymentData['payment_info'][$fieldsKey];
+                $fields = $paymentData['payment_info'][$fieldsKey];
+                $data['fields'] = $this->processFields($fields, $paymentData['payment_info'], $currency);
             }
 
             if ($paymentMethod) {
@@ -203,6 +204,67 @@ class SyncPaymentMethodsCommand extends Command
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Process fields to add title, placeholder and list options
+     */
+    protected function processFields(array $fields, array $paymentInfo, string $currency): array
+    {
+        $extra = $paymentInfo['extra'] ?? [];
+        
+        // Process bank_code list
+        $bankCodes = [];
+        if (isset($extra['bank_code'])) {
+            foreach ($extra['bank_code'] as $key => $t) {
+                if ($currency === 'IDR' && isset($t['bank_id'])) {
+                    $bankCodes[$key]['name'] = $t['bank_code'] ?? '';
+                    $bankCodes[$key]['value'] = $t['bank_code'] ?? '';
+                    $bankCodes[$key]['bank_info'] = $t;
+                    $bankCodes[$key]['value_type'] = '1';
+                } else {
+                    if (isset($t['bank_name'])) $bankCodes[$key]['name'] = $t['bank_name'];
+                    if (isset($t['bank_code'])) $bankCodes[$key]['value'] = $t['bank_code'];
+                    if (isset($t['bank_icon'])) $bankCodes[$key]['icon'] = $t['bank_icon'];
+                }
+            }
+        }
+
+        // Process each field
+        $processedFields = [];
+        foreach ($fields as $field) {
+            // For IDR currency, skip bank_id and bank_name fields
+            if ($currency === 'IDR') {
+                if ($field['field'] === 'bank_id' || $field['field'] === 'bank_name') {
+                    continue;
+                }
+            }
+
+            // Add list options for specific fields
+            if ($field['field'] === 'bank_code' && !empty($bankCodes)) {
+                $field['list'] = array_values($bankCodes);
+            }
+            if ($field['field'] === 'bank_type' && isset($extra['bank_type'])) {
+                $field['list'] = $extra['bank_type'];
+            }
+            if ($field['field'] === 'pix_type' && isset($extra['pix_type'])) {
+                $field['list'] = $extra['pix_type'];
+            }
+            if ($field['field'] === 'wallet_type' && isset($extra['wallet_type'])) {
+                $field['list'] = $extra['wallet_type'];
+            }
+            if ($field['field'] === 'account_type' && isset($extra['account_type'])) {
+                $field['list'] = $extra['account_type'];
+            }
+
+            // Add title and placeholder
+            $field['title'] = $field['field'];
+            $field['placeholder'] = $field['field'];
+
+            $processedFields[] = $field;
+        }
+
+        return $processedFields;
     }
 
     /**
