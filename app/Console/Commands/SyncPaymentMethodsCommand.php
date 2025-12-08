@@ -177,18 +177,26 @@ class SyncPaymentMethodsCommand extends Command
 
             // Extract fields based on type (deposit_fields or withdraw_fields)
             $fieldsKey = $type === 'deposit' ? 'deposit_fields' : 'withdraw_fields';
+            $newFields = null;
             if (!empty($paymentData['payment_info'][$fieldsKey])) {
                 $fields = $paymentData['payment_info'][$fieldsKey];
-                $data['fields'] = $this->processFields($fields, $paymentData['payment_info'], $currency);
+                $newFields = $this->processFields($fields, $paymentData['payment_info'], $currency);
             }
 
             if ($paymentMethod) {
-                // Update existing
+                // Update existing - merge fields (only update intersection)
+                if ($newFields !== null) {
+                    $existingFields = $paymentMethod->fields ?? [];
+                    $data['fields'] = $this->mergeFieldsIntersection($existingFields, $newFields);
+                }
                 $paymentMethod->update($data);
                 $updated++;
                 $this->line("    ✓ Updated: {$paymentData['name']} ({$currency}) [{$type}] [ID: {$paymentData['id']}]");
             } else {
-                // Create new
+                // Create new - use all new fields
+                if ($newFields !== null) {
+                    $data['fields'] = $newFields;
+                }
                 $data['display_name'] = $paymentData['name'];
                 PaymentMethod::create($data);
                 $created++;
@@ -204,6 +212,44 @@ class SyncPaymentMethodsCommand extends Command
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Merge fields - only update intersection fields (existing fields that also exist in new fields)
+     * Preserves existing fields' custom properties while updating sync-related properties from new fields
+     */
+    protected function mergeFieldsIntersection(array $existingFields, array $newFields): array
+    {
+        // Build a map of new fields by field name
+        $newFieldsMap = [];
+        foreach ($newFields as $field) {
+            if (isset($field['field'])) {
+                $newFieldsMap[$field['field']] = $field;
+            }
+        }
+
+        // Update existing fields with new data for intersection only
+        $mergedFields = [];
+        foreach ($existingFields as $existingField) {
+            $fieldName = $existingField['field'] ?? null;
+            if ($fieldName && isset($newFieldsMap[$fieldName])) {
+                // Field exists in both - merge: keep existing as base, update with new sync data
+                $merged = $existingField;
+                $newField = $newFieldsMap[$fieldName];
+                
+                // Update sync-related properties from new field
+                if (isset($newField['require'])) $merged['require'] = $newField['require'];
+                if (isset($newField['type'])) $merged['type'] = $newField['type'];
+                if (isset($newField['list'])) $merged['list'] = $newField['list'];
+                
+                $mergedFields[] = $merged;
+            } else {
+                // Field only exists in existing - keep as is
+                $mergedFields[] = $existingField;
+            }
+        }
+
+        return $mergedFields;
     }
 
     /**
@@ -256,10 +302,6 @@ class SyncPaymentMethodsCommand extends Command
             if ($field['field'] === 'account_type' && isset($extra['account_type'])) {
                 $field['list'] = $extra['account_type'];
             }
-
-            // Add title and placeholder
-            $field['title'] = $field['field'];
-            $field['placeholder'] = $field['field'];
 
             $processedFields[] = $field;
         }
