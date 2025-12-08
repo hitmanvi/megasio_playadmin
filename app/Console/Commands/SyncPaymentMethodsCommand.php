@@ -175,6 +175,12 @@ class SyncPaymentMethodsCommand extends Command
                 $data['notes'] = json_encode($paymentData['payment_info'], JSON_UNESCAPED_UNICODE);
             }
 
+            // Extract fields based on type (deposit_fields or withdraw_fields)
+            $fieldsKey = $type === 'deposit' ? 'deposit_fields' : 'withdraw_fields';
+            if (!empty($paymentData['payment_info'][$fieldsKey])) {
+                $data['fields'] = $paymentData['payment_info'][$fieldsKey];
+            }
+
             if ($paymentMethod) {
                 // Update existing
                 $paymentMethod->update($data);
