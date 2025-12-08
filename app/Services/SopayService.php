@@ -35,7 +35,7 @@ class SopayService
         $params = ['method'=> 'payments'];
         $params = $this->sign($params);
         
-        $url    = $this->endpoint . '/api/payments/list';
+        $url    = $this->endpoint . '/api/v2/payments/list';
         $resp   = Http::get($url, $params);
         $res    = $resp->json();
 
@@ -46,7 +46,7 @@ class SopayService
     {
         $params = ['method'=> 'coins'];
         $params = $this->sign($params);
-        $url    = $this->endpoint . '/api/coins';
+        $url    = $this->endpoint . '/api/v2/coins';
         $resp   = Http::get($url, $params);
         $res    = $resp->json();
         return $res;
