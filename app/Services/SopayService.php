@@ -35,7 +35,7 @@ class SopayService
         $params = ['method'=> 'payments'];
         $params = $this->sign($params);
         
-        $url    = $this->endpoint . '/api/v2/payments/list';
+        $url    = $this->endpoint . '/api/payments/list';
         $resp   = Http::get($url, $params);
         $res    = $resp->json();
 
@@ -46,7 +46,7 @@ class SopayService
     {
         $params = ['method'=> 'coins'];
         $params = $this->sign($params);
-        $url    = $this->endpoint . '/api/v2/coins';
+        $url    = $this->endpoint . '/api/coins';
         $resp   = Http::get($url, $params);
         $res    = $resp->json();
         return $res;
@@ -74,7 +74,7 @@ class SopayService
             $params[$key] = trim($value);
         }
         $params = $this->sign($params);
-        $url    = $this->endpoint . '/api/orders/withdraw';
+        $url    = $this->endpoint . '/api/v2/orders/withdraw';
         $resp   = Http::post($url, $params);
         $res    = $resp->json();
 
