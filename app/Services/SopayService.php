@@ -74,7 +74,7 @@ class SopayService
             $params[$key] = trim($value);
         }
         $params = $this->sign($params);
-        $url    = $this->endpoint . '/api/v2/orders/withdraw';
+        $url    = $this->endpoint . '/api/orders/withdraw';
         $resp   = Http::post($url, $params);
         $res    = $resp->json();
 
