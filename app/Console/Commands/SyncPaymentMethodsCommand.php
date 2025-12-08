@@ -215,7 +215,7 @@ class SyncPaymentMethodsCommand extends Command
     }
 
     /**
-     * Merge fields - only update intersection fields (existing fields that also exist in new fields)
+     * Merge fields - update existing fields and add new fields
      * Preserves existing fields' custom properties while updating sync-related properties from new fields
      */
     protected function mergeFieldsIntersection(array $existingFields, array $newFields): array
@@ -228,7 +228,15 @@ class SyncPaymentMethodsCommand extends Command
             }
         }
 
-        // Update existing fields with new data for intersection only
+        // Build a map of existing field names
+        $existingFieldNames = [];
+        foreach ($existingFields as $existingField) {
+            if (isset($existingField['field'])) {
+                $existingFieldNames[$existingField['field']] = true;
+            }
+        }
+
+        // Update existing fields with new data
         $mergedFields = [];
         foreach ($existingFields as $existingField) {
             $fieldName = $existingField['field'] ?? null;
@@ -246,6 +254,14 @@ class SyncPaymentMethodsCommand extends Command
             } else {
                 // Field only exists in existing - keep as is
                 $mergedFields[] = $existingField;
+            }
+        }
+
+        // Add new fields that don't exist in existing fields
+        foreach ($newFields as $newField) {
+            $fieldName = $newField['field'] ?? null;
+            if ($fieldName && !isset($existingFieldNames[$fieldName])) {
+                $mergedFields[] = $newField;
             }
         }
 
