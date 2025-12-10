@@ -15,6 +15,7 @@ use App\Http\Controllers\WithdrawController;
 use App\Http\Controllers\UserActivityController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\KycController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -110,4 +111,9 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('currencies/{currency}', [CurrencyController::class, 'show']);
            Route::put('currencies/{currency}', [CurrencyController::class, 'update']);
            Route::delete('currencies/{currency}', [CurrencyController::class, 'destroy']);
+           
+           // KYCs routes
+           Route::get('kycs', [KycController::class, 'index']);
+           Route::post('kycs/{kyc}/approve', [KycController::class, 'approve']);
+           Route::post('kycs/{kyc}/reject', [KycController::class, 'reject']);
        });

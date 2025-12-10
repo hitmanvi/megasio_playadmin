@@ -6233,6 +6233,294 @@
           }
         }
       }
+    },
+    "/kycs": {
+      "get": {
+        "tags": ["KYCs"],
+        "summary": "Get KYC list",
+        "description": "Get paginated list of KYC submissions with optional filtering",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "in": "query",
+            "description": "Filter KYCs by user email or phone",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "Filter KYCs by user ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter KYCs by status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["pending", "approved", "rejected"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "KYC list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Kyc"
+                          }
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "properties": {
+                            "current_page": {
+                              "type": "integer"
+                            },
+                            "per_page": {
+                              "type": "integer"
+                            },
+                            "total": {
+                              "type": "integer"
+                            },
+                            "last_page": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kycs/{kyc}/approve": {
+      "post": {
+        "tags": ["KYCs"],
+        "summary": "Approve KYC request",
+        "description": "Approve a KYC submission",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "kyc",
+            "in": "path",
+            "description": "KYC ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "KYC approved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Kyc"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "KYC not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kycs/{kyc}/reject": {
+      "post": {
+        "tags": ["KYCs"],
+        "summary": "Reject KYC request",
+        "description": "Reject a KYC submission with a reason",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "kyc",
+            "in": "path",
+            "description": "KYC ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["reject_reason"],
+                "properties": {
+                  "reject_reason": {
+                    "type": "string",
+                    "description": "Reason for rejection"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "KYC rejected successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Kyc"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "KYC not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -7391,6 +7679,73 @@
           }
         }
       },
+      "Kyc": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "KYC ID"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "User ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's full name",
+            "nullable": true
+          },
+          "birthdate": {
+            "type": "string",
+            "description": "User's birthdate",
+            "nullable": true
+          },
+          "document_front": {
+            "type": "string",
+            "description": "URL of document front image",
+            "nullable": true
+          },
+          "document_back": {
+            "type": "string",
+            "description": "URL of document back image",
+            "nullable": true
+          },
+          "document_number": {
+            "type": "string",
+            "description": "Document number",
+            "nullable": true
+          },
+          "selfie": {
+            "type": "string",
+            "description": "URL of selfie image",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "KYC status",
+            "enum": ["pending", "approved", "rejected"]
+          },
+          "reject_reason": {
+            "type": "string",
+            "description": "Reason for rejection",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User",
+            "description": "Associated user"
+          }
+        }
+      },
       "ErrorResponse": {
         "type": "object",
         "properties": {
@@ -7467,6 +7822,10 @@
     {
       "name": "Currencies",
       "description": "Currency management endpoints"
+    },
+    {
+      "name": "KYCs",
+      "description": "KYC verification management endpoints"
     }
   ]
 }
