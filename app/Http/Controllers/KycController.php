@@ -14,8 +14,7 @@ class KycController extends Controller
     public function index(Request $request): JsonResponse
     {
         $request->validate([
-            'account' => 'nullable|string',
-            'user_id' => 'nullable|integer',
+            'document_number' => 'nullable|string',
             'status' => 'nullable|string|in:pending,approved,rejected',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
@@ -24,12 +23,8 @@ class KycController extends Controller
         $query = Kyc::with(['user']);
 
         // Apply filters
-        if ($request->has('account') && $request->account) {
-            $query->byUserEmailOrPhone($request->account);
-        }
-
-        if ($request->has('user_id') && $request->user_id) {
-            $query->byUserId($request->user_id);
+        if ($request->has('document_number') && $request->document_number) {
+            $query->byDocumentNumber($request->document_number);
         }
 
         if ($request->has('status') && $request->status) {

@@ -44,22 +44,11 @@ class Kyc extends Model
     }
 
     /**
-     * Scope to filter by user ID.
+     * Scope to filter by document number.
      */
-    public function scopeByUserId($query, $userId)
+    public function scopeByDocumentNumber($query, $documentNumber)
     {
-        return $query->where('user_id', $userId);
-    }
-
-    /**
-     * Scope to filter by user email or phone.
-     */
-    public function scopeByUserEmailOrPhone($query, $emailOrPhone)
-    {
-        return $query->whereHas('user', function ($q) use ($emailOrPhone) {
-            $q->where('email', 'like', "%{$emailOrPhone}%")
-              ->orWhere('phone', 'like', "%{$emailOrPhone}%");
-        });
+        return $query->where('document_number', 'like', "%{$documentNumber}%");
     }
 
     /**
