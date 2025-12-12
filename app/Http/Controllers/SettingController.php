@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Err;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -48,48 +47,6 @@ class SettingController extends Controller
         $settings = $query->paginate($perPage);
 
         return $this->responseListWithPaginator($settings, null);
-    }
-
-    /**
-     * Get all available groups
-     */
-    public function groups(): JsonResponse
-    {
-        $groups = Setting::select('group')
-            ->distinct()
-            ->orderBy('group')
-            ->pluck('group');
-
-        return $this->responseItem(['groups' => $groups]);
-    }
-
-    /**
-     * Get settings by group
-     */
-    public function getByGroup(Request $request, string $group): JsonResponse
-    {
-        $settings = Setting::byGroup($group)
-            ->orderBy('key')
-            ->get();
-
-        return $this->responseItem([
-            'group' => $group,
-            'settings' => $settings,
-        ]);
-    }
-
-    /**
-     * Get setting by key
-     */
-    public function getByKey(string $key): JsonResponse
-    {
-        $setting = Setting::byKey($key)->first();
-
-        if (!$setting) {
-            return $this->error(Err::ACCOUNT_NOT_FOUND);
-        }
-
-        return $this->responseItem($setting);
     }
 
     /**
@@ -152,27 +109,6 @@ class SettingController extends Controller
             $setting->description = $validated['description'];
         }
 
-        $setting->save();
-
-        return $this->responseItem($setting);
-    }
-
-    /**
-     * Update setting by key
-     */
-    public function updateByKey(Request $request, string $key): JsonResponse
-    {
-        $setting = Setting::byKey($key)->first();
-
-        if (!$setting) {
-            return $this->error(Err::ACCOUNT_NOT_FOUND);
-        }
-
-        $validated = $request->validate([
-            'value' => 'nullable',
-        ]);
-
-        $setting->value = $validated['value'] ?? null;
         $setting->save();
 
         return $this->responseItem($setting);

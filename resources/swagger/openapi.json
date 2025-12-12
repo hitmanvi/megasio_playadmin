@@ -6261,7 +6261,8 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["pending", "approved", "rejected"]
+              "enum": ["pending", "reviewed"],
+              "description": "pending: 待审核, reviewed: 已审核, 不传为全部"
             }
           },
           {
@@ -6354,7 +6355,7 @@
       "post": {
         "tags": ["KYCs"],
         "summary": "Approve KYC request",
-        "description": "Approve a KYC submission",
+        "description": "Approve a KYC submission. pending -> approved (初审通过), selfie_pending -> selfie_approved (自拍审核通过)",
         "security": [
           {
             "sanctum": []
@@ -6422,7 +6423,7 @@
       "post": {
         "tags": ["KYCs"],
         "summary": "Reject KYC request",
-        "description": "Reject a KYC submission with a reason",
+        "description": "Reject a KYC submission with a reason. pending -> rejected (初审拒绝), selfie_pending -> selfie_rejected (自拍审核拒绝)",
         "security": [
           {
             "sanctum": []
@@ -6502,6 +6503,561 @@
           },
           "422": {
             "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/settings": {
+      "get": {
+        "tags": ["Settings"],
+        "summary": "Get settings list",
+        "description": "Get paginated list of settings with optional filtering by group, key, or type",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "description": "Filter settings by key (partial match)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group",
+            "in": "query",
+            "description": "Filter settings by group",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter settings by type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["string", "integer", "boolean", "json", "array"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Settings list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Setting"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "per_page": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Settings"],
+        "summary": "Create a new setting",
+        "description": "Create a new setting with key, value, type, group and description",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["key"],
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "description": "Unique setting key"
+                  },
+                  "value": {
+                    "description": "Setting value",
+                    "nullable": true
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["string", "integer", "boolean", "json", "array"],
+                    "default": "string",
+                    "description": "Value type"
+                  },
+                  "group": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "default": "general",
+                    "description": "Setting group"
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "description": "Setting description",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Setting created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Setting"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/settings/batch": {
+      "post": {
+        "tags": ["Settings"],
+        "summary": "Batch update settings",
+        "description": "Update multiple settings at once by key",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["settings"],
+                "properties": {
+                  "settings": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["key"],
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "description": "Setting key"
+                        },
+                        "value": {
+                          "description": "New value",
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Settings updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "updated": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Setting"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/settings/{setting}": {
+      "get": {
+        "tags": ["Settings"],
+        "summary": "Get setting details",
+        "description": "Get a specific setting by ID",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "setting",
+            "in": "path",
+            "description": "Setting ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Setting retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Setting"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Setting not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Settings"],
+        "summary": "Update setting",
+        "description": "Update a specific setting by ID",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "setting",
+            "in": "path",
+            "description": "Setting ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "description": "Setting value",
+                    "nullable": true
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["string", "integer", "boolean", "json", "array"],
+                    "description": "Value type"
+                  },
+                  "group": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Setting group"
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "description": "Setting description",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Setting updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Setting"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Setting not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Settings"],
+        "summary": "Delete setting",
+        "description": "Delete a specific setting by ID",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "setting",
+            "in": "path",
+            "description": "Setting ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Setting deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deleted": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Setting not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -7714,7 +8270,7 @@
           "status": {
             "type": "string",
             "description": "KYC status",
-            "enum": ["pending", "approved", "rejected"]
+            "enum": ["pending", "approved", "rejected", "selfie_pending", "selfie_approved", "selfie_rejected"]
           },
           "reject_reason": {
             "type": "string",
@@ -7734,6 +8290,48 @@
           "user": {
             "$ref": "#/components/schemas/User",
             "description": "Associated user"
+          }
+        }
+      },
+      "Setting": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Setting ID"
+          },
+          "key": {
+            "type": "string",
+            "description": "Setting key (unique)"
+          },
+          "value": {
+            "type": "string",
+            "description": "Setting value",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "description": "Value type",
+            "enum": ["string", "integer", "boolean", "json", "array"]
+          },
+          "group": {
+            "type": "string",
+            "description": "Setting group"
+          },
+          "description": {
+            "type": "string",
+            "description": "Setting description",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
           }
         }
       },
@@ -7817,6 +8415,10 @@
     {
       "name": "KYCs",
       "description": "KYC verification management endpoints"
+    },
+    {
+      "name": "Settings",
+      "description": "System settings management endpoints"
     }
   ]
 }

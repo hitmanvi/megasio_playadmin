@@ -120,12 +120,8 @@ Route::middleware('auth:sanctum')->group(function () {
            
            // Settings routes
            Route::get('settings', [SettingController::class, 'index']);
-           Route::get('settings/groups', [SettingController::class, 'groups']);
-           Route::get('settings/group/{group}', [SettingController::class, 'getByGroup']);
-           Route::get('settings/key/{key}', [SettingController::class, 'getByKey']);
-           Route::put('settings/key/{key}', [SettingController::class, 'updateByKey']);
-           Route::post('settings/batch', [SettingController::class, 'batchUpdate']);
            Route::post('settings', [SettingController::class, 'store']);
+           Route::post('settings/batch', [SettingController::class, 'batchUpdate']);
            Route::get('settings/{setting}', [SettingController::class, 'show']);
            Route::put('settings/{setting}', [SettingController::class, 'update']);
            Route::delete('settings/{setting}', [SettingController::class, 'destroy']);

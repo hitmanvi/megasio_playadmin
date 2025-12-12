@@ -26,6 +26,9 @@ class Kyc extends Model
     const STATUS_PENDING = 'pending';
     const STATUS_APPROVED = 'approved';
     const STATUS_REJECTED = 'rejected';
+    const STATUS_SELFIE_PENDING = 'selfie_pending';
+    const STATUS_SELFIE_APPROVED = 'selfie_approved';
+    const STATUS_SELFIE_REJECTED = 'selfie_rejected';
 
     /**
      * Get the user that owns the KYC.
