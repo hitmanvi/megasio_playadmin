@@ -28,17 +28,23 @@ class KycController extends Controller
             $query->byDocumentNumber($request->document_number);
         }
 
-        // 待审核: pending, selfie_pending
-        // 已审核: approved, rejected, selfie_approved, selfie_rejected
+        // 待审核: pending, advanced_pending, enhanced_pending
+        // 已审核: approved, rejected, advanced_approved, advanced_rejected, enhanced_approved, enhanced_rejected
         if ($request->has('status') && $request->status) {
             if ($request->status === 'pending') {
-                $query->whereIn('status', [Kyc::STATUS_PENDING, Kyc::STATUS_SELFIE_PENDING]);
+                $query->whereIn('status', [
+                    Kyc::STATUS_PENDING,
+                    Kyc::STATUS_ADVANCED_PENDING,
+                    Kyc::STATUS_ENHANCED_PENDING,
+                ]);
             } elseif ($request->status === 'reviewed') {
                 $query->whereIn('status', [
                     Kyc::STATUS_APPROVED,
                     Kyc::STATUS_REJECTED,
-                    Kyc::STATUS_SELFIE_APPROVED,
-                    Kyc::STATUS_SELFIE_REJECTED,
+                    Kyc::STATUS_ADVANCED_APPROVED,
+                    Kyc::STATUS_ADVANCED_REJECTED,
+                    Kyc::STATUS_ENHANCED_APPROVED,
+                    Kyc::STATUS_ENHANCED_REJECTED,
                 ]);
             }
         }
@@ -56,13 +62,15 @@ class KycController extends Controller
     /**
      * Approve a KYC request
      * - pending -> approved (初审通过)
-     * - selfie_pending -> selfie_approved (自拍审核通过)
+     * - advanced_pending -> advanced_approved (高级认证通过)
+     * - enhanced_pending -> enhanced_approved (增强认证通过)
      */
     public function approve(Request $request, Kyc $kyc): JsonResponse
     {
         $newStatus = match ($kyc->status) {
             Kyc::STATUS_PENDING => Kyc::STATUS_APPROVED,
-            Kyc::STATUS_SELFIE_PENDING => Kyc::STATUS_SELFIE_APPROVED,
+            Kyc::STATUS_ADVANCED_PENDING => Kyc::STATUS_ADVANCED_APPROVED,
+            Kyc::STATUS_ENHANCED_PENDING => Kyc::STATUS_ENHANCED_APPROVED,
             default => null,
         };
 
@@ -83,7 +91,8 @@ class KycController extends Controller
     /**
      * Reject a KYC request
      * - pending -> rejected (初审拒绝)
-     * - selfie_pending -> selfie_rejected (自拍审核拒绝)
+     * - advanced_pending -> advanced_rejected (高级认证拒绝)
+     * - enhanced_pending -> enhanced_rejected (增强认证拒绝)
      */
     public function reject(Request $request, Kyc $kyc): JsonResponse
     {
@@ -93,7 +102,8 @@ class KycController extends Controller
 
         $newStatus = match ($kyc->status) {
             Kyc::STATUS_PENDING => Kyc::STATUS_REJECTED,
-            Kyc::STATUS_SELFIE_PENDING => Kyc::STATUS_SELFIE_REJECTED,
+            Kyc::STATUS_ADVANCED_PENDING => Kyc::STATUS_ADVANCED_REJECTED,
+            Kyc::STATUS_ENHANCED_PENDING => Kyc::STATUS_ENHANCED_REJECTED,
             default => null,
         };
 

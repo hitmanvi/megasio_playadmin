@@ -22,13 +22,23 @@ class Kyc extends Model
 
     /**
      * KYC status constants.
+     * 
+     * 流程：
+     * 1. pending -> approved/rejected (初审)
+     * 2. approved -> advanced_pending (提交高级认证)
+     * 3. advanced_pending -> advanced_approved/advanced_rejected (高级认证审核)
+     * 4. advanced_approved -> enhanced_pending (提交增强认证)
+     * 5. enhanced_pending -> enhanced_approved/enhanced_rejected (增强认证审核)
      */
-    const STATUS_PENDING = 'pending';
-    const STATUS_APPROVED = 'approved';
-    const STATUS_REJECTED = 'rejected';
-    const STATUS_SELFIE_PENDING = 'selfie_pending';
-    const STATUS_SELFIE_APPROVED = 'selfie_approved';
-    const STATUS_SELFIE_REJECTED = 'selfie_rejected';
+    const STATUS_PENDING = 'pending';                     // 初审待审核
+    const STATUS_APPROVED = 'approved';                   // 初审通过（可提交高级认证）
+    const STATUS_REJECTED = 'rejected';                   // 初审拒绝
+    const STATUS_ADVANCED_PENDING = 'advanced_pending';   // 高级认证待审核
+    const STATUS_ADVANCED_APPROVED = 'advanced_approved'; // 高级认证通过（可提交增强认证）
+    const STATUS_ADVANCED_REJECTED = 'advanced_rejected'; // 高级认证拒绝
+    const STATUS_ENHANCED_PENDING = 'enhanced_pending';   // 增强认证待审核
+    const STATUS_ENHANCED_APPROVED = 'enhanced_approved'; // 增强认证通过（完成）
+    const STATUS_ENHANCED_REJECTED = 'enhanced_rejected'; // 增强认证拒绝
 
     /**
      * Get the user that owns the KYC.

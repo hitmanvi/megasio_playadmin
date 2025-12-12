@@ -6355,7 +6355,7 @@
       "post": {
         "tags": ["KYCs"],
         "summary": "Approve KYC request",
-        "description": "Approve a KYC submission. pending -> approved (初审通过), selfie_pending -> selfie_approved (自拍审核通过)",
+        "description": "Approve a KYC submission. pending -> approved (初审通过), advanced_pending -> advanced_approved (高级认证通过), enhanced_pending -> enhanced_approved (增强认证通过)",
         "security": [
           {
             "sanctum": []
@@ -6423,7 +6423,7 @@
       "post": {
         "tags": ["KYCs"],
         "summary": "Reject KYC request",
-        "description": "Reject a KYC submission with a reason. pending -> rejected (初审拒绝), selfie_pending -> selfie_rejected (自拍审核拒绝)",
+        "description": "Reject a KYC submission with a reason. pending -> rejected (初审拒绝), advanced_pending -> advanced_rejected (高级认证拒绝), enhanced_pending -> enhanced_rejected (增强认证拒绝)",
         "security": [
           {
             "sanctum": []
@@ -8270,7 +8270,7 @@
           "status": {
             "type": "string",
             "description": "KYC status",
-            "enum": ["pending", "approved", "rejected", "selfie_pending", "selfie_approved", "selfie_rejected"]
+            "enum": ["pending", "approved", "rejected", "advanced_pending", "advanced_approved", "advanced_rejected", "enhanced_pending", "enhanced_approved", "enhanced_rejected"]
           },
           "reject_reason": {
             "type": "string",
