@@ -61,16 +61,17 @@ class KycController extends Controller
 
     /**
      * Approve a KYC request
-     * - pending -> approved (初审通过)
-     * - advanced_pending -> advanced_approved (高级认证通过)
-     * - enhanced_pending -> enhanced_approved (增强认证通过)
+     * - pending/rejected -> approved (初审通过，可多次修改)
+     * - advanced_pending/advanced_rejected -> advanced_approved (高级认证通过，可多次修改)
+     * - enhanced_pending/enhanced_rejected -> enhanced_approved (增强认证通过，可多次修改)
      */
     public function approve(Request $request, Kyc $kyc): JsonResponse
     {
+        // Allow "approve" operation not only from pending, but also from rejected states at each level
         $newStatus = match ($kyc->status) {
-            Kyc::STATUS_PENDING => Kyc::STATUS_APPROVED,
-            Kyc::STATUS_ADVANCED_PENDING => Kyc::STATUS_ADVANCED_APPROVED,
-            Kyc::STATUS_ENHANCED_PENDING => Kyc::STATUS_ENHANCED_APPROVED,
+            Kyc::STATUS_PENDING, Kyc::STATUS_REJECTED => Kyc::STATUS_APPROVED,
+            Kyc::STATUS_ADVANCED_PENDING, Kyc::STATUS_ADVANCED_REJECTED => Kyc::STATUS_ADVANCED_APPROVED,
+            Kyc::STATUS_ENHANCED_PENDING, Kyc::STATUS_ENHANCED_REJECTED => Kyc::STATUS_ENHANCED_APPROVED,
             default => null,
         };
 
@@ -90,9 +91,9 @@ class KycController extends Controller
 
     /**
      * Reject a KYC request
-     * - pending -> rejected (初审拒绝)
-     * - advanced_pending -> advanced_rejected (高级认证拒绝)
-     * - enhanced_pending -> enhanced_rejected (增强认证拒绝)
+     * - pending/approved -> rejected (初审拒绝，可多次修改)
+     * - advanced_pending/advanced_approved -> advanced_rejected (高级认证拒绝，可多次修改)
+     * - enhanced_pending/enhanced_approved -> enhanced_rejected (增强认证拒绝，可多次修改)
      */
     public function reject(Request $request, Kyc $kyc): JsonResponse
     {
@@ -100,10 +101,11 @@ class KycController extends Controller
             'reject_reason' => 'required|string',
         ]);
 
+        // Allow "reject" operation not only from pending, but also from approved states at each level
         $newStatus = match ($kyc->status) {
-            Kyc::STATUS_PENDING => Kyc::STATUS_REJECTED,
-            Kyc::STATUS_ADVANCED_PENDING => Kyc::STATUS_ADVANCED_REJECTED,
-            Kyc::STATUS_ENHANCED_PENDING => Kyc::STATUS_ENHANCED_REJECTED,
+            Kyc::STATUS_PENDING, Kyc::STATUS_APPROVED => Kyc::STATUS_REJECTED,
+            Kyc::STATUS_ADVANCED_PENDING, Kyc::STATUS_ADVANCED_APPROVED => Kyc::STATUS_ADVANCED_REJECTED,
+            Kyc::STATUS_ENHANCED_PENDING, Kyc::STATUS_ENHANCED_APPROVED => Kyc::STATUS_ENHANCED_REJECTED,
             default => null,
         };
 
