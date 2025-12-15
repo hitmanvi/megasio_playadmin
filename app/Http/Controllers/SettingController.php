@@ -55,7 +55,7 @@ class SettingController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'key' => 'required|string|max:100|unique:settings,key',
+            'key' => 'required|string|max:100',
             'value' => 'nullable',
             'type' => ['nullable', 'string', Rule::in(['string', 'integer', 'boolean', 'json', 'array'])],
             'group' => 'nullable|string|max:50',
