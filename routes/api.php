@@ -17,6 +17,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\KycController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\BundleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -125,4 +126,11 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('settings/{setting}', [SettingController::class, 'show']);
            Route::put('settings/{setting}', [SettingController::class, 'update']);
            Route::delete('settings/{setting}', [SettingController::class, 'destroy']);
+           
+           // Bundles routes
+           Route::get('bundles', [BundleController::class, 'index']);
+           Route::post('bundles', [BundleController::class, 'store']);
+           Route::get('bundles/{bundle}', [BundleController::class, 'show']);
+           Route::put('bundles/{bundle}', [BundleController::class, 'update']);
+           Route::delete('bundles/{bundle}', [BundleController::class, 'destroy']);
        });
