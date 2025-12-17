@@ -18,6 +18,8 @@ use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\KycController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\BundleController;
+use App\Http\Controllers\BundlePurchaseController;
+use App\Http\Controllers\RedeemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -133,4 +135,12 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('bundles/{bundle}', [BundleController::class, 'show']);
            Route::put('bundles/{bundle}', [BundleController::class, 'update']);
            Route::delete('bundles/{bundle}', [BundleController::class, 'destroy']);
+           
+           // Bundle purchases routes
+           Route::get('bundle-purchases', [BundlePurchaseController::class, 'index']);
+           
+           // Redeems routes
+           Route::get('redeems', [RedeemController::class, 'index']);
+           Route::post('redeems/{redeem}/pass', [RedeemController::class, 'pass']);
+           Route::post('redeems/{redeem}/reject', [RedeemController::class, 'reject']);
        });

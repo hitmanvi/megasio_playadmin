@@ -7588,6 +7588,482 @@
           }
         }
       }
+    },
+    "/bundle-purchases": {
+      "get": {
+        "tags": ["Bundle Purchases"],
+        "summary": "Get bundle purchases list",
+        "description": "Get paginated list of bundle purchases with optional filtering",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "in": "query",
+            "description": "Filter by user email or phone",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_no",
+            "in": "query",
+            "description": "Filter by order number (partial match)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "out_trade_no",
+            "in": "query",
+            "description": "Filter by external trade number (partial match)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bundle_id",
+            "in": "query",
+            "description": "Filter by bundle ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "payment_method_id",
+            "in": "query",
+            "description": "Filter by payment method ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by order status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["pending", "completed", "failed", "cancelled", "refunded"]
+            }
+          },
+          {
+            "name": "pay_status",
+            "in": "query",
+            "description": "Filter by payment status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["unpaid", "paid", "refunded"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bundle purchases list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/BundlePurchase"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "per_page": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/redeems": {
+      "get": {
+        "tags": ["Redeems"],
+        "summary": "Get redeems list",
+        "description": "Get paginated list of SC redeem requests with optional filtering",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "in": "query",
+            "description": "Filter by user email or phone",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_no",
+            "in": "query",
+            "description": "Filter by order number (partial match)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "out_trade_no",
+            "in": "query",
+            "description": "Filter by external trade number (partial match)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "payment_method_id",
+            "in": "query",
+            "description": "Filter by payment method ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["PENDING", "PROCESSING", "COMPLETED", "FAILED", "CANCELLED", "REJECTED"]
+            }
+          },
+          {
+            "name": "pay_status",
+            "in": "query",
+            "description": "Filter by payment status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["PENDING", "PAID", "FAILED", "CANCELLED"]
+            }
+          },
+          {
+            "name": "approved",
+            "in": "query",
+            "description": "Filter by approved status",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Redeems list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Redeem"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "per_page": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/redeems/{redeem}/pass": {
+      "post": {
+        "tags": ["Redeems"],
+        "summary": "Approve redeem request",
+        "description": "Approve a SC redeem request",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "redeem",
+            "in": "path",
+            "description": "Redeem ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "note": {
+                    "type": "string",
+                    "description": "Optional note"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Redeem approved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Redeem"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Redeem not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/redeems/{redeem}/reject": {
+      "post": {
+        "tags": ["Redeems"],
+        "summary": "Reject redeem request",
+        "description": "Reject a SC redeem request",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "redeem",
+            "in": "path",
+            "description": "Redeem ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "note": {
+                    "type": "string",
+                    "description": "Optional note"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Redeem rejected successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Redeem"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Redeem not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -8922,6 +9398,217 @@
           }
         }
       },
+      "BundlePurchase": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Purchase ID"
+          },
+          "order_no": {
+            "type": "string",
+            "description": "Order number"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "User ID"
+          },
+          "bundle_id": {
+            "type": "integer",
+            "description": "Bundle ID"
+          },
+          "payment_method_id": {
+            "type": "integer",
+            "description": "Payment method ID"
+          },
+          "gold_coin": {
+            "type": "number",
+            "description": "GoldCoin received"
+          },
+          "social_coin": {
+            "type": "number",
+            "description": "SocialCoin received"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Payment amount"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Payment currency"
+          },
+          "out_trade_no": {
+            "type": "string",
+            "description": "External trade number",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Order status",
+            "enum": ["pending", "completed", "failed", "cancelled", "refunded"]
+          },
+          "pay_status": {
+            "type": "string",
+            "description": "Payment status",
+            "enum": ["unpaid", "paid", "refunded"]
+          },
+          "user_ip": {
+            "type": "string",
+            "description": "User IP address",
+            "nullable": true
+          },
+          "payment_info": {
+            "type": "object",
+            "description": "Payment information",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes",
+            "nullable": true
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Payment timestamp",
+            "nullable": true
+          },
+          "finished_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Finish timestamp",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User",
+            "description": "Associated user"
+          },
+          "bundle": {
+            "$ref": "#/components/schemas/Bundle",
+            "description": "Associated bundle"
+          },
+          "payment_method": {
+            "type": "object",
+            "description": "Associated payment method"
+          }
+        }
+      },
+      "Redeem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Redeem ID"
+          },
+          "order_no": {
+            "type": "string",
+            "description": "Order number"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "User ID"
+          },
+          "out_trade_no": {
+            "type": "string",
+            "description": "External trade number",
+            "nullable": true
+          },
+          "sc_amount": {
+            "type": "number",
+            "description": "SC amount consumed"
+          },
+          "exchange_rate": {
+            "type": "number",
+            "description": "Exchange rate (SC -> USD)"
+          },
+          "usd_amount": {
+            "type": "number",
+            "description": "USD amount received"
+          },
+          "actual_amount": {
+            "type": "number",
+            "description": "Actual amount received",
+            "nullable": true
+          },
+          "fee": {
+            "type": "number",
+            "description": "Fee amount"
+          },
+          "payment_method_id": {
+            "type": "integer",
+            "description": "Payment method ID",
+            "nullable": true
+          },
+          "withdraw_info": {
+            "type": "object",
+            "description": "Withdraw information",
+            "nullable": true
+          },
+          "extra_info": {
+            "type": "object",
+            "description": "Extra information",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Status",
+            "enum": ["PENDING", "PROCESSING", "COMPLETED", "FAILED", "CANCELLED", "REJECTED"]
+          },
+          "pay_status": {
+            "type": "string",
+            "description": "Payment status",
+            "enum": ["PENDING", "PAID", "FAILED", "CANCELLED"]
+          },
+          "approved": {
+            "type": "boolean",
+            "description": "Whether approved"
+          },
+          "user_ip": {
+            "type": "string",
+            "description": "User IP address",
+            "nullable": true
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Completion timestamp",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "description": "Note",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User",
+            "description": "Associated user"
+          },
+          "payment_method": {
+            "type": "object",
+            "description": "Associated payment method"
+          }
+        }
+      },
       "ErrorResponse": {
         "type": "object",
         "properties": {
@@ -9010,6 +9697,14 @@
     {
       "name": "Bundles",
       "description": "Bundle management endpoints"
+    },
+    {
+      "name": "Bundle Purchases",
+      "description": "Bundle purchase records endpoints"
+    },
+    {
+      "name": "Redeems",
+      "description": "SC redeem management endpoints"
     }
   ]
 }
