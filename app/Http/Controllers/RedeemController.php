@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Redeem;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-
+use App\Services\SopayService;
 class RedeemController extends Controller
 {
     /**
@@ -80,6 +80,15 @@ class RedeemController extends Controller
             'status' => Redeem::STATUS_PROCESSING,
             'note' => $request->note ?? $redeem->note,
         ]);
+
+        $sopayService = new SopayService();
+        $sopayService->withdraw([
+            'out_trade_no' => $redeem->order_no,
+            'amount' => $redeem->amount,
+            'currency' => $redeem->currency,
+            'coin_type' => $redeem->currency_type,
+            'extra_info' => $redeem->extra_info,
+        ], [], 2, $redeem->payment_method->key);
 
         $redeem->load(['paymentMethod', 'user']);
 
