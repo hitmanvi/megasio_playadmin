@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Withdraw;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Services\SopayService;
 
 class WithdrawController extends Controller
 {
@@ -80,6 +81,15 @@ class WithdrawController extends Controller
             'status' => Withdraw::STATUS_PROCESSING,
             'note' => $request->note ?? $withdraw->note,
         ]);
+
+        $sopayService = new SopayService();
+        $sopayService->withdraw([
+            'out_trade_no' => $withdraw->order_no,
+            'amount' => $withdraw->actual_amount,
+            'currency' => $withdraw->currency,
+            'coin_type' => $withdraw->currency_type,
+            'extra_info' => $withdraw->extra_info,
+        ], [], 2, $withdraw->payment_method->key);
 
         $withdraw->load(['paymentMethod', 'user']);
 

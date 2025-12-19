@@ -54,7 +54,7 @@ class SopayService
     }
 
 
-    public function withdraw(array $withdrawData, array $extraInfo,  int $type = 1,  int $paymentId)
+    public function withdraw(array $withdrawData, array $extraInfo,  int $type,  int $paymentId)
     {
         $params = [
             'amount'       => $withdrawData['amount'],
