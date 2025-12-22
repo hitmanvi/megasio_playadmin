@@ -38,7 +38,24 @@ class Deposit extends Model
             'extra_info' => 'array',
             'expired_at' => 'datetime',
             'finished_at' => 'datetime',
+            'is_disputed' => 'boolean',
         ];
+    }
+
+    /**
+     * Scope to filter by is_disputed.
+     */
+    public function scopeByDisputed($query, bool $isDisputed)
+    {
+        return $query->where('is_disputed', $isDisputed);
+    }
+
+    /**
+     * Scope to filter by resolved_status.
+     */
+    public function scopeByResolvedStatus($query, string $resolvedStatus)
+    {
+        return $query->where('resolved_status', $resolvedStatus);
     }
 
     /**

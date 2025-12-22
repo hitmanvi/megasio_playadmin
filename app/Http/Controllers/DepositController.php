@@ -20,6 +20,8 @@ class DepositController extends Controller
             'payment_method_id' => 'nullable|integer',
             'pay_status' => 'nullable|string',
             'status' => 'nullable|string',
+            'is_disputed' => 'nullable|boolean',
+            'resolved_status' => 'nullable|string',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
@@ -51,6 +53,14 @@ class DepositController extends Controller
             $query->byStatus($request->status);
         }
 
+        if ($request->has('is_disputed') && $request->is_disputed !== null) {
+            $query->byDisputed(filter_var($request->is_disputed, FILTER_VALIDATE_BOOLEAN));
+        }
+
+        if ($request->has('resolved_status') && $request->resolved_status) {
+            $query->byResolvedStatus($request->resolved_status);
+        }
+
         // Order by created_at desc
         $query->orderBy('created_at', 'desc');
 
@@ -59,6 +69,33 @@ class DepositController extends Controller
         $deposits = $query->paginate($perPage);
 
         return $this->responseListWithPaginator($deposits, null);
+    }
+
+    /**
+     * Mark deposit as disputed
+     */
+    public function dispute(Deposit $deposit): JsonResponse
+    {
+        $deposit->is_disputed = true;
+        $deposit->save();
+
+        return $this->responseItem($deposit);
+    }
+
+    /**
+     * Resolve disputed deposit
+     */
+    public function resolve(Request $request, Deposit $deposit): JsonResponse
+    {
+        $validated = $request->validate([
+            'resolved_status' => 'required|string|max:255',
+        ]);
+
+        $deposit->is_disputed = false;
+        $deposit->resolved_status = $validated['resolved_status'];
+        $deposit->save();
+
+        return $this->responseItem($deposit);
     }
 }
 

@@ -98,6 +98,8 @@ Route::middleware('auth:sanctum')->group(function () {
            
            // Deposits routes
            Route::get('deposits', [DepositController::class, 'index']);
+           Route::post('deposits/{deposit}/dispute', [DepositController::class, 'dispute']);
+           Route::post('deposits/{deposit}/resolve', [DepositController::class, 'resolve']);
            
            // Withdraws routes
            Route::get('withdraws', [WithdrawController::class, 'index']);
