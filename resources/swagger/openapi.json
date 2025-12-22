@@ -9196,6 +9196,123 @@
           }
         }
       }
+    },
+    "/user-tag-logs": {
+      "get": {
+        "tags": ["User Tag Logs"],
+        "summary": "Get user tag logs",
+        "description": "Get paginated list of user tag logs with optional filtering",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "value",
+            "in": "query",
+            "description": "Filter by value (partial match)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tag_id",
+            "in": "query",
+            "description": "Filter by tag ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "user_status",
+            "in": "query",
+            "description": "Filter by user status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["active", "banned"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User tag logs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/UserTagLog"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "per_page": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -10640,6 +10757,45 @@
           }
         }
       },
+      "UserTagLog": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Log ID"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "User ID"
+          },
+          "tag_id": {
+            "type": "integer",
+            "description": "Tag ID"
+          },
+          "value": {
+            "type": "string",
+            "description": "Value that triggered the tag"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for tagging",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User",
+            "description": "Associated user"
+          },
+          "tag": {
+            "$ref": "#/components/schemas/Tag",
+            "description": "Associated tag"
+          }
+        }
+      },
       "Blacklist": {
         "type": "object",
         "properties": {
@@ -10928,6 +11084,10 @@
     {
       "name": "Blacklists",
       "description": "Blacklist management endpoints"
+    },
+    {
+      "name": "User Tag Logs",
+      "description": "User tag log endpoints"
     }
   ]
 }

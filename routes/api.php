@@ -22,6 +22,7 @@ use App\Http\Controllers\BundlePurchaseController;
 use App\Http\Controllers\RedeemController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\BlacklistController;
+use App\Http\Controllers\UserTagLogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -163,4 +164,7 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('blacklists', [BlacklistController::class, 'index']);
            Route::post('blacklists', [BlacklistController::class, 'store']);
            Route::delete('blacklists/{blacklist}', [BlacklistController::class, 'destroy']);
+           
+           // User tag logs routes
+           Route::get('user-tag-logs', [UserTagLogController::class, 'index']);
        });
