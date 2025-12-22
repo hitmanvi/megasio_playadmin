@@ -21,6 +21,7 @@ use App\Http\Controllers\BundleController;
 use App\Http\Controllers\BundlePurchaseController;
 use App\Http\Controllers\RedeemController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\BlacklistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -157,4 +158,9 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::post('users/{user}/tags/attach', [TagController::class, 'attachToUser']);
            Route::post('users/{user}/tags/detach', [TagController::class, 'detachFromUser']);
            Route::post('users/{user}/tags/sync', [TagController::class, 'syncUserTags']);
+           
+           // Blacklist routes
+           Route::get('blacklists', [BlacklistController::class, 'index']);
+           Route::post('blacklists', [BlacklistController::class, 'store']);
+           Route::delete('blacklists/{blacklist}', [BlacklistController::class, 'destroy']);
        });
