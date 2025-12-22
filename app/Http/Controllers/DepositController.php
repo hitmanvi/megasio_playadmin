@@ -26,7 +26,7 @@ class DepositController extends Controller
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
 
-        $query = Deposit::with(['paymentMethod', 'user']);
+        $query = Deposit::with(['paymentMethod', 'user.tags']);
 
         // Apply filters
         if ($request->has('account') && $request->account) {
