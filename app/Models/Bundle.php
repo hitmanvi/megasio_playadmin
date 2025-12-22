@@ -8,6 +8,7 @@ class Bundle extends Model
 
     protected $fillable = [
         'name',
+        'display_name',
         'description',
         'icon',
         'gold_coin',

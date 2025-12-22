@@ -49,6 +49,7 @@ class BundleController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'display_name' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:255',
             'gold_coin' => 'nullable|numeric|min:0',
@@ -63,6 +64,7 @@ class BundleController extends Controller
 
         $bundle = new Bundle();
         $bundle->name = $validated['name'];
+        $bundle->display_name = $validated['display_name'] ?? null;
         $bundle->description = $validated['description'] ?? null;
         $bundle->icon = $validated['icon'] ?? null;
         $bundle->gold_coin = $validated['gold_coin'] ?? 0;
@@ -93,6 +95,7 @@ class BundleController extends Controller
     {
         $validated = $request->validate([
             'name' => 'nullable|string|max:255',
+            'display_name' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:255',
             'gold_coin' => 'nullable|numeric|min:0',
@@ -107,6 +110,9 @@ class BundleController extends Controller
 
         if (array_key_exists('name', $validated)) {
             $bundle->name = $validated['name'];
+        }
+        if (array_key_exists('display_name', $validated)) {
+            $bundle->display_name = $validated['display_name'];
         }
         if (array_key_exists('description', $validated)) {
             $bundle->description = $validated['description'];

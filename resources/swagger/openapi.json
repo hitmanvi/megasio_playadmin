@@ -7197,6 +7197,12 @@
                     "maxLength": 255,
                     "description": "Bundle name"
                   },
+                  "display_name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "description": "Bundle display name",
+                    "nullable": true
+                  },
                   "description": {
                     "type": "string",
                     "maxLength": 255,
@@ -7402,6 +7408,12 @@
                     "type": "string",
                     "maxLength": 255,
                     "description": "Bundle name"
+                  },
+                  "display_name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "description": "Bundle display name",
+                    "nullable": true
                   },
                   "description": {
                     "type": "string",
@@ -9341,6 +9353,11 @@
           "name": {
             "type": "string",
             "description": "Bundle name"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Bundle display name",
+            "nullable": true
           },
           "description": {
             "type": "string",
