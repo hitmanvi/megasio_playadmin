@@ -2,87 +2,37 @@
 
 namespace App\Models;
 
-use App\Traits\Translatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tag extends Model
 {
     protected $table = 'megasio_play_api.tags';
-    use Translatable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
-        'type',
-        'icon',
+        'display_name',
+        'color',
+        'description',
         'enabled',
+        'sort_id',
+    ];
+
+    protected $casts = [
+        'enabled' => 'boolean',
+        'sort_id' => 'integer',
     ];
 
     /**
-     * Get the translated name for the current locale.
-     *
-     * @param string|null $locale
-     * @return string|null
+     * Get the users that have this tag.
      */
-    public function getName(?string $locale = null): ?string
+    public function users(): BelongsToMany
     {
-        return $this->getTranslatedAttribute('name', $locale);
+        return $this->belongsToMany(User::class, 'megasio_play_api.user_tags')
+            ->withTimestamps();
     }
 
     /**
-     * Set the translated name for a specific locale.
-     *
-     * @param string $name
-     * @param string|null $locale
-     * @return void
-     */
-    public function setName(string $name, ?string $locale = null): void
-    {
-        $this->setTranslation('name', $name, $locale);
-    }
-
-    /**
-     * Get all translated names.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getAllNames()
-    {
-        return $this->getTranslations('name');
-    }
-
-    /**
-     * Set multiple translated names.
-     *
-     * @param array $names ['en' => 'Action', 'zh-CN' => '动作']
-     * @return void
-     */
-    public function setNames(array $names): void
-    {
-        $this->setTranslations('name', $names);
-    }
-
-    /**
-     * Scope to filter by enabled status.
-     */
-    public function scopeByEnabled($query, $enabled)
-    {
-        return $query->where('enabled', $enabled);
-    }
-
-    /**
-     * Scope to filter by name.
-     */
-    public function scopeByName($query, $name)
-    {
-        return $query->where('name', 'like', "%{$name}%");
-    }
-
-    /**
-     * Scope to filter by enabled tags.
+     * Scope: 按启用状态筛选
      */
     public function scopeEnabled($query)
     {
@@ -90,10 +40,10 @@ class Tag extends Model
     }
 
     /**
-     * Scope to filter by disabled tags.
+     * Scope: 按名称筛选
      */
-    public function scopeDisabled($query)
+    public function scopeByName($query, string $name)
     {
-        return $query->where('enabled', false);
+        return $query->where('name', 'like', '%' . $name . '%');
     }
 }

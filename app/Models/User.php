@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 class User extends Model
 {
     protected $table = 'megasio_play_api.users';
@@ -86,6 +88,15 @@ class User extends Model
     public function isActive(): bool
     {
         return $this->status === self::STATUS_ACTIVE;
+    }
+
+    /**
+     * Get the tags for the user.
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'megasio_play_api.user_tags')
+            ->withTimestamps();
     }
 }
 

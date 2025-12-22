@@ -4,150 +4,192 @@ namespace App\Http\Controllers;
 
 use App\Enums\Err;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\Rule;
 
 class TagController extends Controller
 {
     /**
-     * Create a new tag with translations
-     */
-    public function store(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => ['required', 'string', Rule::in(['theme', 'category'])],
-            'icon' => 'nullable|string|max:255',
-            'enabled' => 'nullable|boolean',
-            'translations' => 'required|array',
-            'translations.*' => 'string|max:255',
-        ]);
-
-        $tag = Tag::where('name', $validated['name'])->first();
-        if ($tag) {
-            return $this->error(Err::RECORD_ALREADY_EXISTS);
-        }
-        $tag = new Tag();
-        $tag->name = $validated['name'];
-        $tag->type = $validated['type'];
-        if (array_key_exists('icon', $validated)) {
-            $tag->icon = $validated['icon'];
-        }
-        if (array_key_exists('enabled', $validated)) {
-            $tag->enabled = (bool)$validated['enabled'];
-        }
-        $tag->save();
-
-        // Set translations
-        $tag->setNames($validated['translations']);
-        $tag->load('translations');
-
-        // 直接返回tag资源（增加translations虚拟属性），更简洁
-        return $this->responseItem($this->withExtraTranslations($tag));
-    }
-
-    /**
-     * Get tags list with type filter and pagination
+     * Get tags list with filtering and pagination
      */
     public function index(Request $request): JsonResponse
     {
         $request->validate([
-            'id' => 'nullable',
             'name' => 'nullable|string',
-            'type' => 'nullable|string',
             'enabled' => 'nullable|boolean',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
-            'locale' => 'nullable|string',
         ]);
 
-        $query = Tag::with('translations');
+        $query = Tag::query();
 
-        // Filter by id if provided
-        if ($request->has('id') && $request->id) {
-            $query->where('id', $request->id);
-        }
-
-        // Filter by name if provided
+        // Filter by name
         if ($request->has('name') && $request->name) {
             $query->byName($request->name);
         }
 
-        // Filter by type if provided
-        if ($request->has('type') && $request->type) {
-            $query->where('type', $request->type);
-        }
-
-        // Filter by enabled status if provided
+        // Filter by enabled status
         if ($request->has('enabled')) {
             $query->where('enabled', $request->boolean('enabled'));
         }
+
+        // Order by sort_id asc, id desc
+        $query->orderBy('sort_id')->orderByDesc('id');
 
         // Pagination
         $perPage = $request->get('per_page', 15);
         $tags = $query->paginate($perPage);
 
-        // 将每个tag都增加translations属性
-        $tags->getCollection()->transform(function ($tag) {
-            return $this->withExtraTranslations($tag);
-        });
-
         return $this->responseListWithPaginator($tags, null);
+    }
+
+    /**
+     * Create a new tag
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:megasio_play_api.tags,name',
+            'display_name' => 'nullable|string|max:255',
+            'color' => 'nullable|string|max:20',
+            'description' => 'nullable|string|max:255',
+            'enabled' => 'nullable|boolean',
+            'sort_id' => 'nullable|integer',
+        ]);
+
+        $tag = new Tag();
+        $tag->name = $validated['name'];
+        $tag->display_name = $validated['display_name'] ?? null;
+        $tag->color = $validated['color'] ?? null;
+        $tag->description = $validated['description'] ?? null;
+        $tag->enabled = $validated['enabled'] ?? true;
+        $tag->sort_id = $validated['sort_id'] ?? 0;
+        $tag->save();
+
+        return $this->responseItem($tag);
     }
 
     /**
      * Get tag details
      */
-    public function show(Request $request, Tag $tag): JsonResponse
+    public function show(Tag $tag): JsonResponse
     {
-        $request->validate([
-            'locale' => 'nullable|string',
-        ]);
-        $tag->load('translations');
-        return $this->responseItem($this->withExtraTranslations($tag));
+        return $this->responseItem($tag);
     }
 
     /**
-     * Update tag with translations support
+     * Update tag
      */
     public function update(Request $request, Tag $tag): JsonResponse
     {
-        $request->validate([
-            'icon' => 'nullable|string|max:255',
+        $validated = $request->validate([
+            'name' => 'nullable|string|max:255|unique:megasio_play_api.tags,name,' . $tag->id,
+            'display_name' => 'nullable|string|max:255',
+            'color' => 'nullable|string|max:20',
+            'description' => 'nullable|string|max:255',
             'enabled' => 'nullable|boolean',
-            'translations' => 'required|array',
-            'translations.*' => 'string|max:255',
+            'sort_id' => 'nullable|integer',
         ]);
 
-        // Update icon if provided
-        if ($request->has('icon')) {
-            $tag->icon = $request->icon;
-            $tag->save();
+        if (array_key_exists('name', $validated)) {
+            $tag->name = $validated['name'];
+        }
+        if (array_key_exists('display_name', $validated)) {
+            $tag->display_name = $validated['display_name'];
+        }
+        if (array_key_exists('color', $validated)) {
+            $tag->color = $validated['color'];
+        }
+        if (array_key_exists('description', $validated)) {
+            $tag->description = $validated['description'];
+        }
+        if (array_key_exists('enabled', $validated)) {
+            $tag->enabled = $validated['enabled'];
+        }
+        if (array_key_exists('sort_id', $validated)) {
+            $tag->sort_id = $validated['sort_id'];
         }
 
-        // Update enabled status if provided
-        if ($request->has('enabled')) {
-            $tag->enabled = $request->boolean('enabled');
-            $tag->save();
-        }
+        $tag->save();
 
-        // Update translations
-        $tag->setNames($request->translations);
-
-        // Reload with translations
-        $tag->load('translations');
-
-        return $this->responseItem($this->withExtraTranslations($tag));
+        return $this->responseItem($tag);
     }
 
     /**
-     * 给tag增加translations属性用于简洁响应
+     * Delete tag
      */
-    protected function withExtraTranslations(Tag $tag)
+    public function destroy(Tag $tag): JsonResponse
     {
-        // 注意：直接设置属性可能会在序列化时被模型已有的 translations 覆盖
-        $tag->setRelation('translations', $tag->getAllNames());
-        return $tag;
+        $tag->delete();
+
+        return $this->responseItem(['deleted' => true]);
+    }
+
+    /**
+     * Attach tags to a user
+     */
+    public function attachToUser(Request $request, User $user): JsonResponse
+    {
+        $validated = $request->validate([
+            'tag_ids' => 'required|array',
+            'tag_ids.*' => 'integer|exists:megasio_play_api.tags,id',
+        ]);
+
+        $user->tags()->syncWithoutDetaching($validated['tag_ids']);
+
+        $user->load('tags');
+
+        return $this->responseItem($user);
+    }
+
+    /**
+     * Detach tags from a user
+     */
+    public function detachFromUser(Request $request, User $user): JsonResponse
+    {
+        $validated = $request->validate([
+            'tag_ids' => 'required|array',
+            'tag_ids.*' => 'integer|exists:megasio_play_api.tags,id',
+        ]);
+
+        $user->tags()->detach($validated['tag_ids']);
+
+        $user->load('tags');
+
+        return $this->responseItem($user);
+    }
+
+    /**
+     * Sync tags for a user (replace all)
+     */
+    public function syncUserTags(Request $request, User $user): JsonResponse
+    {
+        $validated = $request->validate([
+            'tag_ids' => 'required|array',
+            'tag_ids.*' => 'integer|exists:megasio_play_api.tags,id',
+        ]);
+
+        $user->tags()->sync($validated['tag_ids']);
+
+        $user->load('tags');
+
+        return $this->responseItem($user);
+    }
+
+    /**
+     * Get users by tag
+     */
+    public function getUsers(Request $request, Tag $tag): JsonResponse
+    {
+        $request->validate([
+            'page' => 'nullable|integer|min:1',
+            'per_page' => 'nullable|integer|min:1|max:100',
+        ]);
+
+        $perPage = $request->get('per_page', 15);
+        $users = $tag->users()->paginate($perPage);
+
+        return $this->responseListWithPaginator($users, null);
     }
 }

@@ -20,6 +20,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\BundleController;
 use App\Http\Controllers\BundlePurchaseController;
 use App\Http\Controllers\RedeemController;
+use App\Http\Controllers\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -143,4 +144,17 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('redeems', [RedeemController::class, 'index']);
            Route::post('redeems/{redeem}/pass', [RedeemController::class, 'pass']);
            Route::post('redeems/{redeem}/reject', [RedeemController::class, 'reject']);
+           
+           // Tags routes
+           Route::get('tags', [TagController::class, 'index']);
+           Route::post('tags', [TagController::class, 'store']);
+           Route::get('tags/{tag}', [TagController::class, 'show']);
+           Route::put('tags/{tag}', [TagController::class, 'update']);
+           Route::delete('tags/{tag}', [TagController::class, 'destroy']);
+           Route::get('tags/{tag}/users', [TagController::class, 'getUsers']);
+           
+           // User tags routes
+           Route::post('users/{user}/tags/attach', [TagController::class, 'attachToUser']);
+           Route::post('users/{user}/tags/detach', [TagController::class, 'detachFromUser']);
+           Route::post('users/{user}/tags/sync', [TagController::class, 'syncUserTags']);
        });
