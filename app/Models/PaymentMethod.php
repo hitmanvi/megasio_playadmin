@@ -28,6 +28,8 @@ class PaymentMethod extends Model
         'sort_id',
         'crypto_info',
         'fields',
+        'extra_step_type',
+        'extra_step_fields',
     ];
 
     /**
@@ -46,6 +48,7 @@ class PaymentMethod extends Model
             'synced_at' => 'datetime',
             'crypto_info' => 'array',
             'fields' => 'array',
+            'extra_step_fields' => 'array',
         ];
     }
 

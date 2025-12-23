@@ -10374,6 +10374,20 @@
               "additionalProperties": true
             }
           },
+          "extra_step_type": {
+            "type": "string",
+            "description": "Extra step type (e.g., iframe)",
+            "nullable": true
+          },
+          "extra_step_fields": {
+            "type": "array",
+            "description": "Extra step fields array",
+            "nullable": true,
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",

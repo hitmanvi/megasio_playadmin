@@ -183,6 +183,14 @@ class SyncPaymentMethodsCommand extends Command
                 $newFields = $this->processFields($fields, $paymentData['payment_info'], $currency);
             }
 
+            // Extract extra_step_type and extra_step_fields
+            if (!empty($paymentData['payment_info']['extra_step_type'])) {
+                $data['extra_step_type'] = $paymentData['payment_info']['extra_step_type'];
+            }
+            if (!empty($paymentData['payment_info']['extra_step_fields'])) {
+                $data['extra_step_fields'] = $paymentData['payment_info']['extra_step_fields'];
+            }
+
             if ($paymentMethod) {
                 // Update existing - merge fields (only update intersection)
                 if ($newFields !== null) {
