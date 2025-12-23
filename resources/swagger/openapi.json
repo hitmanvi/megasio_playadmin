@@ -4863,8 +4863,8 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["created_at", "amount", "actual_amount", "completed_at"],
-              "default": "created_at"
+              "enum": ["id", "created_at", "amount", "actual_amount", "completed_at", "abnormal_at"],
+              "default": "id"
             }
           },
           {
