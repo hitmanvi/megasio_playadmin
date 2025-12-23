@@ -22,7 +22,7 @@ class DepositController extends Controller
             'status' => 'nullable|string',
             'is_disputed' => 'nullable|boolean',
             'resolved_status' => 'nullable|string',
-            'sort_by' => 'nullable|string|in:id,created_at,amount,actual_amount,completed_at,abnormal_at',
+            'sort_by' => 'nullable|string|in:id,created_at,amount,actual_amount,completed_at,abnormaled_at',
             'sort_order' => 'nullable|string|in:asc,desc',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
