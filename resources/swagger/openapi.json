@@ -4962,79 +4962,11 @@
         }
       }
     },
-    "/deposits/{deposit}/dispute": {
-      "post": {
-        "tags": ["Deposits"],
-        "summary": "Mark deposit as disputed",
-        "description": "Mark a deposit as disputed (is_disputed=true)",
-        "security": [
-          {
-            "sanctum": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "deposit",
-            "in": "path",
-            "description": "Deposit ID",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Deposit marked as disputed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "example": 0
-                    },
-                    "errmsg": {
-                      "type": "string",
-                      "example": ""
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/Deposit"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Deposit not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/deposits/{deposit}/resolve": {
       "post": {
         "tags": ["Deposits"],
-        "summary": "Resolve disputed deposit",
-        "description": "Resolve a disputed deposit by setting resolved_status and is_disputed=false",
+        "summary": "Resolve deposit dispute",
+        "description": "Resolve a deposit dispute by setting resolved_status and marking is_disputed=true",
         "security": [
           {
             "sanctum": []

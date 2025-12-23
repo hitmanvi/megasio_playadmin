@@ -72,17 +72,6 @@ class DepositController extends Controller
     }
 
     /**
-     * Mark deposit as disputed
-     */
-    public function dispute(Deposit $deposit): JsonResponse
-    {
-        $deposit->is_disputed = true;
-        $deposit->save();
-
-        return $this->responseItem($deposit);
-    }
-
-    /**
      * Resolve disputed deposit
      */
     public function resolve(Request $request, Deposit $deposit): JsonResponse
@@ -90,8 +79,7 @@ class DepositController extends Controller
         $validated = $request->validate([
             'resolved_status' => 'required|string|max:255',
         ]);
-
-        $deposit->is_disputed = false;
+        $deposit->is_disputed = true;
         $deposit->resolved_status = $validated['resolved_status'];
         $deposit->save();
 
