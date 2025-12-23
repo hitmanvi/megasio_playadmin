@@ -22,6 +22,8 @@ class DepositController extends Controller
             'status' => 'nullable|string',
             'is_disputed' => 'nullable|boolean',
             'resolved_status' => 'nullable|string',
+            'sort_by' => 'nullable|string|in:created_at,amount,actual_amount,completed_at',
+            'sort_order' => 'nullable|string|in:asc,desc',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
@@ -61,8 +63,10 @@ class DepositController extends Controller
             $query->byResolvedStatus($request->resolved_status);
         }
 
-        // Order by created_at desc
-        $query->orderBy('created_at', 'desc');
+        // Order by
+        $sortBy = $request->get('sort_by', 'id');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $query->orderBy($sortBy, $sortOrder);
 
         // Pagination
         $perPage = $request->get('per_page', 15);
