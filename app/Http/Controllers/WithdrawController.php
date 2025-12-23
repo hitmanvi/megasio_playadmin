@@ -6,6 +6,7 @@ use App\Models\Withdraw;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Services\SopayService;
+use Carbon\Carbon;
 
 class WithdrawController extends Controller
 {
@@ -69,6 +70,30 @@ class WithdrawController extends Controller
         // Pagination
         $perPage = $request->get('per_page', 15);
         $withdraws = $query->paginate($perPage);
+
+        // Add computed fields - transform to array for adding custom fields
+        $items = $withdraws->getCollection()->map(function ($withdraw) {
+            $now = Carbon::now();
+            $data = $withdraw->toArray();
+            
+            // Time since first deposit
+            if ($withdraw->user && $withdraw->user->firstDeposit && $withdraw->user->firstDeposit->created_at) {
+                $data['user_first_deposit_ago'] = Carbon::parse($withdraw->user->firstDeposit->created_at)->diffForHumans($now, true);
+            } else {
+                $data['user_first_deposit_ago'] = null;
+            }
+            
+            // Time since user registration
+            if ($withdraw->user && $withdraw->user->created_at) {
+                $data['user_registered_ago'] = Carbon::parse($withdraw->user->created_at)->diffForHumans($now, true);
+            } else {
+                $data['user_registered_ago'] = null;
+            }
+            
+            return $data;
+        });
+        
+        $withdraws->setCollection($items);
 
         return $this->responseListWithPaginator($withdraws, null);
     }
