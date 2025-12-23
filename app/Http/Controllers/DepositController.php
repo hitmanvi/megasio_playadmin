@@ -78,9 +78,11 @@ class DepositController extends Controller
     {
         $validated = $request->validate([
             'resolved_status' => 'required|string|max:255',
+            'abnormal_status' => 'required|string|max:255',
         ]);
         $deposit->is_disputed = true;
         $deposit->resolved_status = $validated['resolved_status'];
+        $deposit->abnormal_status = $validated['abnormal_status'];
         $deposit->save();
 
         return $this->responseItem($deposit);

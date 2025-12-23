@@ -26,7 +26,13 @@ class WithdrawController extends Controller
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
 
-        $query = Withdraw::with(['paymentMethod', 'user']);
+        $query = Withdraw::with([
+            'paymentMethod',
+            'user' => function ($query) {
+                $query->with('firstDeposit')
+                    ->withCount(['disputedDeposits']);
+            },
+        ]);
 
         // Apply filters
         if ($request->has('account') && $request->account) {

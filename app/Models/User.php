@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Model
 {
@@ -97,6 +99,30 @@ class User extends Model
     {
         return $this->belongsToMany(Tag::class, 'megasio_play_api.user_tags')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the deposits for the user.
+     */
+    public function deposits(): HasMany
+    {
+        return $this->hasMany(Deposit::class);
+    }
+
+    /**
+     * Get the first deposit for the user.
+     */
+    public function firstDeposit(): HasOne
+    {
+        return $this->hasOne(Deposit::class)->oldestOfMany();
+    }
+
+    /**
+     * Get the disputed deposits for the user.
+     */
+    public function disputedDeposits(): HasMany
+    {
+        return $this->hasMany(Deposit::class)->where('is_disputed', true);
     }
 }
 
