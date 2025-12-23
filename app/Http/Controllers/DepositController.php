@@ -90,7 +90,7 @@ class DepositController extends Controller
         }
         if ($validated['abnormal_status'] ?? null) {
             $deposit->abnormal_status = $validated['abnormal_status'];
-            $deposit->abnormal_at = now();
+            $deposit->disputed_at = now();
         }
 
         $deposit->save();
