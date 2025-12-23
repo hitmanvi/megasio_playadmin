@@ -81,11 +81,15 @@ class DepositController extends Controller
             'abnormal_status' => 'nullable|string|max:255',
         ]);
         $deposit->is_disputed = true;
-        $deposit->resolved_status = $validated['resolved_status'] ?? null;
-        $deposit->abnormal_status = $validated['abnormal_status'] ?? null;
+        if ($validated['resolved_status'] ?? null) {
+            $deposit->resolved_status = $validated['resolved_status'];
+        }
+        if ($validated['abnormal_status'] ?? null) {
+            $deposit->abnormal_status = $validated['abnormal_status'];
+        }
+
         $deposit->save();
 
-        return $this->responseItem($deposit);
+        return $this->responseItem($deposit, 'Deposit resolved successfully');
     }
 }
-
