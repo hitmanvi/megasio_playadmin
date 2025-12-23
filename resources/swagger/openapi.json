@@ -5123,10 +5123,16 @@
           {
             "name": "status",
             "in": "query",
-            "description": "Filter withdraws by status",
+            "description": "Filter withdraws by status (supports multiple values)",
             "required": false,
+            "style": "form",
+            "explode": true,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["PENDING", "PROCESSING", "COMPLETED", "FAILED", "CANCELLED", "REJECTED"]
+              }
             }
           },
           {

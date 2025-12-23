@@ -21,7 +21,8 @@ class WithdrawController extends Controller
             'out_trade_no' => 'nullable|string',
             'payment_method_id' => 'nullable|integer',
             'pay_status' => 'nullable|string',
-            'status' => 'nullable|string',
+            'status' => 'nullable|array',
+            'status.*' => 'string',
             'approved' => 'nullable|boolean',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
@@ -57,7 +58,10 @@ class WithdrawController extends Controller
         }
 
         if ($request->has('status') && $request->status) {
-            $query->byStatus($request->status);
+            $statuses = $request->status;
+            if (is_array($statuses) && count($statuses) > 0) {
+                $query->whereIn('status', $statuses);
+            }
         }
 
         if ($request->has('approved')) {
