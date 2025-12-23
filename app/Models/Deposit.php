@@ -23,7 +23,7 @@ class Deposit extends Model
         'pay_fee',
         'user_ip',
         'expired_at',
-        'finished_at',
+        'completed_at',
     ];
 
     protected function casts(): array
@@ -37,7 +37,7 @@ class Deposit extends Model
             'deposit_info' => 'array',
             'extra_info' => 'array',
             'expired_at' => 'datetime',
-            'finished_at' => 'datetime',
+            'completed_at' => 'datetime',
             'is_disputed' => 'boolean',
         ];
     }

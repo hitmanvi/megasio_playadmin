@@ -10431,10 +10431,10 @@
             "description": "Expiration time",
             "nullable": true
           },
-          "finished_at": {
+          "completed_at": {
             "type": "string",
             "format": "date-time",
-            "description": "Finished time",
+            "description": "Completed time",
             "nullable": true
           },
           "payment_method": {
