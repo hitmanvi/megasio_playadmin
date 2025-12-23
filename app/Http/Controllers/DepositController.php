@@ -77,12 +77,12 @@ class DepositController extends Controller
     public function resolve(Request $request, Deposit $deposit): JsonResponse
     {
         $validated = $request->validate([
-            'resolved_status' => 'required|string|max:255',
-            'abnormal_status' => 'required|string|max:255',
+            'resolved_status' => 'nullable|string|max:255',
+            'abnormal_status' => 'nullable|string|max:255',
         ]);
         $deposit->is_disputed = true;
-        $deposit->resolved_status = $validated['resolved_status'];
-        $deposit->abnormal_status = $validated['abnormal_status'];
+        $deposit->resolved_status = $validated['resolved_status'] ?? null;
+        $deposit->abnormal_status = $validated['abnormal_status'] ?? null;
         $deposit->save();
 
         return $this->responseItem($deposit);
