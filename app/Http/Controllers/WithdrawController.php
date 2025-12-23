@@ -90,6 +90,13 @@ class WithdrawController extends Controller
                 $data['user_registered_ago'] = null;
             }
             
+            // Time taken to complete the order
+            if ($withdraw->completed_at && $withdraw->created_at) {
+                $data['completion_time'] = Carbon::parse($withdraw->created_at)->diffForHumans(Carbon::parse($withdraw->completed_at), true);
+            } else {
+                $data['completion_time'] = null;
+            }
+            
             return $data;
         });
         
