@@ -4984,17 +4984,23 @@
           }
         ],
         "requestBody": {
-          "required": true,
+          "required": false,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["resolved_status"],
                 "properties": {
                   "resolved_status": {
                     "type": "string",
                     "description": "Resolution status",
-                    "maxLength": 255
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "abnormal_status": {
+                    "type": "string",
+                    "description": "Abnormal status",
+                    "maxLength": 255,
+                    "nullable": true
                   }
                 }
               }
@@ -10400,6 +10406,11 @@
           "resolved_status": {
             "type": "string",
             "description": "Dispute resolution status",
+            "nullable": true
+          },
+          "abnormal_status": {
+            "type": "string",
+            "description": "Abnormal status",
             "nullable": true
           },
           "pay_fee": {
