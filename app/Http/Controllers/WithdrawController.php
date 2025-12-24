@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Services\SopayService;
 use Carbon\Carbon;
-
+use App\Enums\Err;
 class WithdrawController extends Controller
 {
     /**
@@ -137,8 +137,7 @@ class WithdrawController extends Controller
             ], [], 2, $withdraw->payment_method?->key);
 
             if (!isset($resp['code']) || $resp['code'] != 0) {
-                $code = $resp['code'] ?? 'unknown';
-                return $this->error('sopay error ' . $code, $resp);
+                return $this->error(Err::SOPAY_ERROR, $resp);
             }
 
             $withdraw->load(['payment_method', 'user']);

@@ -11,4 +11,5 @@ class Err
     const ERROR = ['500', 'error'];
     const RECORD_ALREADY_EXISTS = ['400', 'record already exists'];
 
+    const SOPAY_ERROR = ['500', 'sopay error'];
 }
