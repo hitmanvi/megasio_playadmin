@@ -4,5 +4,6 @@ namespace App\Enums;
 
 class Err
 {
-    const SOPAY_ERROR = [0, 'sopay error'];
+    
+    const SOPAY_ERROR = [10001, 'sopay error'];
 }
