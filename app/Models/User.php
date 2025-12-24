@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class User extends Model
 {
@@ -123,6 +124,14 @@ class User extends Model
     public function disputedDeposits(): HasMany
     {
         return $this->hasMany(Deposit::class)->where('is_disputed', true);
+    }
+
+    /**
+     * Get the KYC for the user.
+     */
+    public function kyc(): HasOne
+    {
+        return $this->hasOne(Kyc::class);
     }
 }
 
