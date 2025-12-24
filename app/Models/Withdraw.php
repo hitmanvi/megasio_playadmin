@@ -63,7 +63,7 @@ class Withdraw extends Model
     /**
      * Get the payment method that owns the withdraw.
      */
-    public function paymentMethod(): BelongsTo
+    public function payment_method(): BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class);
     }

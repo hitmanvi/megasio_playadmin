@@ -29,7 +29,7 @@ class WithdrawController extends Controller
         ]);
 
         $query = Withdraw::with([
-            'paymentMethod',
+            'payment_method',
             'user' => function ($query) {
                 $query->with(['firstDeposit', 'kyc'])
                     ->withCount(['disputedDeposits']);
@@ -131,9 +131,9 @@ class WithdrawController extends Controller
             'currency' => $withdraw->currency,
             'coin_type' => $withdraw->currency_type,
             'extra_info' => $withdraw->extra_info,
-        ], [], 2, $withdraw->payment_method->key);
+        ], [], 2, $withdraw->payment_method?->key);
 
-        $withdraw->load(['paymentMethod', 'user']);
+        $withdraw->load(['payment_method', 'user']);
 
         return $this->responseItem($withdraw);
     }
@@ -153,7 +153,7 @@ class WithdrawController extends Controller
             'note' => $request->note ?? $withdraw->note,
         ]);
 
-        $withdraw->load(['paymentMethod', 'user']);
+        $withdraw->load(['payment_method', 'user']);
 
         return $this->responseItem($withdraw);
     }
