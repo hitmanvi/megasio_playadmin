@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Withdraw;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use App\Services\SopayService;
 use Carbon\Carbon;
 
@@ -118,25 +119,27 @@ class WithdrawController extends Controller
             'note' => 'nullable|string',
         ]);
 
-        $withdraw->update([
-            'approved' => true,
-            'status' => Withdraw::STATUS_PROCESSING,
-            'note' => $request->note ?? $withdraw->note,
-        ]);
+        return DB::transaction(function () use ($request, $withdraw) {
+            $withdraw->update([
+                'approved' => true,
+                'status' => Withdraw::STATUS_PROCESSING,
+                'note' => $request->note ?? $withdraw->note,
+            ]);
 
-        $sopayService = new SopayService();
-        $sopayService->withdraw([
-            'out_trade_no' => $withdraw->order_no,
-            'amount' => $withdraw->actual_amount,
-            'symbol' => $withdraw->currency,
-            'coin_type' => $withdraw->currency_type,
-            'extra_info' => $withdraw->extra_info,
-            'user_ip' => $withdraw->user_ip,
-        ], [], 2, $withdraw->payment_method?->key);
+            $sopayService = new SopayService();
+            $sopayService->withdraw([
+                'out_trade_no' => $withdraw->order_no,
+                'amount' => $withdraw->actual_amount,
+                'symbol' => $withdraw->currency,
+                'coin_type' => $withdraw->currency_type,
+                'extra_info' => $withdraw->extra_info,
+                'user_ip' => $withdraw->user_ip,
+            ], [], 2, $withdraw->payment_method?->key);
 
-        $withdraw->load(['payment_method', 'user']);
+            $withdraw->load(['payment_method', 'user']);
 
-        return $this->responseItem($withdraw);
+            return $this->responseItem($withdraw);
+        });
     }
 
     /**
@@ -148,15 +151,17 @@ class WithdrawController extends Controller
             'note' => 'nullable|string',
         ]);
 
-        $withdraw->update([
-            'approved' => false,
-            'status' => Withdraw::STATUS_REJECTED,
-            'note' => $request->note ?? $withdraw->note,
-        ]);
+        return DB::transaction(function () use ($request, $withdraw) {
+            $withdraw->update([
+                'approved' => false,
+                'status' => Withdraw::STATUS_REJECTED,
+                'note' => $request->note ?? $withdraw->note,
+            ]);
 
-        $withdraw->load(['payment_method', 'user']);
+            $withdraw->load(['payment_method', 'user']);
 
-        return $this->responseItem($withdraw);
+            return $this->responseItem($withdraw);
+        });
     }
 
     /**
