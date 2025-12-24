@@ -148,7 +148,7 @@ class WithdrawController extends Controller
             return $this->responseItem($withdraw);
         } catch (Exception $e) {
             DB::rollBack();
-            return $this->error([0, "withdraw error"], $e->getMessage());
+            return $this->error(Err::UNKNOWN_ERROR, $e->getMessage());
         }
     }
 
