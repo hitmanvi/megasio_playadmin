@@ -135,7 +135,12 @@ class WithdrawController extends Controller
                 'extra_info' => $withdraw->extra_info,
                 'user_ip' => $withdraw->user_ip,
             ], [], 2, $withdraw->payment_method?->key);
-            
+
+            if (!isset($resp['code']) || $resp['code'] != 0) {
+                $code = $resp['code'] ?? 'unknown';
+                return $this->error('sopay error ' . $code, $resp);
+            }
+
             $withdraw->load(['payment_method', 'user']);
 
             return $this->responseItem($withdraw);
