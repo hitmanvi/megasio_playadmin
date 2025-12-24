@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use App\Services\SopayService;
 use Carbon\Carbon;
 use App\Enums\Err;
+use Exception;
+
 class WithdrawController extends Controller
 {
     /**
@@ -119,13 +121,14 @@ class WithdrawController extends Controller
             'note' => 'nullable|string',
         ]);
 
-        return DB::transaction(function () use ($request, $withdraw) {
+        DB::beginTransaction();
+        try{
             $withdraw->update([
                 'approved' => true,
                 'status' => Withdraw::STATUS_PROCESSING,
                 'note' => $request->note ?? $withdraw->note,
             ]);
-
+    
             $sopayService = new SopayService();
             $resp = $sopayService->withdraw([
                 'out_trade_no' => $withdraw->order_no,
@@ -135,15 +138,18 @@ class WithdrawController extends Controller
                 'extra_info' => $withdraw->extra_info,
                 'user_ip' => $withdraw->user_ip,
             ], [], 2, $withdraw->payment_method?->key);
-
+    
             if (!isset($resp['code']) || $resp['code'] != 0) {
+                DB::rollBack();
                 return $this->error(Err::SOPAY_ERROR, $resp);
             }
-
             $withdraw->load(['payment_method', 'user']);
-
+            DB::commit();
             return $this->responseItem($withdraw);
-        });
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->error([0, "withdraw error"], $e->getMessage());
+        }
     }
 
     /**
