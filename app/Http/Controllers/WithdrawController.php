@@ -128,9 +128,10 @@ class WithdrawController extends Controller
         $sopayService->withdraw([
             'out_trade_no' => $withdraw->order_no,
             'amount' => $withdraw->actual_amount,
-            'currency' => $withdraw->currency,
+            'symbol' => $withdraw->currency,
             'coin_type' => $withdraw->currency_type,
             'extra_info' => $withdraw->extra_info,
+            'user_ip' => $withdraw->user_ip,
         ], [], 2, $withdraw->payment_method?->key);
 
         $withdraw->load(['payment_method', 'user']);
