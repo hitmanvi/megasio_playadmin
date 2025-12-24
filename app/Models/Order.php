@@ -118,5 +118,13 @@ class Order extends Model
             $q->where('name', 'like', "%{$gameName}%");
         });
     }
+
+    /**
+     * Get the user that owns the order.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
 
