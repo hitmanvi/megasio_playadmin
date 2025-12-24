@@ -26,7 +26,7 @@ class OrderController extends Controller
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
 
-        $query = Order::with(['game', 'brand']);
+        $query = Order::with(['game', 'brand', 'user']);
 
         // Apply filters
         if ($request->has('order_id') && $request->order_id) {
