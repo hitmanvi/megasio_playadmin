@@ -127,7 +127,7 @@ class WithdrawController extends Controller
             ]);
 
             $sopayService = new SopayService();
-            $sopayService->withdraw([
+            $resp = $sopayService->withdraw([
                 'out_trade_no' => $withdraw->order_no,
                 'amount' => $withdraw->actual_amount,
                 'symbol' => $withdraw->currency,
@@ -135,7 +135,7 @@ class WithdrawController extends Controller
                 'extra_info' => $withdraw->extra_info,
                 'user_ip' => $withdraw->user_ip,
             ], [], 2, $withdraw->payment_method?->key);
-
+            
             $withdraw->load(['payment_method', 'user']);
 
             return $this->responseItem($withdraw);

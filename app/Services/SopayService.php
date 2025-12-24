@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SopayService
 {
@@ -79,7 +80,7 @@ class SopayService
         $url    = $this->endpoint . '/api/orders/withdraw';
         $resp   = Http::post($url, $params);
         $res    = $resp->json();
-
+        Log::error('sopay withdraw: ', $res);
         return $res;
     }
 
