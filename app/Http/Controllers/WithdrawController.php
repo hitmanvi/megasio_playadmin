@@ -27,6 +27,8 @@ class WithdrawController extends Controller
             'status' => 'nullable|array',
             'status.*' => 'string',
             'approved' => 'nullable|boolean',
+            'min_amount' => 'nullable|numeric|min:0',
+            'max_amount' => 'nullable|numeric|min:0',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
@@ -69,6 +71,14 @@ class WithdrawController extends Controller
 
         if ($request->has('approved')) {
             $query->byApproved($request->boolean('approved'));
+        }
+
+        if ($request->has('min_amount') && $request->min_amount !== null) {
+            $query->where('amount', '>=', $request->min_amount);
+        }
+
+        if ($request->has('max_amount') && $request->max_amount !== null) {
+            $query->where('amount', '<=', $request->max_amount);
         }
 
         // Order by created_at desc

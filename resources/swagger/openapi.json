@@ -5167,6 +5167,26 @@
             }
           },
           {
+            "name": "min_amount",
+            "in": "query",
+            "description": "Filter withdraws with amount >= this value",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "max_amount",
+            "in": "query",
+            "description": "Filter withdraws with amount <= this value",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number",
