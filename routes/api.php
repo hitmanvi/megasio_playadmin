@@ -102,6 +102,7 @@ Route::middleware('auth:sanctum')->group(function () {
            
            // Withdraws routes
            Route::get('withdraws', [WithdrawController::class, 'index']);
+           Route::get('withdraws/counts', [WithdrawController::class, 'counts']);
            Route::post('withdraws/{withdraw}/pass', [WithdrawController::class, 'pass']);
            Route::post('withdraws/{withdraw}/reject', [WithdrawController::class, 'reject']);
            

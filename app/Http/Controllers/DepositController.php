@@ -97,4 +97,5 @@ class DepositController extends Controller
 
         return $this->responseItem($deposit, 'Deposit resolved successfully');
     }
+    
 }

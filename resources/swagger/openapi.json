@@ -5272,6 +5272,63 @@
         }
       }
     },
+    "/withdraws/counts": {
+      "get": {
+        "tags": ["Withdraws"],
+        "summary": "Get withdraw counts by status",
+        "description": "Get counts of withdraws grouped by status: pending, processing, and other",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Withdraw counts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "pending": {
+                          "type": "integer",
+                          "description": "Count of pending withdraws"
+                        },
+                        "processing": {
+                          "type": "integer",
+                          "description": "Count of processing withdraws"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/withdraws/{withdraw}/pass": {
       "post": {
         "tags": ["Withdraws"],
