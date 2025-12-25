@@ -4243,6 +4243,169 @@
         }
       }
     },
+    "/order-archives": {
+      "get": {
+        "tags": ["Order Archives"],
+        "summary": "Get order archives list",
+        "description": "Get paginated list of archived orders with optional filtering",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "query",
+            "description": "Filter by order ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "out_id",
+            "in": "query",
+            "description": "Filter by external order ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "game_name",
+            "in": "query",
+            "description": "Filter by game name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Filter by start date (YYYY-MM-DD)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Filter by end date (YYYY-MM-DD)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "min_amount",
+            "in": "query",
+            "description": "Filter by minimum amount",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "max_amount",
+            "in": "query",
+            "description": "Filter by maximum amount",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "description": "Filter by currency",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order archives list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/OrderArchive"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "per_page": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/payment-methods": {
       "get": {
         "tags": ["Payment Methods"],
@@ -10255,6 +10418,118 @@
           }
         }
       },
+      "OrderArchive": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Order archive ID"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "User ID"
+          },
+          "game_id": {
+            "type": "integer",
+            "description": "Game ID"
+          },
+          "brand_id": {
+            "type": "integer",
+            "description": "Brand ID"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Order amount",
+            "example": "100.00"
+          },
+          "payout": {
+            "type": "string",
+            "description": "Payout amount",
+            "nullable": true,
+            "example": "90.00"
+          },
+          "payment_currency": {
+            "type": "string",
+            "description": "Payment currency",
+            "nullable": true
+          },
+          "payment_amount": {
+            "type": "string",
+            "description": "Payment amount",
+            "nullable": true,
+            "example": "100.00"
+          },
+          "payment_payout": {
+            "type": "string",
+            "description": "Payment payout amount",
+            "nullable": true,
+            "example": "90.00"
+          },
+          "status": {
+            "type": "string",
+            "description": "Order status"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency type"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes",
+            "nullable": true
+          },
+          "finished_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Finished time",
+            "nullable": true
+          },
+          "order_id": {
+            "type": "string",
+            "description": "System order ID"
+          },
+          "out_id": {
+            "type": "string",
+            "description": "External order ID",
+            "nullable": true
+          },
+          "version": {
+            "type": "integer",
+            "description": "Version number"
+          },
+          "archived_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Archived time",
+            "nullable": true
+          },
+          "game": {
+            "type": "object",
+            "description": "Game information",
+            "nullable": true
+          },
+          "brand": {
+            "type": "object",
+            "description": "Brand information",
+            "nullable": true
+          },
+          "user": {
+            "type": "object",
+            "description": "User information",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        }
+      },
       "LoginRequest": {
         "type": "object",
         "required": ["name", "password"],
@@ -11286,6 +11561,10 @@
     {
       "name": "Orders",
       "description": "Order management endpoints"
+    },
+    {
+      "name": "Order Archives",
+      "description": "Order archive management endpoints"
     },
     {
       "name": "Payment Methods",

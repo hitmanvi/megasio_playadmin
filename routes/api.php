@@ -7,6 +7,7 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\GameGroupController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderArchiveController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\GameCategoryController;
@@ -88,6 +89,7 @@ Route::middleware('auth:sanctum')->group(function () {
            
            // Orders routes
            Route::get('orders', [OrderController::class, 'index']);
+           Route::get('order-archives', [OrderArchiveController::class, 'index']);
            
            // Payment methods routes
            Route::get('payment-methods', [PaymentMethodController::class, 'index']);
