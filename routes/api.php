@@ -24,6 +24,7 @@ use App\Http\Controllers\RedeemController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\BlacklistController;
 use App\Http\Controllers\UserTagLogController;
+use App\Http\Controllers\VipLevelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -171,4 +172,11 @@ Route::middleware('auth:sanctum')->group(function () {
            
            // User tag logs routes
            Route::get('user-tag-logs', [UserTagLogController::class, 'index']);
+           
+           // VIP levels routes
+           Route::get('vip-levels', [VipLevelController::class, 'index']);
+           Route::post('vip-levels', [VipLevelController::class, 'store']);
+           Route::get('vip-levels/{vipLevel}', [VipLevelController::class, 'show']);
+           Route::put('vip-levels/{vipLevel}', [VipLevelController::class, 'update']);
+           Route::delete('vip-levels/{vipLevel}', [VipLevelController::class, 'destroy']);
        });

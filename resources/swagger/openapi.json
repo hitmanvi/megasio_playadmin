@@ -9701,6 +9701,483 @@
           }
         }
       }
+    },
+    "/vip-levels": {
+      "get": {
+        "tags": ["VIP Levels"],
+        "summary": "Get VIP levels list",
+        "description": "Get paginated list of VIP levels",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "enabled",
+            "in": "query",
+            "description": "Filter by enabled status",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "VIP levels retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/VipLevel"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "per_page": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["VIP Levels"],
+        "summary": "Create VIP level",
+        "description": "Create a new VIP level",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["level", "name"],
+                "properties": {
+                  "level": {
+                    "type": "string",
+                    "description": "Level identifier",
+                    "maxLength": 255
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Level name",
+                    "maxLength": 255
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Level icon",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "required_exp": {
+                    "type": "integer",
+                    "description": "Required experience points",
+                    "minimum": 0,
+                    "default": 0
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Level description",
+                    "nullable": true
+                  },
+                  "benefits": {
+                    "type": "array",
+                    "description": "Level benefits",
+                    "nullable": true
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0,
+                    "default": 0
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the level is enabled",
+                    "default": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "VIP level created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/VipLevel"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vip-levels/{vipLevel}": {
+      "get": {
+        "tags": ["VIP Levels"],
+        "summary": "Get VIP level details",
+        "description": "Get details of a specific VIP level",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vipLevel",
+            "in": "path",
+            "description": "VIP level ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "VIP level retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/VipLevel"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "VIP level not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["VIP Levels"],
+        "summary": "Update VIP level",
+        "description": "Update an existing VIP level",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vipLevel",
+            "in": "path",
+            "description": "VIP level ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "level": {
+                    "type": "string",
+                    "description": "Level identifier",
+                    "maxLength": 255
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Level name",
+                    "maxLength": 255
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Level icon",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "required_exp": {
+                    "type": "integer",
+                    "description": "Required experience points",
+                    "minimum": 0
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Level description",
+                    "nullable": true
+                  },
+                  "benefits": {
+                    "type": "array",
+                    "description": "Level benefits",
+                    "nullable": true
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the level is enabled"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "VIP level updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/VipLevel"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "VIP level not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["VIP Levels"],
+        "summary": "Delete VIP level",
+        "description": "Delete a VIP level",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "vipLevel",
+            "in": "path",
+            "description": "VIP level ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "VIP level deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deleted": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "VIP level not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -11325,6 +11802,60 @@
           }
         }
       },
+      "VipLevel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "VIP level ID"
+          },
+          "level": {
+            "type": "string",
+            "description": "Level identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Level name"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Level icon",
+            "nullable": true
+          },
+          "required_exp": {
+            "type": "integer",
+            "description": "Required experience points"
+          },
+          "description": {
+            "type": "string",
+            "description": "Level description",
+            "nullable": true
+          },
+          "benefits": {
+            "type": "array",
+            "description": "Level benefits",
+            "nullable": true
+          },
+          "sort_id": {
+            "type": "integer",
+            "description": "Sort order"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the level is enabled"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        }
+      },
       "Blacklist": {
         "type": "object",
         "properties": {
@@ -11621,6 +12152,10 @@
     {
       "name": "User Tag Logs",
       "description": "User tag log endpoints"
+    },
+    {
+      "name": "VIP Levels",
+      "description": "VIP level management endpoints"
     }
   ]
 }
