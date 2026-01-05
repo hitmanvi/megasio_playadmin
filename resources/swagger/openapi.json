@@ -2657,25 +2657,25 @@
                     "description": "Banner type (e.g., home, promotion)",
                     "maxLength": 255
                   },
-                  "web_img_url": {
+                  "web_img": {
                     "type": "string",
-                    "description": "Web image URL",
+                    "description": "Web image",
                     "maxLength": 255,
                     "nullable": true
                   },
-                  "app_img_url": {
+                  "app_img": {
                     "type": "string",
-                    "description": "App image URL",
+                    "description": "App image",
                     "maxLength": 255,
                     "nullable": true
                   },
-                  "web_rule_url": {
+                  "web_href": {
                     "type": "string",
                     "description": "Web redirect URL",
                     "maxLength": 255,
                     "nullable": true
                   },
-                  "app_rule_url": {
+                  "app_href": {
                     "type": "string",
                     "description": "App redirect URL",
                     "maxLength": 255,
@@ -2858,25 +2858,25 @@
                     "description": "Banner type (e.g., home, promotion)",
                     "maxLength": 255
                   },
-                  "web_img_url": {
+                  "web_img": {
                     "type": "string",
-                    "description": "Web image URL",
+                    "description": "Web image",
                     "maxLength": 255,
                     "nullable": true
                   },
-                  "app_img_url": {
+                  "app_img": {
                     "type": "string",
-                    "description": "App image URL",
+                    "description": "App image",
                     "maxLength": 255,
                     "nullable": true
                   },
-                  "web_rule_url": {
+                  "web_href": {
                     "type": "string",
                     "description": "Web redirect URL",
                     "maxLength": 255,
                     "nullable": true
                   },
-                  "app_rule_url": {
+                  "app_href": {
                     "type": "string",
                     "description": "App redirect URL",
                     "maxLength": 255,
@@ -10175,22 +10175,22 @@
             "type": "string",
             "description": "Banner type (e.g., home, promotion)"
           },
-          "web_img_url": {
+          "web_img": {
             "type": "string",
-            "description": "Web image URL",
+            "description": "Web image",
             "nullable": true
           },
-          "app_img_url": {
+          "app_img": {
             "type": "string",
-            "description": "App image URL",
+            "description": "App image",
             "nullable": true
           },
-          "web_rule_url": {
+          "web_href": {
             "type": "string",
             "description": "Web redirect URL",
             "nullable": true
           },
-          "app_rule_url": {
+          "app_href": {
             "type": "string",
             "description": "App redirect URL",
             "nullable": true

@@ -57,10 +57,10 @@ class BannerController extends Controller
     {
         $request->validate([
             'type' => 'required|string|max:255',
-            'web_img_url' => 'nullable|string|max:255',
-            'app_img_url' => 'nullable|string|max:255',
-            'web_rule_url' => 'nullable|string|max:255',
-            'app_rule_url' => 'nullable|string|max:255',
+            'web_img' => 'nullable|string|max:255',
+            'app_img' => 'nullable|string|max:255',
+            'web_href' => 'nullable|string|max:255',
+            'app_href' => 'nullable|string|max:255',
             'enabled' => 'nullable|boolean',
             'sort_id' => 'nullable|integer|min:0',
             'started_at' => 'nullable|date',
@@ -80,10 +80,10 @@ class BannerController extends Controller
     {
         $request->validate([
             'type' => 'nullable|string|max:255',
-            'web_img_url' => 'nullable|string|max:255',
-            'app_img_url' => 'nullable|string|max:255',
-            'web_rule_url' => 'nullable|string|max:255',
-            'app_rule_url' => 'nullable|string|max:255',
+            'web_img' => 'nullable|string|max:255',
+            'app_img' => 'nullable|string|max:255',
+            'web_href' => 'nullable|string|max:255',
+            'app_href' => 'nullable|string|max:255',
             'enabled' => 'nullable|boolean',
             'sort_id' => 'nullable|integer|min:0',
             'started_at' => 'nullable|date',
@@ -94,10 +94,10 @@ class BannerController extends Controller
         // Update fields if provided
         $updateData = $request->only([
             'type',
-            'web_img_url',
-            'app_img_url',
-            'web_rule_url',
-            'app_rule_url',
+            'web_img',
+            'app_img',
+            'web_href',
+            'app_href',
             'enabled',
             'sort_id',
             'started_at',
