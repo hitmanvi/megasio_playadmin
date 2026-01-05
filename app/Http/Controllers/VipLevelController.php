@@ -68,7 +68,7 @@ class VipLevelController extends Controller
     public function update(Request $request, VipLevel $vipLevel): JsonResponse
     {
         $validated = $request->validate([
-            'level' => 'nullable|string|max:255|unique:megasio_play_api.vip_levels,level,' . $vipLevel->id,
+            'level' => 'nullable|string|max:255,' . $vipLevel->id,
             'name' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:255',
             'required_exp' => 'nullable|integer|min:0',
