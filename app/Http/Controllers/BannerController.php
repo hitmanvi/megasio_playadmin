@@ -105,11 +105,6 @@ class BannerController extends Controller
             'description',
         ]);
 
-        // Remove null values
-        $updateData = array_filter($updateData, function ($value) {
-            return $value !== null;
-        });
-
         $banner->update($updateData);
 
         return $this->responseItem($banner);
