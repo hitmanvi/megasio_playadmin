@@ -17,7 +17,6 @@ class ArticleGroupController extends Controller
             'name' => 'nullable|string',
             'parent_id' => 'nullable|integer',
             'enabled' => 'nullable|boolean',
-            'root_only' => 'nullable|boolean',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
