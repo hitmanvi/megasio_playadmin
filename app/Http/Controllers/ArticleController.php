@@ -67,7 +67,7 @@ class ArticleController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',
-            'group_id' => 'nullable|integer|exists:megasio_play_api.article_groups,id',
+            'group_id' => 'nullable|integer',
             'enabled' => 'nullable|boolean',
             'sort_id' => 'nullable|integer|min:0',
         ]);
@@ -85,7 +85,7 @@ class ArticleController extends Controller
         $validated = $request->validate([
             'title' => 'nullable|string|max:255',
             'content' => 'nullable|string',
-            'group_id' => 'nullable|integer|exists:megasio_play_api.article_groups,id',
+            'group_id' => 'nullable|integer',
             'enabled' => 'nullable|boolean',
             'sort_id' => 'nullable|integer|min:0',
         ]);
