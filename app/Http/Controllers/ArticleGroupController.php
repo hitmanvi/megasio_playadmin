@@ -69,7 +69,7 @@ class ArticleGroupController extends Controller
 
         $options = $query->get(['id', 'name', 'parent_id', 'icon']);
 
-        return $this->responseItem($options);
+        return $this->responseList($options);
     }
 
     /**
