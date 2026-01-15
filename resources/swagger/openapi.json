@@ -10408,7 +10408,7 @@
       "get": {
         "tags": ["Article Groups"],
         "summary": "Get article groups options",
-        "description": "Get all article groups for dropdown selection",
+        "description": "Get paginated article groups for dropdown selection",
         "security": [
           {
             "sanctum": []
@@ -10422,6 +10422,29 @@
             "required": false,
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
             }
           }
         ],
@@ -10442,24 +10465,43 @@
                       "example": ""
                     },
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "integer"
-                          },
-                          "name": {
-                            "type": "string"
-                          },
-                          "parent_id": {
-                            "type": "integer",
-                            "nullable": true
-                          },
-                          "icon": {
-                            "type": "string",
-                            "nullable": true
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "parent_id": {
+                                "type": "integer",
+                                "nullable": true
+                              },
+                              "icon": {
+                                "type": "string",
+                                "nullable": true
+                              }
+                            }
                           }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer"
+                        },
+                        "last_page": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
                         }
                       }
                     }

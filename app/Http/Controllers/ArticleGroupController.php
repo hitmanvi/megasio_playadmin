@@ -59,6 +59,12 @@ class ArticleGroupController extends Controller
      */
     public function options(Request $request): JsonResponse
     {
+        $request->validate([
+            'enabled' => 'nullable|boolean',
+            'page' => 'nullable|integer|min:1',
+            'per_page' => 'nullable|integer|min:1|max:100',
+        ]);
+
         $query = ArticleGroup::query();
 
         if ($request->has('enabled')) {
@@ -67,9 +73,12 @@ class ArticleGroupController extends Controller
 
         $query->ordered();
 
-        $options = $query->get(['id', 'name', 'parent_id', 'icon']);
+        $query->select(['id', 'name', 'parent_id', 'icon']);
 
-        return $this->responseList($options);
+        $perPage = $request->get('per_page', 15);
+        $options = $query->paginate($perPage);
+
+        return $this->responseListWithPaginator($options, null);
     }
 
     /**
