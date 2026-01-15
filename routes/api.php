@@ -25,6 +25,8 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\BlacklistController;
 use App\Http\Controllers\UserTagLogController;
 use App\Http\Controllers\VipLevelController;
+use App\Http\Controllers\ArticleGroupController;
+use App\Http\Controllers\ArticleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -179,4 +181,19 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('vip-levels/{vipLevel}', [VipLevelController::class, 'show']);
            Route::put('vip-levels/{vipLevel}', [VipLevelController::class, 'update']);
            Route::delete('vip-levels/{vipLevel}', [VipLevelController::class, 'destroy']);
+           
+           // Article groups routes
+           Route::get('article-groups', [ArticleGroupController::class, 'index']);
+           Route::get('article-groups/options', [ArticleGroupController::class, 'options']);
+           Route::post('article-groups', [ArticleGroupController::class, 'store']);
+           Route::get('article-groups/{articleGroup}', [ArticleGroupController::class, 'show']);
+           Route::put('article-groups/{articleGroup}', [ArticleGroupController::class, 'update']);
+           Route::delete('article-groups/{articleGroup}', [ArticleGroupController::class, 'destroy']);
+           
+           // Articles routes
+           Route::get('articles', [ArticleController::class, 'index']);
+           Route::post('articles', [ArticleController::class, 'store']);
+           Route::get('articles/{article}', [ArticleController::class, 'show']);
+           Route::put('articles/{article}', [ArticleController::class, 'update']);
+           Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
        });

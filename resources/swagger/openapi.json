@@ -10178,6 +10178,1028 @@
           }
         }
       }
+    },
+    "/article-groups": {
+      "get": {
+        "tags": ["Article Groups"],
+        "summary": "Get article groups list",
+        "description": "Get paginated list of article groups with filtering options",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filter by group name (partial match)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "parent_id",
+            "in": "query",
+            "description": "Filter by parent group ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "enabled",
+            "in": "query",
+            "description": "Filter by enabled status",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "root_only",
+            "in": "query",
+            "description": "Only return root groups (no parent)",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article groups retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/ArticleGroup"
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer"
+                        },
+                        "last_page": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Article Groups"],
+        "summary": "Create article group",
+        "description": "Create a new article group",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Group name",
+                    "maxLength": 255
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Icon path or class name",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "parent_id": {
+                    "type": "integer",
+                    "description": "Parent group ID",
+                    "nullable": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the group is enabled",
+                    "default": true
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0,
+                    "default": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Article group created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/ArticleGroup"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/article-groups/options": {
+      "get": {
+        "tags": ["Article Groups"],
+        "summary": "Get article groups options",
+        "description": "Get all article groups for dropdown selection",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "enabled",
+            "in": "query",
+            "description": "Filter by enabled status",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article groups options retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "parent_id": {
+                            "type": "integer",
+                            "nullable": true
+                          },
+                          "icon": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/article-groups/{articleGroup}": {
+      "get": {
+        "tags": ["Article Groups"],
+        "summary": "Get article group details",
+        "description": "Get details of a specific article group",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "articleGroup",
+            "in": "path",
+            "description": "Article group ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article group retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/ArticleGroup"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Article Groups"],
+        "summary": "Update article group",
+        "description": "Update an existing article group",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "articleGroup",
+            "in": "path",
+            "description": "Article group ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Group name",
+                    "maxLength": 255
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Icon path or class name",
+                    "maxLength": 255,
+                    "nullable": true
+                  },
+                  "parent_id": {
+                    "type": "integer",
+                    "description": "Parent group ID",
+                    "nullable": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the group is enabled"
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Article group updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/ArticleGroup"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Article Groups"],
+        "summary": "Delete article group",
+        "description": "Delete an article group. Cannot delete if group has children or articles.",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "articleGroup",
+            "in": "path",
+            "description": "Article group ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article group deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deleted": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article group not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/articles": {
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Get articles list",
+        "description": "Get paginated list of articles with filtering options",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "description": "Filter by article title (partial match)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group_id",
+            "in": "query",
+            "description": "Filter by group ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "enabled",
+            "in": "query",
+            "description": "Filter by enabled status",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Articles retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Article"
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer"
+                        },
+                        "last_page": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Articles"],
+        "summary": "Create article",
+        "description": "Create a new article",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title"],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Article title",
+                    "maxLength": 255
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Article content",
+                    "nullable": true
+                  },
+                  "group_id": {
+                    "type": "integer",
+                    "description": "Group ID",
+                    "nullable": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the article is enabled",
+                    "default": true
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0,
+                    "default": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Article created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Article"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/articles/{article}": {
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Get article details",
+        "description": "Get details of a specific article",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "article",
+            "in": "path",
+            "description": "Article ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Article"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Articles"],
+        "summary": "Update article",
+        "description": "Update an existing article",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "article",
+            "in": "path",
+            "description": "Article ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Article title",
+                    "maxLength": 255
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Article content",
+                    "nullable": true
+                  },
+                  "group_id": {
+                    "type": "integer",
+                    "description": "Group ID",
+                    "nullable": true
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the article is enabled"
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "description": "Sort order",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Article updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Article"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Articles"],
+        "summary": "Delete article",
+        "description": "Delete an article",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "article",
+            "in": "path",
+            "description": "Article ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deleted": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -11856,6 +12878,112 @@
           }
         }
       },
+      "ArticleGroup": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Article group ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Group name"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Icon path or class name",
+            "nullable": true
+          },
+          "parent_id": {
+            "type": "integer",
+            "description": "Parent group ID",
+            "nullable": true
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the group is enabled"
+          },
+          "sort_id": {
+            "type": "integer",
+            "description": "Sort order"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "parent": {
+            "$ref": "#/components/schemas/ArticleGroup",
+            "description": "Parent group",
+            "nullable": true
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleGroup"
+            },
+            "description": "Child groups"
+          },
+          "articles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Article"
+            },
+            "description": "Articles in this group"
+          }
+        }
+      },
+      "Article": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Article ID"
+          },
+          "title": {
+            "type": "string",
+            "description": "Article title"
+          },
+          "content": {
+            "type": "string",
+            "description": "Article content",
+            "nullable": true
+          },
+          "group_id": {
+            "type": "integer",
+            "description": "Group ID",
+            "nullable": true
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the article is enabled"
+          },
+          "sort_id": {
+            "type": "integer",
+            "description": "Sort order"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "group": {
+            "$ref": "#/components/schemas/ArticleGroup",
+            "description": "Associated group",
+            "nullable": true
+          }
+        }
+      },
       "Blacklist": {
         "type": "object",
         "properties": {
@@ -12156,6 +13284,14 @@
     {
       "name": "VIP Levels",
       "description": "VIP level management endpoints"
+    },
+    {
+      "name": "Article Groups",
+      "description": "Article group management endpoints"
+    },
+    {
+      "name": "Articles",
+      "description": "Article management endpoints"
     }
   ]
 }
