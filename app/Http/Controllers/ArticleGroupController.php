@@ -33,10 +33,6 @@ class ArticleGroupController extends Controller
             $query->byParent($request->integer('parent_id'));
         }
 
-        if ($request->boolean('root_only')) {
-            $query->root();
-        }
-
         if ($request->has('enabled')) {
             $query->byEnabled($request->boolean('enabled'));
         }
