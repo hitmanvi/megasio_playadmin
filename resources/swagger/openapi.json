@@ -10191,6 +10191,18 @@
         ],
         "parameters": [
           {
+            "name": "ids",
+            "in": "query",
+            "description": "Filter by group IDs",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          {
             "name": "name",
             "in": "query",
             "description": "Filter by group name (partial match)",

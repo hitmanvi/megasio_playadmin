@@ -14,6 +14,8 @@ class ArticleGroupController extends Controller
     public function index(Request $request): JsonResponse
     {
         $request->validate([
+            'ids' => 'nullable|array',
+            'ids.*' => 'integer',
             'name' => 'nullable|string',
             'parent_id' => 'nullable|integer',
             'enabled' => 'nullable|boolean',
@@ -24,6 +26,10 @@ class ArticleGroupController extends Controller
         $query = ArticleGroup::query();
 
         // Apply filters
+        if ($request->has('ids') && is_array($request->ids) && count($request->ids) > 0) {
+            $query->whereIn('id', $request->ids);
+        }
+
         if ($request->has('name') && $request->name) {
             $query->byName($request->name);
         }
