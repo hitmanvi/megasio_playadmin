@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kyc;
+use App\Models\Invitation;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -67,6 +68,8 @@ class KycController extends Controller
      */
     public function approve(Request $request, Kyc $kyc): JsonResponse
     {
+        $oldStatus = $kyc->status;
+        
         // Allow "approve" operation not only from pending, but also from rejected states at each level
         $newStatus = match ($kyc->status) {
             Kyc::STATUS_PENDING, Kyc::STATUS_REJECTED => Kyc::STATUS_APPROVED,
@@ -83,6 +86,13 @@ class KycController extends Controller
             'status' => $newStatus,
             'reject_reason' => null,
         ]);
+
+        // 当初审通过时，更新被邀请人的 invitation 状态为 active
+        if ($newStatus === Kyc::STATUS_APPROVED && in_array($oldStatus, [Kyc::STATUS_PENDING, Kyc::STATUS_REJECTED])) {
+            Invitation::where('invitee_id', $kyc->user_id)
+                ->where('status', Invitation::STATUS_INACTIVE)
+                ->update(['status' => Invitation::STATUS_ACTIVE]);
+        }
 
         $kyc->load(['user']);
 
