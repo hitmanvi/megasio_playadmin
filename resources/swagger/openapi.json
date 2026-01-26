@@ -10802,11 +10802,23 @@
           {
             "name": "group_id",
             "in": "query",
-            "description": "Filter by group ID",
+            "description": "Filter by group ID(s). Can be a single integer or an array of integers",
             "required": false,
             "schema": {
-              "type": "integer"
-            }
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              ]
+            },
+            "style": "form",
+            "explode": true
           },
           {
             "name": "enabled",

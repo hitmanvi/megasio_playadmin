@@ -15,7 +15,8 @@ class ArticleController extends Controller
     {
         $request->validate([
             'title' => 'nullable|string',
-            'group_id' => 'nullable|integer',
+            'group_id' => 'nullable',
+            'group_id.*' => 'integer',
             'enabled' => 'nullable|boolean',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
@@ -29,7 +30,13 @@ class ArticleController extends Controller
         }
 
         if ($request->has('group_id')) {
-            $query->byGroup($request->integer('group_id'));
+            $groupIds = $request->input('group_id');
+            // Support both array and single value
+            if (is_array($groupIds) && count($groupIds) > 0) {
+                $query->whereIn('group_id', $groupIds);
+            } elseif (is_numeric($groupIds)) {
+                $query->byGroup((int)$groupIds);
+            }
         }
 
         if ($request->has('enabled')) {
