@@ -15,12 +15,23 @@ class PaymentMethodController extends Controller
     public function index(Request $request): JsonResponse
     {
         $request->validate([
+            'ids' => 'nullable|array',
+            'ids.*' => 'integer',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
 
+        $query = PaymentMethod::query();
+
+        // Apply filters
+        if ($request->has('ids') && is_array($request->ids) && count($request->ids) > 0) {
+            $query->whereIn('id', $request->ids);
+        }
+
+        $query->ordered();
+
         $perPage = $request->get('per_page', 15);
-        $paymentMethods = PaymentMethod::ordered()->paginate($perPage);
+        $paymentMethods = $query->paginate($perPage);
 
         return $this->responseListWithPaginator($paymentMethods);
     }
