@@ -12,6 +12,11 @@ class Setting extends Model
         'type',
         'group',
         'description',
+        'sort_id',
+    ];
+
+    protected $casts = [
+        'sort_id' => 'integer',
     ];
 
     /**

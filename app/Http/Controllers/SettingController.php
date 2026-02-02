@@ -39,8 +39,8 @@ class SettingController extends Controller
             $query->where('type', $request->type);
         }
 
-        // Order by group and key
-        $query->orderBy('group')->orderBy('key');
+        // Order by group, sort_id, and key
+        $query->orderBy('group')->orderBy('sort_id')->orderBy('key');
 
         // Pagination
         $perPage = $request->get('per_page', 15);
@@ -60,6 +60,7 @@ class SettingController extends Controller
             'type' => ['nullable', 'string', Rule::in(['string', 'integer', 'boolean', 'json', 'array'])],
             'group' => 'nullable|string|max:50',
             'description' => 'nullable|string|max:255',
+            'sort_id' => 'nullable|integer|min:0',
         ]);
 
         $setting = new Setting();
@@ -68,6 +69,7 @@ class SettingController extends Controller
         $setting->type = $validated['type'] ?? 'string';
         $setting->group = $validated['group'] ?? 'general';
         $setting->description = $validated['description'] ?? null;
+        $setting->sort_id = $validated['sort_id'] ?? 0;
         $setting->save();
 
         return $this->responseItem($setting);
@@ -91,6 +93,7 @@ class SettingController extends Controller
             'type' => ['nullable', 'string', Rule::in(['string', 'integer', 'boolean', 'json', 'array'])],
             'group' => 'nullable|string|max:50',
             'description' => 'nullable|string|max:255',
+            'sort_id' => 'nullable|integer|min:0',
         ]);
 
         if (array_key_exists('value', $validated)) {
@@ -107,6 +110,10 @@ class SettingController extends Controller
 
         if (array_key_exists('description', $validated)) {
             $setting->description = $validated['description'];
+        }
+
+        if (array_key_exists('sort_id', $validated)) {
+            $setting->sort_id = $validated['sort_id'];
         }
 
         $setting->save();

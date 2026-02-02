@@ -7061,6 +7061,12 @@
                     "maxLength": 255,
                     "description": "Setting description",
                     "nullable": true
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 0,
+                    "description": "Sort order"
                   }
                 }
               }
@@ -7322,6 +7328,11 @@
                     "maxLength": 255,
                     "description": "Setting description",
                     "nullable": true
+                  },
+                  "sort_id": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Sort order"
                   }
                 }
               }
@@ -12652,6 +12663,10 @@
             "type": "string",
             "description": "Setting description",
             "nullable": true
+          },
+          "sort_id": {
+            "type": "integer",
+            "description": "Sort order"
           },
           "created_at": {
             "type": "string",
