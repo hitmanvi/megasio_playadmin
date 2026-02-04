@@ -25,6 +25,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\BlacklistController;
 use App\Http\Controllers\UserTagLogController;
 use App\Http\Controllers\VipLevelController;
+use App\Http\Controllers\VipLevelGroupController;
 use App\Http\Controllers\ArticleGroupController;
 use App\Http\Controllers\ArticleController;
 use Illuminate\Http\Request;
@@ -174,6 +175,13 @@ Route::middleware('auth:sanctum')->group(function () {
            
            // User tag logs routes
            Route::get('user-tag-logs', [UserTagLogController::class, 'index']);
+           
+           // VIP level groups routes
+           Route::get('vip-level-groups', [VipLevelGroupController::class, 'index']);
+           Route::post('vip-level-groups', [VipLevelGroupController::class, 'store']);
+           Route::get('vip-level-groups/{vipLevelGroup}', [VipLevelGroupController::class, 'show']);
+           Route::put('vip-level-groups/{vipLevelGroup}', [VipLevelGroupController::class, 'update']);
+           Route::delete('vip-level-groups/{vipLevelGroup}', [VipLevelGroupController::class, 'destroy']);
            
            // VIP levels routes
            Route::get('vip-levels', [VipLevelController::class, 'index']);

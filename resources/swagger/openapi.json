@@ -9725,6 +9725,15 @@
         ],
         "parameters": [
           {
+            "name": "group_id",
+            "in": "query",
+            "description": "Filter by group ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
             "name": "enabled",
             "in": "query",
             "description": "Filter by enabled status",
@@ -9825,23 +9834,17 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["level", "name"],
+                "required": ["level"],
                 "properties": {
+                  "group_id": {
+                    "type": "integer",
+                    "description": "VIP level group ID",
+                    "nullable": true
+                  },
                   "level": {
                     "type": "string",
                     "description": "Level identifier",
                     "maxLength": 255
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "Level name",
-                    "maxLength": 255
-                  },
-                  "icon": {
-                    "type": "string",
-                    "description": "Level icon",
-                    "maxLength": 255,
-                    "nullable": true
                   },
                   "required_exp": {
                     "type": "integer",
@@ -10016,21 +10019,15 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "group_id": {
+                    "type": "integer",
+                    "description": "VIP level group ID",
+                    "nullable": true
+                  },
                   "level": {
                     "type": "string",
                     "description": "Level identifier",
                     "maxLength": 255
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "Level name",
-                    "maxLength": 255
-                  },
-                  "icon": {
-                    "type": "string",
-                    "description": "Level icon",
-                    "maxLength": 255,
-                    "nullable": true
                   },
                   "required_exp": {
                     "type": "integer",
@@ -12903,18 +12900,14 @@
             "type": "integer",
             "description": "VIP level ID"
           },
+          "group_id": {
+            "type": "integer",
+            "description": "VIP level group ID",
+            "nullable": true
+          },
           "level": {
             "type": "string",
             "description": "Level identifier"
-          },
-          "name": {
-            "type": "string",
-            "description": "Level name"
-          },
-          "icon": {
-            "type": "string",
-            "description": "Level icon",
-            "nullable": true
           },
           "required_exp": {
             "type": "integer",
@@ -12947,6 +12940,59 @@
             "type": "string",
             "format": "date-time",
             "description": "Last update timestamp"
+          },
+          "group": {
+            "$ref": "#/components/schemas/VipLevelGroup",
+            "description": "Associated group",
+            "nullable": true
+          }
+        }
+      },
+      "VipLevelGroup": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "VIP level group ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Group name"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Group icon",
+            "nullable": true
+          },
+          "card_img": {
+            "type": "string",
+            "description": "Group card image",
+            "nullable": true
+          },
+          "sort_id": {
+            "type": "integer",
+            "description": "Sort order"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the group is enabled"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "vipLevels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VipLevel"
+            },
+            "description": "VIP levels in this group"
           }
         }
       },
@@ -13352,6 +13398,14 @@
     {
       "name": "User Tag Logs",
       "description": "User tag log endpoints"
+    },
+    {
+      "name": "VIP Level Groups",
+      "description": "VIP level group management endpoints"
+    },
+    {
+      "name": "VIP Level Groups",
+      "description": "VIP level group management endpoints"
     },
     {
       "name": "VIP Levels",

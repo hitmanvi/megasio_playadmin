@@ -14,6 +14,7 @@ class VipLevelController extends Controller
     public function index(Request $request): JsonResponse
     {
         $request->validate([
+            'group_id' => 'nullable|integer',
             'enabled' => 'nullable|boolean',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
@@ -21,11 +22,18 @@ class VipLevelController extends Controller
 
         $query = VipLevel::query();
 
+        if ($request->has('group_id')) {
+            $query->byGroup($request->integer('group_id'));
+        }
+
         if ($request->has('enabled')) {
             $query->where('enabled', $request->boolean('enabled'));
         }
 
         $query->ordered();
+
+        // Eager load relationships
+        $query->with('group');
 
         $perPage = $request->get('per_page', 15);
         $vipLevels = $query->paginate($perPage);
@@ -39,9 +47,8 @@ class VipLevelController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'group_id' => 'nullable|integer',
             'level' => 'required|string|max:255',
-            'name' => 'required|string|max:255',
-            'icon' => 'nullable|string|max:255',
             'required_exp' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
             'benefits' => 'nullable|array',
@@ -59,6 +66,7 @@ class VipLevelController extends Controller
      */
     public function show(VipLevel $vipLevel): JsonResponse
     {
+        $vipLevel->load('group');
         return $this->responseItem($vipLevel);
     }
 
@@ -68,9 +76,8 @@ class VipLevelController extends Controller
     public function update(Request $request, VipLevel $vipLevel): JsonResponse
     {
         $validated = $request->validate([
+            'group_id' => 'nullable|integer',
             'level' => 'nullable|string|max:255',
-            'name' => 'nullable|string|max:255',
-            'icon' => 'nullable|string|max:255',
             'required_exp' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
             'benefits' => 'nullable|array',

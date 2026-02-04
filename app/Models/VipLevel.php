@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class VipLevel extends Model
 {
     protected $table = 'megasio_play_api.vip_levels';
 
     protected $fillable = [
+        'group_id',
         'level',
-        'name',
-        'icon',
         'required_exp',
         'description',
         'benefits',
@@ -20,11 +21,20 @@ class VipLevel extends Model
     protected function casts(): array
     {
         return [
+            'group_id' => 'integer',
             'required_exp' => 'integer',
             'benefits' => 'array',
             'sort_id' => 'integer',
             'enabled' => 'boolean',
         ];
+    }
+
+    /**
+     * Get the group this VIP level belongs to.
+     */
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(VipLevelGroup::class, 'group_id');
     }
 
     /**
@@ -49,5 +59,16 @@ class VipLevel extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_id', 'asc');
+    }
+
+    /**
+     * Scope to filter by group_id.
+     */
+    public function scopeByGroup($query, $groupId)
+    {
+        if ($groupId === null) {
+            return $query->whereNull('group_id');
+        }
+        return $query->where('group_id', $groupId);
     }
 }
