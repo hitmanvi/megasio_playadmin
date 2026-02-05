@@ -4581,6 +4581,12 @@
                     "minimum": 0,
                     "nullable": true
                   },
+                  "default_amount": {
+                    "type": "number",
+                    "description": "Default amount",
+                    "minimum": 0,
+                    "nullable": true
+                  },
                   "amounts": {
                     "type": "array",
                     "description": "Supported amounts array",
@@ -4847,6 +4853,11 @@
                   "min_amount": {
                     "type": "number",
                     "description": "Minimum amount supported",
+                    "minimum": 0
+                  },
+                  "default_amount": {
+                    "type": "number",
+                    "description": "Default amount",
                     "minimum": 0
                   },
                   "amounts": {
@@ -12681,6 +12692,12 @@
           "min_amount": {
             "type": "string",
             "description": "Minimum amount supported",
+            "nullable": true,
+            "format": "decimal"
+          },
+          "default_amount": {
+            "type": "string",
+            "description": "Default amount",
             "nullable": true,
             "format": "decimal"
           },
