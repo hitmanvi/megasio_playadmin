@@ -94,6 +94,13 @@ class KycController extends Controller
                 ->update(['status' => Invitation::STATUS_ACTIVE]);
         }
 
+        // 如果状态是STATUS_APPROVED，检查selfie存不存在，存在则状态变成下一个pending
+        if ($newStatus === Kyc::STATUS_APPROVED && !empty($kyc->selfie)) {
+            $kyc->update([
+                'status' => Kyc::STATUS_ADVANCED_PENDING,
+            ]);
+        }
+
         $kyc->load(['user']);
 
         return $this->responseItem($kyc);
