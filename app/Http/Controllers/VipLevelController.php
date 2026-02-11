@@ -68,14 +68,32 @@ class VipLevelController extends Controller
     {
         $validated = $request->validate([
             'items' => 'required|array',
-            'items.*.group_id' => 'nullable|integer',
-            'items.*.level' => 'required|string|max:255',
-            'items.*.required_exp' => 'nullable|integer|min:0',
-            'items.*.description' => 'nullable|string',
-            'items.*.benefits' => 'nullable|array',
-            'items.*.sort_id' => 'nullable|integer|min:0',
-            'items.*.enabled' => 'nullable|boolean',
+            'items.*.group_id' => 'nullable',
+            'items.*.level' => 'required',
+            'items.*.required_exp' => 'nullable',
+            'items.*.description' => 'nullable',
+            'items.*.benefits' => 'nullable',
+            'items.*.sort_id' => 'nullable',
+            'items.*.enabled' => 'nullable',
         ]);
+
+        // 创建前删除已有数据（按本次 items 的 group_id 范围）
+        $groupIds = collect($validated['items'])->pluck('group_id')->unique()->values()->all();
+        $query = VipLevel::query();
+        if (count($groupIds) === 0 || (count($groupIds) === 1 && $groupIds[0] === null)) {
+            $query->whereNull('group_id');
+        } elseif (in_array(null, $groupIds, true)) {
+            $ids = array_filter($groupIds, fn ($id) => $id !== null);
+            $query->where(function ($q) use ($ids) {
+                $q->whereNull('group_id');
+                if (count($ids) > 0) {
+                    $q->orWhereIn('group_id', $ids);
+                }
+            });
+        } else {
+            $query->whereIn('group_id', $groupIds);
+        }
+        $query->delete();
 
         $created = [];
         foreach ($validated['items'] as $item) {
