@@ -58,7 +58,7 @@ class VipLevel extends Model
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('sort_id', 'asc');
+        return $query->orderBy('level', 'asc');
     }
 
     /**
