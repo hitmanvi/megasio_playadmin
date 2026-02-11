@@ -62,6 +62,30 @@ class VipLevelController extends Controller
     }
 
     /**
+     * Batch store VIP levels
+     */
+    public function batchStore(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'items' => 'required|array',
+            'items.*.group_id' => 'nullable|integer',
+            'items.*.level' => 'required|string|max:255',
+            'items.*.required_exp' => 'nullable|integer|min:0',
+            'items.*.description' => 'nullable|string',
+            'items.*.benefits' => 'nullable|array',
+            'items.*.sort_id' => 'nullable|integer|min:0',
+            'items.*.enabled' => 'nullable|boolean',
+        ]);
+
+        $created = [];
+        foreach ($validated['items'] as $item) {
+            $created[] = VipLevel::create($item);
+        }
+
+        return $this->responseItem(['created' => $created]);
+    }
+
+    /**
      * Display the specified VIP level
      */
     public function show(VipLevel $vipLevel): JsonResponse

@@ -10186,6 +10186,129 @@
         }
       }
     },
+    "/vip-levels/batch": {
+      "post": {
+        "tags": ["VIP Levels"],
+        "summary": "Batch create VIP levels",
+        "description": "Create multiple VIP levels in one request",
+        "security": [
+          {
+            "sanctum": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["items"],
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "description": "Array of VIP level objects to create",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "required": ["level"],
+                      "properties": {
+                        "group_id": {
+                          "type": "integer",
+                          "description": "VIP level group ID",
+                          "nullable": true
+                        },
+                        "level": {
+                          "type": "string",
+                          "description": "Level identifier",
+                          "maxLength": 255
+                        },
+                        "required_exp": {
+                          "type": "integer",
+                          "description": "Required experience points",
+                          "minimum": 0
+                        },
+                        "description": {
+                          "type": "string",
+                          "description": "Level description",
+                          "nullable": true
+                        },
+                        "benefits": {
+                          "type": "array",
+                          "description": "Level benefits",
+                          "nullable": true
+                        },
+                        "sort_id": {
+                          "type": "integer",
+                          "description": "Sort order",
+                          "minimum": 0
+                        },
+                        "enabled": {
+                          "type": "boolean",
+                          "description": "Whether the level is enabled"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "VIP levels created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "errmsg": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "created": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/VipLevel"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/vip-levels": {
       "get": {
         "tags": ["VIP Levels"],

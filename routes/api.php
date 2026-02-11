@@ -185,6 +185,7 @@ Route::middleware('auth:sanctum')->group(function () {
            
            // VIP levels routes
            Route::get('vip-levels', [VipLevelController::class, 'index']);
+           Route::post('vip-levels/batch', [VipLevelController::class, 'batchStore']);
            Route::post('vip-levels', [VipLevelController::class, 'store']);
            Route::get('vip-levels/{vipLevel}', [VipLevelController::class, 'show']);
            Route::put('vip-levels/{vipLevel}', [VipLevelController::class, 'update']);
