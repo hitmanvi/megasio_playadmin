@@ -43,4 +43,13 @@ return [
         'return_url' => env('SOPAY_RETURN_URL'),
     ],
 
+    /*
+    | Play API Admin 接口（后台调用 API 通知等）
+    | 对应 API 路由前缀 x7k9m2p4，需 API Key 验证
+    */
+    'play_api_admin' => [
+        'base_url' => env('PLAY_API_ADMIN_BASE_URL', ''),
+        'api_key' => env('PLAY_API_ADMIN_API_KEY', ''),
+    ],
+
 ];

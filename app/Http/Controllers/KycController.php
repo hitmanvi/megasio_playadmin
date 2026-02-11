@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kyc;
 use App\Models\Invitation;
+use App\Services\PlayApiAdminService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -101,6 +102,15 @@ class KycController extends Controller
             ]);
         }
 
+        // 通知 API KYC 状态变更（用于发放邀请奖励等）
+        $playApiAdmin = app(PlayApiAdminService::class);
+        if ($playApiAdmin->isConfigured()) {
+            $playApiAdmin->notifyKycCompleted([
+                'user_id' => $kyc->user_id,
+                'status' => $kyc->fresh()->status,
+            ]);
+        }
+
         $kyc->load(['user']);
 
         return $this->responseItem($kyc);
@@ -134,6 +144,24 @@ class KycController extends Controller
             'status' => $newStatus,
             'reject_reason' => $request->reject_reason,
         ]);
+
+        // 通知 API KYC 状态变更（接口仅接受部分 status，初审 rejected 不在其列故不通知）
+        $notifyStatuses = [
+            Kyc::STATUS_APPROVED,
+            Kyc::STATUS_ADVANCED_PENDING,
+            Kyc::STATUS_ADVANCED_APPROVED,
+            Kyc::STATUS_ADVANCED_REJECTED,
+            Kyc::STATUS_ENHANCED_PENDING,
+            Kyc::STATUS_ENHANCED_APPROVED,
+            Kyc::STATUS_ENHANCED_REJECTED,
+        ];
+        $playApiAdmin = app(PlayApiAdminService::class);
+        if ($playApiAdmin->isConfigured() && in_array($kyc->status, $notifyStatuses, true)) {
+            $playApiAdmin->notifyKycCompleted([
+                'user_id' => $kyc->user_id,
+                'status' => $kyc->status,
+            ]);
+        }
 
         $kyc->load(['user']);
 
