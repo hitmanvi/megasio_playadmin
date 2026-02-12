@@ -95,7 +95,8 @@ class KycController extends Controller
             ]);
         }
 
-        // invitation 仅在双方都 KYC 激活时设为 active
+        // invitation 仅在双方都 KYC 激活时设为 active；仅在有 invitation 激活时才通知 API（用于发放邀请奖励）
+        $invitationActivated = false;
         if (Kyc::isUserActivated($kyc->user_id)) {
             $userId = $kyc->user_id;
             // 当前用户作为被邀请人：检查邀请人是否也激活
@@ -105,6 +106,7 @@ class KycController extends Controller
             foreach ($asInvitee as $invitation) {
                 if (Kyc::isUserActivated($invitation->inviter_id)) {
                     $invitation->update(['status' => Invitation::STATUS_ACTIVE]);
+                    $invitationActivated = true;
                 }
             }
             // 当前用户作为邀请人：检查被邀请人是否也激活
@@ -114,17 +116,19 @@ class KycController extends Controller
             foreach ($asInviter as $invitation) {
                 if (Kyc::isUserActivated($invitation->invitee_id)) {
                     $invitation->update(['status' => Invitation::STATUS_ACTIVE]);
+                    $invitationActivated = true;
                 }
             }
         }
 
-        // 通知 API KYC 状态变更（用于发放邀请奖励等）
-        $playApiAdmin = app(PlayApiAdminService::class);
-        if ($playApiAdmin->isConfigured()) {
-            $playApiAdmin->notifyKycCompleted([
-                'user_id' => $kyc->user_id,
-                'status' => $kyc->fresh()->status,
-            ]);
+        if ($invitationActivated) {
+            $playApiAdmin = app(PlayApiAdminService::class);
+            if ($playApiAdmin->isConfigured()) {
+                $playApiAdmin->notifyKycCompleted([
+                    'user_id' => $kyc->user_id,
+                    'status' => $kyc->fresh()->status,
+                ]);
+            }
         }
 
         $kyc->load(['user']);
@@ -160,24 +164,6 @@ class KycController extends Controller
             'status' => $newStatus,
             'reject_reason' => $request->reject_reason,
         ]);
-
-        // 通知 API KYC 状态变更（接口仅接受部分 status，初审 rejected 不在其列故不通知）
-        $notifyStatuses = [
-            Kyc::STATUS_APPROVED,
-            Kyc::STATUS_ADVANCED_PENDING,
-            Kyc::STATUS_ADVANCED_APPROVED,
-            Kyc::STATUS_ADVANCED_REJECTED,
-            Kyc::STATUS_ENHANCED_PENDING,
-            Kyc::STATUS_ENHANCED_APPROVED,
-            Kyc::STATUS_ENHANCED_REJECTED,
-        ];
-        $playApiAdmin = app(PlayApiAdminService::class);
-        if ($playApiAdmin->isConfigured() && in_array($kyc->status, $notifyStatuses, true)) {
-            $playApiAdmin->notifyKycCompleted([
-                'user_id' => $kyc->user_id,
-                'status' => $kyc->status,
-            ]);
-        }
 
         $kyc->load(['user']);
 
