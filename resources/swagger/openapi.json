@@ -4587,6 +4587,11 @@
                     "minimum": 0,
                     "nullable": true
                   },
+                  "support_custom_amount": {
+                    "type": "boolean",
+                    "description": "Whether to support custom amount",
+                    "nullable": true
+                  },
                   "amounts": {
                     "type": "array",
                     "description": "Supported amounts array",
@@ -4859,6 +4864,10 @@
                     "type": "number",
                     "description": "Default amount",
                     "minimum": 0
+                  },
+                  "support_custom_amount": {
+                    "type": "boolean",
+                    "description": "Whether to support custom amount"
                   },
                   "amounts": {
                     "type": "array",
@@ -12823,6 +12832,11 @@
             "description": "Default amount",
             "nullable": true,
             "format": "decimal"
+          },
+          "support_custom_amount": {
+            "type": "boolean",
+            "description": "Whether to support custom amount",
+            "nullable": true
           },
           "enabled": {
             "type": "boolean",
