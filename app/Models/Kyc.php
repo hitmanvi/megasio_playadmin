@@ -89,6 +89,30 @@ class Kyc extends Model
     }
 
     /**
+     * Scope: KYC 已激活（已通过初审或进入更高级别，排除 pending/rejected）
+     */
+    public function scopeActivated($query)
+    {
+        return $query->whereIn('status', [
+            self::STATUS_APPROVED,
+            self::STATUS_ADVANCED_PENDING,
+            self::STATUS_ADVANCED_APPROVED,
+            self::STATUS_ADVANCED_REJECTED,
+            self::STATUS_ENHANCED_PENDING,
+            self::STATUS_ENHANCED_APPROVED,
+            self::STATUS_ENHANCED_REJECTED,
+        ]);
+    }
+
+    /**
+     * 判断用户是否已 KYC 激活
+     */
+    public static function isUserActivated(int $userId): bool
+    {
+        return static::where('user_id', $userId)->activated()->exists();
+    }
+
+    /**
      * Check if KYC is pending.
      */
     public function isPending(): bool

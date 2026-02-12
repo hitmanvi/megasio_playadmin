@@ -88,18 +88,34 @@ class KycController extends Controller
             'reject_reason' => null,
         ]);
 
-        // 当初审通过时，更新被邀请人的 invitation 状态为 active
-        if ($newStatus === Kyc::STATUS_APPROVED && in_array($oldStatus, [Kyc::STATUS_PENDING, Kyc::STATUS_REJECTED])) {
-            Invitation::where('invitee_id', $kyc->user_id)
-                ->where('status', Invitation::STATUS_INACTIVE)
-                ->update(['status' => Invitation::STATUS_ACTIVE]);
-        }
-
         // 如果状态是STATUS_APPROVED，检查selfie存不存在，存在则状态变成下一个pending
         if ($newStatus === Kyc::STATUS_APPROVED && !empty($kyc->selfie)) {
             $kyc->update([
                 'status' => Kyc::STATUS_ADVANCED_PENDING,
             ]);
+        }
+
+        // invitation 仅在双方都 KYC 激活时设为 active
+        if (Kyc::isUserActivated($kyc->user_id)) {
+            $userId = $kyc->user_id;
+            // 当前用户作为被邀请人：检查邀请人是否也激活
+            $asInvitee = Invitation::where('invitee_id', $userId)
+                ->where('status', Invitation::STATUS_INACTIVE)
+                ->get();
+            foreach ($asInvitee as $invitation) {
+                if (Kyc::isUserActivated($invitation->inviter_id)) {
+                    $invitation->update(['status' => Invitation::STATUS_ACTIVE]);
+                }
+            }
+            // 当前用户作为邀请人：检查被邀请人是否也激活
+            $asInviter = Invitation::where('inviter_id', $userId)
+                ->where('status', Invitation::STATUS_INACTIVE)
+                ->get();
+            foreach ($asInviter as $invitation) {
+                if (Kyc::isUserActivated($invitation->invitee_id)) {
+                    $invitation->update(['status' => Invitation::STATUS_ACTIVE]);
+                }
+            }
         }
 
         // 通知 API KYC 状态变更（用于发放邀请奖励等）
