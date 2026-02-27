@@ -2068,6 +2068,15 @@
             }
           },
           {
+            "name": "support_bonus",
+            "in": "query",
+            "description": "Filter games by support_bonus status",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "brand_id",
             "in": "query",
             "description": "Filter games by brand IDs (supports multiple values)",
@@ -2402,6 +2411,11 @@
                   "enabled": {
                     "type": "boolean",
                     "description": "Whether game is enabled",
+                    "nullable": true
+                  },
+                  "support_bonus": {
+                    "type": "boolean",
+                    "description": "Whether game supports bonus",
                     "nullable": true
                   },
                   "memo": {
@@ -12242,6 +12256,11 @@
           "enabled": {
             "type": "boolean",
             "description": "Whether game is enabled"
+          },
+          "support_bonus": {
+            "type": "boolean",
+            "description": "Whether game supports bonus",
+            "nullable": true
           },
           "memo": {
             "type": "string",

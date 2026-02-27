@@ -124,5 +124,32 @@ class GameGroup extends Model
     {
         return $query->orderBy('sort_id');
     }
+
+    /**
+     * Category identifier for the "Support Bonus" game group (used to find or create).
+     */
+    public const CATEGORY_SUPPORT_BONUS = 'SupportBonus';
+
+    /**
+     * Get or create the "Support Bonus" game group.
+     */
+    public static function getOrCreateSupportBonusGroup(): self
+    {
+        $group = static::where('category', self::CATEGORY_SUPPORT_BONUS)->first();
+
+        if (!$group) {
+            $group = static::create([
+                'name' => 'Support Bonus',
+                'category' => "event",
+                'sort_id' => 0,
+                'app_limit' => null,
+                'web_limit' => null,
+                'enabled' => true,
+            ]);
+            $group->setTranslation('name', 'Support Bonus', 'en');
+        }
+
+        return $group;
+    }
 }
 

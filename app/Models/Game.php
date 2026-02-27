@@ -21,12 +21,14 @@ class Game extends Model
         'thumbnail',
         'sort_id',
         'enabled',
+        'support_bonus',
         'memo',
         'languages',
     ];
 
     protected $casts = [
         'enabled' => 'boolean',
+        'support_bonus' => 'boolean',
         'sort_id' => 'integer',
         'languages' => 'array',
     ];
@@ -105,6 +107,14 @@ class Game extends Model
     public function scopeDisabled($query)
     {
         return $query->where('enabled', false);
+    }
+
+    /**
+     * Scope to filter by support_bonus.
+     */
+    public function scopeBySupportBonus($query, bool $supportBonus)
+    {
+        return $query->where('support_bonus', $supportBonus);
     }
 
     /**

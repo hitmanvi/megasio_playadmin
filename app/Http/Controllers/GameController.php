@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Models\GameGroup;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Traits\ResponseTrait;
@@ -20,6 +21,7 @@ class GameController extends Controller
             'name' => 'nullable|string',
             'out_id' => 'nullable|string',
             'enabled' => 'nullable|boolean',
+            'support_bonus' => 'nullable|boolean',
             'brand_id' => 'nullable|array',
             'brand_id.*' => 'integer',
             'category_id' => 'nullable|array',
@@ -48,6 +50,10 @@ class GameController extends Controller
 
         if ($request->has('enabled')) {
             $query->byEnabled($request->boolean('enabled'));
+        }
+
+        if ($request->has('support_bonus')) {
+            $query->bySupportBonus($request->boolean('support_bonus'));
         }
 
         if ($request->has('brand_id') && $request->brand_id) {
@@ -120,6 +126,7 @@ class GameController extends Controller
             'thumbnail' => 'nullable|string|max:255',
             'sort_id' => 'nullable|integer|min:0',
             'enabled' => 'nullable|boolean',
+            'support_bonus' => 'nullable|boolean',
             'memo' => 'nullable|string',
             'name_translations' => 'nullable|array',
             'name_translations.*' => 'string|max:255',
@@ -138,6 +145,7 @@ class GameController extends Controller
             'thumbnail',
             'sort_id',
             'enabled',
+            'support_bonus',
             'memo',
             'languages',
         ]);
@@ -148,6 +156,19 @@ class GameController extends Controller
         });
 
         $game->update($updateData);
+
+        // 当更新了 support_bonus 时，同步到「Support Bonus」GameGroup：true 则加入分组，false 则移出
+        if ($request->has('support_bonus')) {
+            $supportBonusGroup = GameGroup::where('category', GameGroup::CATEGORY_SUPPORT_BONUS)->first();
+            if ($request->boolean('support_bonus')) {
+                $supportBonusGroup = GameGroup::getOrCreateSupportBonusGroup();
+                if (!$supportBonusGroup->games()->where('game_id', $game->id)->exists()) {
+                    $supportBonusGroup->games()->attach($game->id, ['sort_id' => 0]);
+                }
+            } elseif ($supportBonusGroup) {
+                $supportBonusGroup->games()->detach($game->id);
+            }
+        }
 
         // Update translations if provided
         if ($request->has('name_translations')) {
@@ -181,6 +202,7 @@ class GameController extends Controller
             'thumbnail' => $game->thumbnail,
             'sort_id' => $game->sort_id,
             'enabled' => $game->enabled,
+            'support_bonus' => $game->support_bonus,
             'memo' => $game->memo,
             'languages' => $game->languages,
             'name_translations' => $game->getAllNames(),
