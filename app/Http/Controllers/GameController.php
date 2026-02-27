@@ -159,7 +159,7 @@ class GameController extends Controller
 
         // 当更新了 support_bonus 时，同步到「Support Bonus」GameGroup：true 则加入分组，false 则移出
         if ($request->has('support_bonus')) {
-            $supportBonusGroup = GameGroup::where('category', GameGroup::CATEGORY_SUPPORT_BONUS)->first();
+            $supportBonusGroup = GameGroup::where('name', GameGroup::NAME_SUPPORT_BONUS)->first();
             if ($request->boolean('support_bonus')) {
                 $supportBonusGroup = GameGroup::getOrCreateSupportBonusGroup();
                 if (!$supportBonusGroup->games()->where('game_id', $game->id)->exists()) {

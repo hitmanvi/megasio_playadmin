@@ -126,27 +126,26 @@ class GameGroup extends Model
     }
 
     /**
-     * Category identifier for the "Support Bonus" game group (used to find or create).
+     * Display name for the "Support Bonus" game group.
      */
-    public const CATEGORY_SUPPORT_BONUS = 'SupportBonus';
+    public const NAME_SUPPORT_BONUS = 'Support Bonus';
 
     /**
      * Get or create the "Support Bonus" game group.
      */
     public static function getOrCreateSupportBonusGroup(): self
     {
-        $group = static::where('category', self::CATEGORY_SUPPORT_BONUS)->first();
+        $group = static::where('name', self::NAME_SUPPORT_BONUS)->first();
 
         if (!$group) {
             $group = static::create([
-                'name' => 'Support Bonus',
-                'category' => "event",
+                'name' => self::NAME_SUPPORT_BONUS,
                 'sort_id' => 0,
                 'app_limit' => null,
                 'web_limit' => null,
                 'enabled' => true,
             ]);
-            $group->setTranslation('name', 'Support Bonus', 'en');
+            $group->setTranslation('name', self::NAME_SUPPORT_BONUS, 'en');
         }
 
         return $group;
