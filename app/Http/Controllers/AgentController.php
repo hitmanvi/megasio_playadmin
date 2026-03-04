@@ -16,6 +16,7 @@ class AgentController extends Controller
         $request->validate([
             'name' => 'nullable|string',
             'promotion_code' => 'nullable|string|max:32',
+            'parent_id' => 'nullable|integer',
             'status' => 'nullable|string|in:active,inactive',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
@@ -35,6 +36,10 @@ class AgentController extends Controller
             $query->byStatus($request->status);
         }
 
+        if ($request->filled('parent_id')) {
+            $query->byParentId($request->parent_id);
+        }
+
         $query->orderBy('id', 'desc');
 
         $perPage = $request->get('per_page', 15);
@@ -48,6 +53,8 @@ class AgentController extends Controller
      */
     public function show(Agent $agent): JsonResponse
     {
+        $agent->load('parent');
+
         return $this->responseItem($agent);
     }
 
@@ -58,7 +65,8 @@ class AgentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'promotion_code' => 'required|string|max:32|unique:megasio_play_api.agents,promotion_code',
+            'promotion_code' => 'required|string|max:32',
+            'parent_id' => 'nullable|integer',
             'facebook_pixel_id' => 'nullable|string|max:255',
             'facebook_access_token' => 'nullable|string',
             'kochava_app_id' => 'nullable|string|max:255',
@@ -78,6 +86,7 @@ class AgentController extends Controller
         $validated = $request->validate([
             'name' => 'nullable|string|max:255',
             'promotion_code' => 'nullable|string|max:32|unique:megasio_play_api.agents,promotion_code,' . $agent->id,
+            'parent_id' => 'nullable|integer',
             'facebook_pixel_id' => 'nullable|string|max:255',
             'facebook_access_token' => 'nullable|string',
             'kochava_app_id' => 'nullable|string|max:255',

@@ -11894,6 +11894,7 @@
         "parameters": [
           { "name": "name", "in": "query", "description": "Filter by name (partial match)", "required": false, "schema": { "type": "string" } },
           { "name": "promotion_code", "in": "query", "description": "Filter by promotion code", "required": false, "schema": { "type": "string", "maxLength": 32 } },
+          { "name": "parent_id", "in": "query", "description": "Filter by parent agent ID", "required": false, "schema": { "type": "integer" } },
           { "name": "status", "in": "query", "description": "Filter by status", "required": false, "schema": { "type": "string", "enum": ["active", "inactive"] } },
           { "name": "page", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 1, "default": 1 } },
           { "name": "per_page", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 15 } }
@@ -11918,6 +11919,7 @@
                 "properties": {
                   "name": { "type": "string", "maxLength": 255, "description": "Agent name" },
                   "promotion_code": { "type": "string", "maxLength": 32, "description": "Unique promotion code" },
+                  "parent_id": { "type": "integer", "nullable": true, "description": "Parent agent ID" },
                   "facebook_pixel_id": { "type": "string", "maxLength": 255, "nullable": true },
                   "facebook_access_token": { "type": "string", "nullable": true },
                   "kochava_app_id": { "type": "string", "maxLength": 255, "nullable": true },
@@ -11959,6 +11961,7 @@
                 "properties": {
                   "name": { "type": "string", "maxLength": 255 },
                   "promotion_code": { "type": "string", "maxLength": 32 },
+                  "parent_id": { "type": "integer", "nullable": true, "description": "Parent agent ID" },
                   "facebook_pixel_id": { "type": "string", "maxLength": 255, "nullable": true },
                   "facebook_access_token": { "type": "string", "nullable": true },
                   "kochava_app_id": { "type": "string", "maxLength": 255, "nullable": true },
@@ -13845,6 +13848,7 @@
           "id": { "type": "integer", "description": "Agent ID" },
           "name": { "type": "string", "description": "Agent name" },
           "promotion_code": { "type": "string", "maxLength": 32, "description": "Unique promotion code" },
+          "parent_id": { "type": "integer", "nullable": true, "description": "Parent agent ID" },
           "facebook_pixel_id": { "type": "string", "nullable": true, "description": "Facebook Pixel ID" },
           "facebook_access_token": { "type": "string", "nullable": true, "description": "Facebook Conversions API Access Token" },
           "kochava_app_id": { "type": "string", "nullable": true, "description": "Kochava App ID" },

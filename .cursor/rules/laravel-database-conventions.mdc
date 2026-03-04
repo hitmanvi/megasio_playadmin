@@ -1,0 +1,36 @@
+---
+description: Laravel 数据库迁移与表单校验约定
+globs: database/migrations/*.php,**/Http/Requests/*.php,**/Http/Controllers/*.php
+alwaysApply: false
+---
+
+# Laravel 数据库约定
+
+## 1. 迁移文件不添加外键约束
+
+**不要**在 `database/migrations/*.php` 中使用 `foreignId()`、`foreign()` 等外键约束。
+
+```php
+// ❌ BAD
+$table->foreignId('user_id')->constrained()->onDelete('cascade');
+$table->foreign('category_id')->references('id')->on('categories');
+
+// ✅ GOOD
+$table->unsignedBigInteger('user_id');
+$table->unsignedBigInteger('category_id');
+```
+
+## 2. 表单校验不使用数据库相关校验
+
+**不要**在表单校验中使用 `exists:`、`unique:` 等会查询数据库的校验规则。
+
+```php
+// ❌ BAD
+'email' => 'required|email|unique:users,email',
+'tag_ids.*' => 'integer|exists:tags,id',
+
+// ✅ GOOD - 使用应用层校验
+'email' => 'required|email',
+'tag_ids.*' => 'integer|min:1',
+// 在 Controller 或 Service 中手动校验唯一性/存在性
+```

@@ -9,6 +9,7 @@ class Agent extends Model
     protected $fillable = [
         'name',
         'promotion_code',
+        'parent_id',
         'facebook_pixel_id',
         'facebook_access_token',
         'kochava_app_id',
@@ -43,6 +44,14 @@ class Agent extends Model
     }
 
     /**
+     * Scope to filter by parent_id.
+     */
+    public function scopeByParentId($query, $parentId)
+    {
+        return $query->where('parent_id', $parentId);
+    }
+
+    /**
      * Scope to filter active agents.
      */
     public function scopeActive($query)
@@ -56,5 +65,21 @@ class Agent extends Model
     public function scopeInactive($query)
     {
         return $query->where('status', self::STATUS_INACTIVE);
+    }
+
+    /**
+     * Parent agent (optional).
+     */
+    public function parent()
+    {
+        return $this->belongsTo(Agent::class, 'parent_id');
+    }
+
+    /**
+     * Child agents.
+     */
+    public function children()
+    {
+        return $this->hasMany(Agent::class, 'parent_id');
     }
 }
