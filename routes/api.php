@@ -28,6 +28,7 @@ use App\Http\Controllers\VipLevelController;
 use App\Http\Controllers\VipLevelGroupController;
 use App\Http\Controllers\ArticleGroupController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\AgentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -205,4 +206,11 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('articles/{article}', [ArticleController::class, 'show']);
            Route::put('articles/{article}', [ArticleController::class, 'update']);
            Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
+           
+           // Agents routes
+           Route::get('agents', [AgentController::class, 'index']);
+           Route::post('agents', [AgentController::class, 'store']);
+           Route::get('agents/{agent}', [AgentController::class, 'show']);
+           Route::put('agents/{agent}', [AgentController::class, 'update']);
+           Route::delete('agents/{agent}', [AgentController::class, 'destroy']);
        });
