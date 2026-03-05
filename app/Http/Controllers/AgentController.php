@@ -67,9 +67,8 @@ class AgentController extends Controller
             'name' => 'required|string|max:255',
             'promotion_code' => 'required|string|max:32',
             'parent_id' => 'nullable|integer',
-            'facebook_pixel_id' => 'nullable|string|max:255',
-            'facebook_access_token' => 'nullable|string',
-            'kochava_app_id' => 'nullable|string|max:255',
+            'facebook_config' => 'nullable|array',
+            'kochava_config' => 'nullable|array',
             'status' => 'nullable|string|in:active,inactive',
         ]);
 
@@ -85,11 +84,10 @@ class AgentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'nullable|string|max:255',
-            'promotion_code' => 'nullable|string|max:32|unique:megasio_play_api.agents,promotion_code,' . $agent->id,
+            'promotion_code' => 'nullable|string|max:32',
             'parent_id' => 'nullable|integer',
-            'facebook_pixel_id' => 'nullable|string|max:255',
-            'facebook_access_token' => 'nullable|string',
-            'kochava_app_id' => 'nullable|string|max:255',
+            'facebook_config' => 'nullable|array',
+            'kochava_config' => 'nullable|array',
             'status' => 'nullable|string|in:active,inactive',
         ]);
 

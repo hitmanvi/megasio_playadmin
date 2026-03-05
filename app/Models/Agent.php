@@ -10,10 +10,14 @@ class Agent extends Model
         'name',
         'promotion_code',
         'parent_id',
-        'facebook_pixel_id',
-        'facebook_access_token',
-        'kochava_app_id',
+        'facebook_config',
+        'kochava_config',
         'status',
+    ];
+
+    protected $casts = [
+        'facebook_config' => 'array',
+        'kochava_config' => 'array',
     ];
 
     const STATUS_ACTIVE = 'active';
