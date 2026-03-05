@@ -19,6 +19,7 @@ class Admin extends Authenticatable
     protected $fillable = [
         'name',
         'password',
+        'two_factor_secret',
     ];
 
     /**
@@ -28,7 +29,13 @@ class Admin extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'two_factor_secret',
     ];
+
+    public function hasTwoFactorEnabled(): bool
+    {
+        return !empty($this->two_factor_secret);
+    }
 
     /**
      * Get the attributes that should be cast.

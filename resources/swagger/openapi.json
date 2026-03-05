@@ -34,6 +34,12 @@
                     "type": "string",
                     "description": "Admin password",
                     "example": "password"
+                  },
+                  "two_factor_code": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 6,
+                    "description": "双因素验证码（已绑定 2FA 时必填）"
                   }
                 }
               }
@@ -47,6 +53,20 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "需要双因素验证（code=403, errmsg=requires_two_factor）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": { "type": "integer", "example": 403 },
+                    "errmsg": { "type": "string", "example": "requires_two_factor" }
+                  }
                 }
               }
             }
@@ -178,6 +198,123 @@
             "description": "Validation error or invalid current password",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
           }
+        }
+      }
+    },
+    "/two-factor/bind": {
+      "post": {
+        "tags": ["Admin Authentication"],
+        "summary": "绑定双因素认证（步骤1）",
+        "description": "获取 secret 和 provisioning_uri，用 authenticator 扫码后调用 confirm 确认",
+        "security": [{ "sanctum": [] }],
+        "responses": {
+          "200": {
+            "description": "返回 secret 和 provisioning_uri",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": { "type": "integer", "example": 0 },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "secret": { "type": "string", "description": "TOTP 密钥" },
+                        "provisioning_uri": { "type": "string", "description": "otpauth URL，用于生成二维码" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/two-factor/bind/confirm": {
+      "post": {
+        "tags": ["Admin Authentication"],
+        "summary": "确认绑定双因素认证（步骤2）",
+        "description": "验证 authenticator 生成的 6 位验证码，确认后保存绑定",
+        "security": [{ "sanctum": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["code"],
+                "properties": {
+                  "code": { "type": "string", "minLength": 6, "maxLength": 6, "description": "Authenticator 生成的 6 位验证码" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "绑定成功", "content": { "application/json": { "schema": { "type": "object", "properties": { "code": { "type": "integer" }, "data": { "type": "object", "properties": { "bound": { "type": "boolean", "example": true } } } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "422": { "description": "验证码无效或已过期", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/two-factor/rebind": {
+      "post": {
+        "tags": ["Admin Authentication"],
+        "summary": "换绑双因素认证（步骤1）",
+        "description": "获取新的 secret 和 provisioning_uri，用 authenticator 扫码后调用 confirm 确认",
+        "security": [{ "sanctum": [] }],
+        "responses": {
+          "200": {
+            "description": "返回新的 secret 和 provisioning_uri",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": { "type": "integer", "example": 0 },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "secret": { "type": "string" },
+                        "provisioning_uri": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/two-factor/rebind/confirm": {
+      "post": {
+        "tags": ["Admin Authentication"],
+        "summary": "确认换绑双因素认证（步骤2）",
+        "description": "验证当前验证码和新验证码，确认后更新绑定",
+        "security": [{ "sanctum": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["current_code", "new_code"],
+                "properties": {
+                  "current_code": { "type": "string", "minLength": 6, "maxLength": 6, "description": "当前 authenticator 的验证码" },
+                  "new_code": { "type": "string", "minLength": 6, "maxLength": 6, "description": "新 authenticator 的验证码" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "换绑成功", "content": { "application/json": { "schema": { "type": "object", "properties": { "code": { "type": "integer" }, "data": { "type": "object", "properties": { "rebound": { "type": "boolean", "example": true } } } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "422": { "description": "验证码无效或已过期", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
         }
       }
     },
@@ -12949,6 +13086,10 @@
               "name": {
                 "type": "string",
                 "example": "admin"
+              },
+              "two_factor_enabled": {
+                "type": "boolean",
+                "description": "是否已绑定双因素认证"
               }
             }
           }

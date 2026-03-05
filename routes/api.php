@@ -38,6 +38,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AdminAuthController::class, 'logout']);
     Route::get('mine', [AdminAuthController::class, 'mine']);
     Route::put('password', [AdminAuthController::class, 'updatePassword']);
+    Route::post('two-factor/bind', [AdminAuthController::class, 'bindTwoFactor']);
+    Route::post('two-factor/bind/confirm', [AdminAuthController::class, 'bindTwoFactorConfirm']);
+    Route::post('two-factor/rebind', [AdminAuthController::class, 'rebindTwoFactor']);
+    Route::post('two-factor/rebind/confirm', [AdminAuthController::class, 'rebindTwoFactorConfirm']);
     
     // Themes routes
     Route::get('themes', [ThemeController::class, 'index']);
