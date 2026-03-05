@@ -12179,6 +12179,34 @@
           "404": { "description": "Not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
         }
       }
+    },
+    "/agents/{agent}/reset-two-factor": {
+      "post": {
+        "tags": ["Agents"],
+        "summary": "Reset agent two_factor_secret",
+        "description": "将 agent 的 two_factor_secret 置空，解除双因素认证绑定",
+        "security": [{ "sanctum": [] }],
+        "parameters": [{ "name": "agent", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": {
+            "description": "Reset successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": { "type": "integer", "example": 0 },
+                    "errmsg": { "type": "string" },
+                    "data": { "type": "object", "properties": { "reset": { "type": "boolean", "example": true } } }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "404": { "description": "Not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
     }
   },
   "components": {

@@ -102,6 +102,16 @@ class AgentController extends Controller
     }
 
     /**
+     * Reset agent two_factor_secret (set to null)
+     */
+    public function resetTwoFactor(Agent $agent): JsonResponse
+    {
+        $agent->update(['two_factor_secret' => null]);
+
+        return $this->responseItem(['reset' => true]);
+    }
+
+    /**
      * Remove the specified agent from storage.
      */
     public function destroy(Agent $agent): JsonResponse

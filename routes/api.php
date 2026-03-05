@@ -217,5 +217,6 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::post('agents', [AgentController::class, 'store']);
            Route::get('agents/{agent}', [AgentController::class, 'show']);
            Route::put('agents/{agent}', [AgentController::class, 'update']);
+           Route::post('agents/{agent}/reset-two-factor', [AgentController::class, 'resetTwoFactor']);
            Route::delete('agents/{agent}', [AgentController::class, 'destroy']);
        });
