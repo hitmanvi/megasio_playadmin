@@ -66,6 +66,8 @@ class AgentController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'promotion_code' => 'required|string|max:32',
+            'account' => 'nullable|string|max:255',
+            'remark' => 'nullable|string',
             'parent_id' => 'nullable|integer',
             'facebook_config' => 'nullable|array',
             'kochava_config' => 'nullable|array',
@@ -85,9 +87,12 @@ class AgentController extends Controller
         $validated = $request->validate([
             'name' => 'nullable|string|max:255',
             'promotion_code' => 'nullable|string|max:32',
+            'account' => 'nullable|string|max:255',
+            'remark' => 'nullable|string',
             'parent_id' => 'nullable|integer',
             'facebook_config' => 'nullable|array',
             'kochava_config' => 'nullable|array',
+            'two_factor_secret' => 'nullable|string|max:255',
             'status' => 'nullable|string|in:active,inactive',
         ]);
 

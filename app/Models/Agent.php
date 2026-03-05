@@ -9,9 +9,12 @@ class Agent extends Model
     protected $fillable = [
         'name',
         'promotion_code',
+        'account',
+        'remark',
         'parent_id',
         'facebook_config',
         'kochava_config',
+        'two_factor_secret',
         'status',
     ];
 

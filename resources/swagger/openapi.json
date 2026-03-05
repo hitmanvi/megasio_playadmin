@@ -11919,9 +11919,12 @@
                 "properties": {
                   "name": { "type": "string", "maxLength": 255, "description": "Agent name" },
                   "promotion_code": { "type": "string", "maxLength": 32, "description": "Unique promotion code" },
+                  "account": { "type": "string", "maxLength": 255, "nullable": true, "description": "账号" },
+                  "remark": { "type": "string", "nullable": true, "description": "备注" },
                   "parent_id": { "type": "integer", "nullable": true, "description": "Parent agent ID" },
                   "facebook_config": { "type": "object", "nullable": true, "description": "Facebook Conversions 配置 JSON" },
                   "kochava_config": { "type": "object", "nullable": true, "description": "Kochava 配置 JSON" },
+                  "two_factor_secret": { "type": "string", "maxLength": 255, "nullable": true, "description": "双因素认证密钥" },
                   "status": { "type": "string", "enum": ["active", "inactive"], "default": "active" }
                 }
               }
@@ -11960,9 +11963,12 @@
                 "properties": {
                   "name": { "type": "string", "maxLength": 255 },
                   "promotion_code": { "type": "string", "maxLength": 32 },
+                  "account": { "type": "string", "maxLength": 255, "nullable": true, "description": "账号" },
+                  "remark": { "type": "string", "nullable": true, "description": "备注" },
                   "parent_id": { "type": "integer", "nullable": true, "description": "Parent agent ID" },
                   "facebook_config": { "type": "object", "nullable": true, "description": "Facebook Conversions 配置 JSON" },
                   "kochava_config": { "type": "object", "nullable": true, "description": "Kochava 配置 JSON" },
+                  "two_factor_secret": { "type": "string", "maxLength": 255, "nullable": true, "description": "双因素认证密钥" },
                   "status": { "type": "string", "enum": ["active", "inactive"] }
                 }
               }
@@ -13846,9 +13852,12 @@
           "id": { "type": "integer", "description": "Agent ID" },
           "name": { "type": "string", "description": "Agent name" },
           "promotion_code": { "type": "string", "maxLength": 32, "description": "Unique promotion code" },
+          "account": { "type": "string", "nullable": true, "description": "账号" },
+          "remark": { "type": "string", "nullable": true, "description": "备注" },
           "parent_id": { "type": "integer", "nullable": true, "description": "Parent agent ID" },
           "facebook_config": { "type": "object", "nullable": true, "description": "Facebook Conversions 配置 JSON" },
           "kochava_config": { "type": "object", "nullable": true, "description": "Kochava 配置 JSON" },
+          "two_factor_secret": { "type": "string", "nullable": true, "description": "双因素认证密钥" },
           "status": { "type": "string", "enum": ["active", "inactive"], "description": "Status" },
           "created_at": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
           "updated_at": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
