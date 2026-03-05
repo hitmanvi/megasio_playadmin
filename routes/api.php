@@ -37,6 +37,7 @@ Route::post('login', [AdminAuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AdminAuthController::class, 'logout']);
     Route::get('mine', [AdminAuthController::class, 'mine']);
+    Route::put('password', [AdminAuthController::class, 'updatePassword']);
     
     // Themes routes
     Route::get('themes', [ThemeController::class, 'index']);

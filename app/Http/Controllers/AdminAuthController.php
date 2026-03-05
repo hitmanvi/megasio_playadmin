@@ -46,4 +46,25 @@ class AdminAuthController extends Controller
             'name' => $request->user()->name,
         ]);
     }
+
+    /**
+     * Update admin password
+     */
+    public function updatePassword(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $admin = $request->user();
+
+        if (!Hash::check($validated['current_password'], $admin->password)) {
+            return $this->error(Err::INVALID_PARAMS);
+        }
+
+        $admin->update(['password' => $validated['password']]);
+
+        return $this->responseItem(['updated' => true]);
+    }
 }
