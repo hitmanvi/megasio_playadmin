@@ -15,6 +15,7 @@ class AgentController extends Controller
     {
         $request->validate([
             'name' => 'nullable|string',
+            'account' => 'nullable|string|max:255',
             'promotion_code' => 'nullable|string|max:32',
             'parent_id' => 'nullable|integer',
             'status' => 'nullable|string|in:active,inactive',
@@ -24,15 +25,19 @@ class AgentController extends Controller
 
         $query = Agent::query();
 
-        if ($request->has('name') && $request->name) {
+        if ($request->filled('name')) {
             $query->byName($request->name);
         }
 
-        if ($request->has('promotion_code') && $request->promotion_code) {
+        if ($request->filled('account')) {
+            $query->byAccount($request->account);
+        }
+
+        if ($request->filled('promotion_code')) {
             $query->byPromotionCode($request->promotion_code);
         }
 
-        if ($request->has('status') && $request->status) {
+        if ($request->filled('status')) {
             $query->byStatus($request->status);
         }
 
@@ -67,6 +72,7 @@ class AgentController extends Controller
             'name' => 'required|string|max:255',
             'promotion_code' => 'required|string|max:32',
             'account' => 'nullable|string|max:255',
+            'password' => 'nullable|string|min:6',
             'remark' => 'nullable|string',
             'parent_id' => 'nullable|integer',
             'facebook_config' => 'nullable|array',
@@ -88,6 +94,7 @@ class AgentController extends Controller
             'name' => 'nullable|string|max:255',
             'promotion_code' => 'nullable|string|max:32',
             'account' => 'nullable|string|max:255',
+            'password' => 'nullable|string|min:6',
             'remark' => 'nullable|string',
             'parent_id' => 'nullable|integer',
             'facebook_config' => 'nullable|array',
@@ -95,6 +102,10 @@ class AgentController extends Controller
             'two_factor_secret' => 'nullable|string|max:255',
             'status' => 'nullable|string|in:active,inactive',
         ]);
+
+        if (array_key_exists('password', $validated) && empty($validated['password'])) {
+            unset($validated['password']);
+        }
 
         $agent->update($validated);
 

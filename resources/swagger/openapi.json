@@ -12079,6 +12079,7 @@
         "security": [{ "sanctum": [] }],
         "parameters": [
           { "name": "name", "in": "query", "description": "Filter by name (partial match)", "required": false, "schema": { "type": "string" } },
+          { "name": "account", "in": "query", "description": "Filter by account (partial match)", "required": false, "schema": { "type": "string", "maxLength": 255 } },
           { "name": "promotion_code", "in": "query", "description": "Filter by promotion code", "required": false, "schema": { "type": "string", "maxLength": 32 } },
           { "name": "parent_id", "in": "query", "description": "Filter by parent agent ID", "required": false, "schema": { "type": "integer" } },
           { "name": "status", "in": "query", "description": "Filter by status", "required": false, "schema": { "type": "string", "enum": ["active", "inactive"] } },
@@ -12106,6 +12107,7 @@
                   "name": { "type": "string", "maxLength": 255, "description": "Agent name" },
                   "promotion_code": { "type": "string", "maxLength": 32, "description": "Unique promotion code" },
                   "account": { "type": "string", "maxLength": 255, "nullable": true, "description": "账号" },
+                  "password": { "type": "string", "minLength": 6, "nullable": true, "description": "密码" },
                   "remark": { "type": "string", "nullable": true, "description": "备注" },
                   "parent_id": { "type": "integer", "nullable": true, "description": "Parent agent ID" },
                   "facebook_config": { "type": "object", "nullable": true, "description": "Facebook Conversions 配置 JSON" },
@@ -12150,6 +12152,7 @@
                   "name": { "type": "string", "maxLength": 255 },
                   "promotion_code": { "type": "string", "maxLength": 32 },
                   "account": { "type": "string", "maxLength": 255, "nullable": true, "description": "账号" },
+                  "password": { "type": "string", "minLength": 6, "nullable": true, "description": "密码" },
                   "remark": { "type": "string", "nullable": true, "description": "备注" },
                   "parent_id": { "type": "integer", "nullable": true, "description": "Parent agent ID" },
                   "facebook_config": { "type": "object", "nullable": true, "description": "Facebook Conversions 配置 JSON" },

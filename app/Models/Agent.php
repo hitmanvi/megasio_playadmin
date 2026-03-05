@@ -10,6 +10,7 @@ class Agent extends Model
         'name',
         'promotion_code',
         'account',
+        'password',
         'remark',
         'parent_id',
         'facebook_config',
@@ -18,9 +19,14 @@ class Agent extends Model
         'status',
     ];
 
+    protected $hidden = [
+        'password',
+    ];
+
     protected $casts = [
         'facebook_config' => 'array',
         'kochava_config' => 'array',
+        'password' => 'hashed',
     ];
 
     const STATUS_ACTIVE = 'active';
@@ -48,6 +54,14 @@ class Agent extends Model
     public function scopeByName($query, string $name)
     {
         return $query->where('name', 'like', "%{$name}%");
+    }
+
+    /**
+     * Scope to filter by account (partial match).
+     */
+    public function scopeByAccount($query, string $account)
+    {
+        return $query->where('account', 'like', "%{$account}%");
     }
 
     /**
