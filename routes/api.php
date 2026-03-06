@@ -29,6 +29,7 @@ use App\Http\Controllers\VipLevelGroupController;
 use App\Http\Controllers\ArticleGroupController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\AgentLinkController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -219,4 +220,11 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::put('agents/{agent}', [AgentController::class, 'update']);
            Route::post('agents/{agent}/reset-two-factor', [AgentController::class, 'resetTwoFactor']);
            Route::delete('agents/{agent}', [AgentController::class, 'destroy']);
+
+           // Agent links routes
+           Route::get('agent-links', [AgentLinkController::class, 'index']);
+           Route::post('agent-links', [AgentLinkController::class, 'store']);
+           Route::get('agent-links/{agentLink}', [AgentLinkController::class, 'show']);
+           Route::put('agent-links/{agentLink}', [AgentLinkController::class, 'update']);
+           Route::delete('agent-links/{agentLink}', [AgentLinkController::class, 'destroy']);
        });

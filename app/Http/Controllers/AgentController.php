@@ -16,8 +16,6 @@ class AgentController extends Controller
         $request->validate([
             'name' => 'nullable|string',
             'account' => 'nullable|string|max:255',
-            'promotion_code' => 'nullable|string|max:32',
-            'parent_id' => 'nullable|integer',
             'status' => 'nullable|string|in:active,inactive',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
@@ -33,16 +31,8 @@ class AgentController extends Controller
             $query->byAccount($request->account);
         }
 
-        if ($request->filled('promotion_code')) {
-            $query->byPromotionCode($request->promotion_code);
-        }
-
         if ($request->filled('status')) {
             $query->byStatus($request->status);
-        }
-
-        if ($request->filled('parent_id')) {
-            $query->byParentId($request->parent_id);
         }
 
         $query->orderBy('id', 'desc');
@@ -58,7 +48,7 @@ class AgentController extends Controller
      */
     public function show(Agent $agent): JsonResponse
     {
-        $agent->load('parent');
+        $agent->load('agentLinks');
 
         return $this->responseItem($agent);
     }
@@ -70,13 +60,9 @@ class AgentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'promotion_code' => 'required|string|max:32',
             'account' => 'nullable|string|max:255',
             'password' => 'nullable|string|min:6',
             'remark' => 'nullable|string',
-            'parent_id' => 'nullable|integer',
-            'facebook_config' => 'nullable|array',
-            'kochava_config' => 'nullable|array',
             'status' => 'nullable|string|in:active,inactive',
         ]);
 
@@ -92,13 +78,9 @@ class AgentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'nullable|string|max:255',
-            'promotion_code' => 'nullable|string|max:32',
             'account' => 'nullable|string|max:255',
             'password' => 'nullable|string|min:6',
             'remark' => 'nullable|string',
-            'parent_id' => 'nullable|integer',
-            'facebook_config' => 'nullable|array',
-            'kochava_config' => 'nullable|array',
             'two_factor_secret' => 'nullable|string|max:255',
             'status' => 'nullable|string|in:active,inactive',
         ]);
