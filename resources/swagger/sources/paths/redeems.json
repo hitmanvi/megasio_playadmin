@@ -1,0 +1,342 @@
+{
+    "/redeems": {
+        "get": {
+            "tags": [
+                "Redeems"
+            ],
+            "summary": "Get redeems list",
+            "description": "Get paginated list of SC redeem requests with optional filtering",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "account",
+                    "in": "query",
+                    "description": "Filter by user email or phone",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "order_no",
+                    "in": "query",
+                    "description": "Filter by order number (partial match)",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "out_trade_no",
+                    "in": "query",
+                    "description": "Filter by external trade number (partial match)",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "payment_method_id",
+                    "in": "query",
+                    "description": "Filter by payment method ID",
+                    "required": false,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "name": "status",
+                    "in": "query",
+                    "description": "Filter by status",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "enum": [
+                            "PENDING",
+                            "PROCESSING",
+                            "COMPLETED",
+                            "FAILED",
+                            "CANCELLED",
+                            "REJECTED"
+                        ]
+                    }
+                },
+                {
+                    "name": "pay_status",
+                    "in": "query",
+                    "description": "Filter by payment status",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "enum": [
+                            "PENDING",
+                            "PAID",
+                            "FAILED",
+                            "CANCELLED"
+                        ]
+                    }
+                },
+                {
+                    "name": "approved",
+                    "in": "query",
+                    "description": "Filter by approved status",
+                    "required": false,
+                    "schema": {
+                        "type": "boolean"
+                    }
+                },
+                {
+                    "name": "page",
+                    "in": "query",
+                    "description": "Page number",
+                    "required": false,
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "default": 1
+                    }
+                },
+                {
+                    "name": "per_page",
+                    "in": "query",
+                    "description": "Number of items per page",
+                    "required": false,
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100,
+                        "default": 15
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Redeems list retrieved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "list": {
+                                                "type": "array",
+                                                "items": {
+                                                    "$ref": "#/components/schemas/Redeem"
+                                                }
+                                            },
+                                            "total": {
+                                                "type": "integer"
+                                            },
+                                            "page": {
+                                                "type": "integer"
+                                            },
+                                            "per_page": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/redeems/{redeem}/pass": {
+        "post": {
+            "tags": [
+                "Redeems"
+            ],
+            "summary": "Approve redeem request",
+            "description": "Approve a SC redeem request",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "redeem",
+                    "in": "path",
+                    "description": "Redeem ID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "requestBody": {
+                "required": false,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "note": {
+                                    "type": "string",
+                                    "description": "Optional note"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Redeem approved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/Redeem"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Redeem not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/redeems/{redeem}/reject": {
+        "post": {
+            "tags": [
+                "Redeems"
+            ],
+            "summary": "Reject redeem request",
+            "description": "Reject a SC redeem request",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "redeem",
+                    "in": "path",
+                    "description": "Redeem ID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "requestBody": {
+                "required": false,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "note": {
+                                    "type": "string",
+                                    "description": "Optional note"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Redeem rejected successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/Redeem"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Redeem not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

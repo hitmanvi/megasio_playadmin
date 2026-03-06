@@ -1,0 +1,168 @@
+{
+    "/bundle-purchases": {
+        "get": {
+            "tags": [
+                "Bundle Purchases"
+            ],
+            "summary": "Get bundle purchases list",
+            "description": "Get paginated list of bundle purchases with optional filtering",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "account",
+                    "in": "query",
+                    "description": "Filter by user email or phone",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "order_no",
+                    "in": "query",
+                    "description": "Filter by order number (partial match)",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "out_trade_no",
+                    "in": "query",
+                    "description": "Filter by external trade number (partial match)",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "bundle_id",
+                    "in": "query",
+                    "description": "Filter by bundle ID",
+                    "required": false,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "name": "payment_method_id",
+                    "in": "query",
+                    "description": "Filter by payment method ID",
+                    "required": false,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "name": "status",
+                    "in": "query",
+                    "description": "Filter by order status",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "completed",
+                            "failed",
+                            "cancelled",
+                            "refunded"
+                        ]
+                    }
+                },
+                {
+                    "name": "pay_status",
+                    "in": "query",
+                    "description": "Filter by payment status",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "enum": [
+                            "unpaid",
+                            "paid",
+                            "refunded"
+                        ]
+                    }
+                },
+                {
+                    "name": "page",
+                    "in": "query",
+                    "description": "Page number",
+                    "required": false,
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "default": 1
+                    }
+                },
+                {
+                    "name": "per_page",
+                    "in": "query",
+                    "description": "Number of items per page",
+                    "required": false,
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100,
+                        "default": 15
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Bundle purchases list retrieved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "list": {
+                                                "type": "array",
+                                                "items": {
+                                                    "$ref": "#/components/schemas/BundlePurchase"
+                                                }
+                                            },
+                                            "total": {
+                                                "type": "integer"
+                                            },
+                                            "page": {
+                                                "type": "integer"
+                                            },
+                                            "per_page": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

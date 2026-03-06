@@ -1,0 +1,142 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Admin API",
+        "description": "Admin authentication API endpoints",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api",
+            "description": "Local development server"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "Enter the token with the `Bearer ` prefix, e.g. \"Bearer abcde12345\""
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Admin Authentication",
+            "description": "Admin authentication endpoints"
+        },
+        {
+            "name": "Tags",
+            "description": "Tag management endpoints"
+        },
+        {
+            "name": "Brands",
+            "description": "Brand management endpoints"
+        },
+        {
+            "name": "Upload",
+            "description": "File upload endpoints"
+        },
+        {
+            "name": "Games",
+            "description": "Game management endpoints"
+        },
+        {
+            "name": "Banners",
+            "description": "Banner management endpoints"
+        },
+        {
+            "name": "Game Groups",
+            "description": "Game group management endpoints"
+        },
+        {
+            "name": "Orders",
+            "description": "Order management endpoints"
+        },
+        {
+            "name": "Order Archives",
+            "description": "Order archive management endpoints"
+        },
+        {
+            "name": "Payment Methods",
+            "description": "Payment method management endpoints"
+        },
+        {
+            "name": "Deposits",
+            "description": "Deposit management endpoints"
+        },
+        {
+            "name": "Withdraws",
+            "description": "Withdraw management endpoints"
+        },
+        {
+            "name": "User Activities",
+            "description": "User activity management endpoints"
+        },
+        {
+            "name": "Users",
+            "description": "User management endpoints"
+        },
+        {
+            "name": "Currencies",
+            "description": "Currency management endpoints"
+        },
+        {
+            "name": "KYCs",
+            "description": "KYC verification management endpoints"
+        },
+        {
+            "name": "Settings",
+            "description": "System settings management endpoints"
+        },
+        {
+            "name": "Bundles",
+            "description": "Bundle management endpoints"
+        },
+        {
+            "name": "Bundle Purchases",
+            "description": "Bundle purchase records endpoints"
+        },
+        {
+            "name": "Redeems",
+            "description": "SC redeem management endpoints"
+        },
+        {
+            "name": "Tags",
+            "description": "Tag and user tag management endpoints"
+        },
+        {
+            "name": "Blacklists",
+            "description": "Blacklist management endpoints"
+        },
+        {
+            "name": "User Tag Logs",
+            "description": "User tag log endpoints"
+        },
+        {
+            "name": "VIP Level Groups",
+            "description": "VIP level group management endpoints"
+        },
+        {
+            "name": "VIP Level Groups",
+            "description": "VIP level group management endpoints"
+        },
+        {
+            "name": "VIP Levels",
+            "description": "VIP level management endpoints"
+        },
+        {
+            "name": "Article Groups",
+            "description": "Article group management endpoints"
+        },
+        {
+            "name": "Articles",
+            "description": "Article management endpoints"
+        },
+        {
+            "name": "Agents",
+            "description": "Agent (promotion) management endpoints"
+        }
+    ]
+}

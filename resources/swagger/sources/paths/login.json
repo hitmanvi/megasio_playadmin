@@ -1,0 +1,85 @@
+{
+    "/login": {
+        "post": {
+            "tags": [
+                "Admin Authentication"
+            ],
+            "summary": "Admin login",
+            "description": "Authenticate admin user and return access token",
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "name",
+                                "password"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "Admin username",
+                                    "example": "admin"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "description": "Admin password",
+                                    "example": "password"
+                                },
+                                "two_factor_code": {
+                                    "type": "string",
+                                    "minLength": 6,
+                                    "maxLength": 6,
+                                    "description": "双因素验证码（已绑定 2FA 时必填）"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Login successful",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginResponse"
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "description": "需要双因素验证（code=403, errmsg=requires_two_factor）",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 403
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": "requires_two_factor"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "422": {
+                    "description": "Validation error",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,448 @@
+{
+    "/withdraws": {
+        "get": {
+            "tags": [
+                "Withdraws"
+            ],
+            "summary": "Get withdraws list",
+            "description": "Get paginated list of withdraws with optional filtering",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "account",
+                    "in": "query",
+                    "description": "Filter withdraws by user email or phone",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "order_no",
+                    "in": "query",
+                    "description": "Filter withdraws by order number",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "out_trade_no",
+                    "in": "query",
+                    "description": "Filter withdraws by external trade number",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "payment_method_id",
+                    "in": "query",
+                    "description": "Filter withdraws by payment method ID",
+                    "required": false,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "name": "pay_status",
+                    "in": "query",
+                    "description": "Filter withdraws by pay status",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "status",
+                    "in": "query",
+                    "description": "Filter withdraws by status (supports multiple values)",
+                    "required": false,
+                    "style": "form",
+                    "explode": true,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "PENDING",
+                                "PROCESSING",
+                                "COMPLETED",
+                                "FAILED",
+                                "CANCELLED",
+                                "REJECTED"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "approved",
+                    "in": "query",
+                    "description": "Filter withdraws by approved status",
+                    "required": false,
+                    "schema": {
+                        "type": "boolean"
+                    }
+                },
+                {
+                    "name": "min_amount",
+                    "in": "query",
+                    "description": "Filter withdraws with amount >= this value",
+                    "required": false,
+                    "schema": {
+                        "type": "number",
+                        "minimum": 0
+                    }
+                },
+                {
+                    "name": "max_amount",
+                    "in": "query",
+                    "description": "Filter withdraws with amount <= this value",
+                    "required": false,
+                    "schema": {
+                        "type": "number",
+                        "minimum": 0
+                    }
+                },
+                {
+                    "name": "page",
+                    "in": "query",
+                    "description": "Page number",
+                    "required": false,
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "default": 1
+                    }
+                },
+                {
+                    "name": "per_page",
+                    "in": "query",
+                    "description": "Number of items per page",
+                    "required": false,
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100,
+                        "default": 15
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Withdraws list retrieved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "items": {
+                                                "type": "array",
+                                                "items": {
+                                                    "$ref": "#/components/schemas/Withdraw"
+                                                }
+                                            },
+                                            "meta": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "current_page": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "last_page": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "total": {
+                                                        "type": "integer",
+                                                        "example": 100
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "meta": {
+                                        "type": "object",
+                                        "properties": {
+                                            "current_page": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "last_page": {
+                                                "type": "integer",
+                                                "example": 10
+                                            },
+                                            "total": {
+                                                "type": "integer",
+                                                "example": 100
+                                            }
+                                        }
+                                    },
+                                    "extra": {
+                                        "type": "null"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/withdraws/counts": {
+        "get": {
+            "tags": [
+                "Withdraws"
+            ],
+            "summary": "Get withdraw counts by status",
+            "description": "Get counts of withdraws grouped by status: pending, processing, and other",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Withdraw counts retrieved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "pending": {
+                                                "type": "integer",
+                                                "description": "Count of pending withdraws"
+                                            },
+                                            "processing": {
+                                                "type": "integer",
+                                                "description": "Count of processing withdraws"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/withdraws/{withdraw}/pass": {
+        "post": {
+            "tags": [
+                "Withdraws"
+            ],
+            "summary": "Approve withdraw request",
+            "description": "Approve a withdraw request and set status to PROCESSING",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "withdraw",
+                    "in": "path",
+                    "description": "Withdraw ID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "requestBody": {
+                "required": false,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "note": {
+                                    "type": "string",
+                                    "description": "Optional note for the approval"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Withdraw approved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/Withdraw"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Withdraw not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/withdraws/{withdraw}/reject": {
+        "post": {
+            "tags": [
+                "Withdraws"
+            ],
+            "summary": "Reject withdraw request",
+            "description": "Reject a withdraw request and set status to REJECTED",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "withdraw",
+                    "in": "path",
+                    "description": "Withdraw ID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "requestBody": {
+                "required": false,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "note": {
+                                    "type": "string",
+                                    "description": "Optional note for the rejection"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Withdraw rejected successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/Withdraw"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Withdraw not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

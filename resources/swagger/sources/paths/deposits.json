@@ -1,0 +1,329 @@
+{
+    "/deposits": {
+        "get": {
+            "tags": [
+                "Deposits"
+            ],
+            "summary": "Get deposits list",
+            "description": "Get paginated list of deposits with optional filtering",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "account",
+                    "in": "query",
+                    "description": "Filter deposits by user email or phone",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "order_no",
+                    "in": "query",
+                    "description": "Filter deposits by order number",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "out_trade_no",
+                    "in": "query",
+                    "description": "Filter deposits by external trade number",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "payment_method_id",
+                    "in": "query",
+                    "description": "Filter deposits by payment method ID",
+                    "required": false,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "name": "pay_status",
+                    "in": "query",
+                    "description": "Filter deposits by pay status",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "status",
+                    "in": "query",
+                    "description": "Filter deposits by status",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "is_disputed",
+                    "in": "query",
+                    "description": "Filter deposits by disputed status",
+                    "required": false,
+                    "schema": {
+                        "type": "boolean"
+                    }
+                },
+                {
+                    "name": "resolved_status",
+                    "in": "query",
+                    "description": "Filter deposits by dispute resolution status",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "sort_by",
+                    "in": "query",
+                    "description": "Field to sort by",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "enum": [
+                            "id",
+                            "created_at",
+                            "amount",
+                            "actual_amount",
+                            "completed_at",
+                            "disputed_at"
+                        ],
+                        "default": "id"
+                    }
+                },
+                {
+                    "name": "sort_order",
+                    "in": "query",
+                    "description": "Sort order",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "default": "desc"
+                    }
+                },
+                {
+                    "name": "page",
+                    "in": "query",
+                    "description": "Page number",
+                    "required": false,
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "default": 1
+                    }
+                },
+                {
+                    "name": "per_page",
+                    "in": "query",
+                    "description": "Number of items per page",
+                    "required": false,
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100,
+                        "default": 15
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Deposits list retrieved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "items": {
+                                                "type": "array",
+                                                "items": {
+                                                    "$ref": "#/components/schemas/Deposit"
+                                                }
+                                            },
+                                            "meta": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "current_page": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "last_page": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "total": {
+                                                        "type": "integer",
+                                                        "example": 100
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "meta": {
+                                        "type": "object",
+                                        "properties": {
+                                            "current_page": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "last_page": {
+                                                "type": "integer",
+                                                "example": 10
+                                            },
+                                            "total": {
+                                                "type": "integer",
+                                                "example": 100
+                                            }
+                                        }
+                                    },
+                                    "extra": {
+                                        "type": "null"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/deposits/{deposit}/resolve": {
+        "post": {
+            "tags": [
+                "Deposits"
+            ],
+            "summary": "Resolve deposit dispute",
+            "description": "Resolve a deposit dispute by setting resolved_status and marking is_disputed=true",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "deposit",
+                    "in": "path",
+                    "description": "Deposit ID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "requestBody": {
+                "required": false,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "resolved_status": {
+                                    "type": "string",
+                                    "description": "Resolution status",
+                                    "maxLength": 255,
+                                    "nullable": true
+                                },
+                                "abnormal_status": {
+                                    "type": "string",
+                                    "description": "Abnormal status",
+                                    "maxLength": 255,
+                                    "nullable": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Deposit resolved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/Deposit"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Deposit not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "422": {
+                    "description": "Validation error",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

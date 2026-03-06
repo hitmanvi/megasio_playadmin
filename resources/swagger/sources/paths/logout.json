@@ -1,0 +1,38 @@
+{
+    "/logout": {
+        "post": {
+            "tags": [
+                "Admin Authentication"
+            ],
+            "summary": "Admin logout",
+            "description": "Logout admin user and revoke access token",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Logout successful",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LogoutResponse"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

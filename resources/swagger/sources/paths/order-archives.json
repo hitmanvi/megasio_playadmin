@@ -1,0 +1,167 @@
+{
+    "/order-archives": {
+        "get": {
+            "tags": [
+                "Order Archives"
+            ],
+            "summary": "Get order archives list",
+            "description": "Get paginated list of archived orders with optional filtering",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "order_id",
+                    "in": "query",
+                    "description": "Filter by order ID",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "out_id",
+                    "in": "query",
+                    "description": "Filter by external order ID",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "game_name",
+                    "in": "query",
+                    "description": "Filter by game name",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "start_date",
+                    "in": "query",
+                    "description": "Filter by start date (YYYY-MM-DD)",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                {
+                    "name": "end_date",
+                    "in": "query",
+                    "description": "Filter by end date (YYYY-MM-DD)",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                {
+                    "name": "min_amount",
+                    "in": "query",
+                    "description": "Filter by minimum amount",
+                    "required": false,
+                    "schema": {
+                        "type": "number"
+                    }
+                },
+                {
+                    "name": "max_amount",
+                    "in": "query",
+                    "description": "Filter by maximum amount",
+                    "required": false,
+                    "schema": {
+                        "type": "number"
+                    }
+                },
+                {
+                    "name": "currency",
+                    "in": "query",
+                    "description": "Filter by currency",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "page",
+                    "in": "query",
+                    "description": "Page number",
+                    "required": false,
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "default": 1
+                    }
+                },
+                {
+                    "name": "per_page",
+                    "in": "query",
+                    "description": "Number of items per page",
+                    "required": false,
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100,
+                        "default": 15
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Order archives list retrieved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "list": {
+                                                "type": "array",
+                                                "items": {
+                                                    "$ref": "#/components/schemas/OrderArchive"
+                                                }
+                                            },
+                                            "total": {
+                                                "type": "integer"
+                                            },
+                                            "page": {
+                                                "type": "integer"
+                                            },
+                                            "per_page": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
