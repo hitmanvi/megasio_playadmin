@@ -2829,13 +2829,27 @@
                     "Agents"
                 ],
                 "summary": "获取代理列表",
-                "description": "分页获取代理列表，支持按名称、账号、状态筛选",
+                "description": "分页获取代理列表，支持按 ID 列表、名称、账号、状态筛选",
                 "security": [
                     {
                         "sanctum": []
                     }
                 ],
                 "parameters": [
+                    {
+                        "name": "ids",
+                        "in": "query",
+                        "description": "按 ID 列表筛选，如 ids[]=1&ids[]=2",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
                     {
                         "name": "name",
                         "in": "query",

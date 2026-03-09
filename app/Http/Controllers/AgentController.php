@@ -14,6 +14,8 @@ class AgentController extends Controller
     public function index(Request $request): JsonResponse
     {
         $request->validate([
+            'ids' => 'nullable|array',
+            'ids.*' => 'integer',
             'name' => 'nullable|string',
             'account' => 'nullable|string|max:255',
             'status' => 'nullable|string|in:active,inactive',
@@ -22,6 +24,10 @@ class AgentController extends Controller
         ]);
 
         $query = Agent::query();
+
+        if ($request->filled('ids')) {
+            $query->whereIn('id', $request->ids);
+        }
 
         if ($request->filled('name')) {
             $query->byName($request->name);
