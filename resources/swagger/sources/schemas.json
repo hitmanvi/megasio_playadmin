@@ -1913,6 +1913,10 @@
                 ],
                 "description": "Status"
             },
+            "agent_links_count": {
+                "type": "integer",
+                "description": "推广链接数量（列表时返回）"
+            },
             "agent_links": {
                 "type": "array",
                 "items": {

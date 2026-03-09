@@ -38,7 +38,7 @@ class AgentController extends Controller
         $query->orderBy('id', 'desc');
 
         $perPage = $request->get('per_page', 15);
-        $agents = $query->paginate($perPage);
+        $agents = $query->withCount('agentLinks')->paginate($perPage);
 
         return $this->responseListWithPaginator($agents, null);
     }
