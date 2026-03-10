@@ -1953,8 +1953,10 @@
             },
             "promotion_code": {
                 "type": "string",
-                "maxLength": 32,
-                "description": "推广码（唯一）"
+                "minLength": 4,
+                "maxLength": 4,
+                "pattern": "^[A-Za-z]{4}$",
+                "description": "推广码（4位纯字母，唯一，创建时由服务端自动生成）"
             },
             "status": {
                 "type": "string",

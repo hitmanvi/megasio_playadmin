@@ -18,7 +18,7 @@ class AgentLinkController extends Controller
         $request->validate([
             'agent_id' => 'nullable|integer',
             'name' => 'nullable|string',
-            'promotion_code' => 'nullable|string|max:32',
+            'promotion_code' => 'nullable|string|size:4|alpha',
             'status' => 'nullable|string|in:active,inactive',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
@@ -62,13 +62,13 @@ class AgentLinkController extends Controller
 
     /**
      * Store a newly created agent link in storage.
+     * promotion_code 由服务端自动生成（4 位唯一）。
      */
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'agent_id' => 'required|integer',
             'name' => 'required|string|max:255',
-            'promotion_code' => 'required|string|max:32',
             'status' => 'nullable|string|in:active,inactive',
             'facebook_config' => 'nullable|array',
             'kochava_config' => 'nullable|array',
@@ -79,9 +79,32 @@ class AgentLinkController extends Controller
             return $this->error(Err::INVALID_PARAMS);
         }
 
+        $validated['promotion_code'] = $this->generateUniquePromotionCode();
+
         $link = AgentLink::create($validated);
 
         return $this->responseItem($link);
+    }
+
+    /**
+     * 生成 4 位唯一推广码（数字+大写字母，排除易混淆字符）
+     */
+    private function generateUniquePromotionCode(): string
+    {
+        $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // 纯字母，排除 I/O 易混淆
+        $maxAttempts = 100;
+
+        for ($i = 0; $i < $maxAttempts; $i++) {
+            $code = '';
+            for ($j = 0; $j < 4; $j++) {
+                $code .= $chars[random_int(0, strlen($chars) - 1)];
+            }
+            if (!AgentLink::where('promotion_code', $code)->exists()) {
+                return $code;
+            }
+        }
+
+        throw new \RuntimeException('Unable to generate unique promotion code.');
     }
 
     /**
@@ -91,7 +114,7 @@ class AgentLinkController extends Controller
     {
         $validated = $request->validate([
             'name' => 'nullable|string|max:255',
-            'promotion_code' => 'nullable|string|max:32',
+            'promotion_code' => 'nullable|string|size:4|alpha',
             'status' => 'nullable|string|in:active,inactive',
             'facebook_config' => 'nullable|array',
             'kochava_config' => 'nullable|array',

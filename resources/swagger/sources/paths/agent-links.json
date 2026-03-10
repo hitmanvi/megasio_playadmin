@@ -33,11 +33,12 @@
                 {
                     "name": "promotion_code",
                     "in": "query",
-                    "description": "按推广码筛选",
+                    "description": "按推广码筛选（4位纯字母）",
                     "required": false,
                     "schema": {
                         "type": "string",
-                        "maxLength": 32
+                        "minLength": 4,
+                        "maxLength": 4
                     }
                 },
                 {
@@ -137,6 +138,7 @@
                 "Agent Links"
             ],
             "summary": "创建推广链接",
+            "description": "推广码（promotion_code）由服务端自动生成 4 位纯字母唯一码，无需传入",
             "security": [
                 {
                     "sanctum": []
@@ -150,8 +152,7 @@
                             "type": "object",
                             "required": [
                                 "agent_id",
-                                "name",
-                                "promotion_code"
+                                "name"
                             ],
                             "properties": {
                                 "agent_id": {
@@ -162,11 +163,6 @@
                                     "type": "string",
                                     "maxLength": 255,
                                     "description": "链接名称"
-                                },
-                                "promotion_code": {
-                                    "type": "string",
-                                    "maxLength": 32,
-                                    "description": "推广码（唯一）"
                                 },
                                 "status": {
                                     "type": "string",
@@ -333,7 +329,9 @@
                                 },
                                 "promotion_code": {
                                     "type": "string",
-                                    "maxLength": 32
+                                    "minLength": 4,
+                                    "maxLength": 4,
+                                    "pattern": "^[A-Za-z]{4}$"
                                 },
                                 "status": {
                                     "type": "string",
