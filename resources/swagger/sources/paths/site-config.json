@@ -1,0 +1,40 @@
+{
+    "/site-config": {
+        "get": {
+            "tags": ["Site"],
+            "summary": "获取站点基础配置",
+            "description": "返回站点基础配置，当前包含站点域名（来自 APP_URL）",
+            "security": [{ "sanctum": [] }],
+            "responses": {
+                "200": {
+                    "description": "成功",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": { "type": "integer", "example": 0 },
+                                    "errmsg": { "type": "string" },
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "domain": { "type": "string", "description": "站点域名", "example": "example.com" }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "未授权",
+                    "content": {
+                        "application/json": {
+                            "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

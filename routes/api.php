@@ -30,6 +30,7 @@ use App\Http\Controllers\ArticleGroupController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\AgentLinkController;
+use App\Http\Controllers\SiteConfigController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,7 @@ Route::post('login', [AdminAuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AdminAuthController::class, 'logout']);
     Route::get('mine', [AdminAuthController::class, 'mine']);
+    Route::get('site-config', [SiteConfigController::class, 'index']);
     Route::put('password', [AdminAuthController::class, 'updatePassword']);
     Route::post('two-factor/bind', [AdminAuthController::class, 'bindTwoFactor']);
     Route::post('two-factor/bind/confirm', [AdminAuthController::class, 'bindTwoFactorConfirm']);
