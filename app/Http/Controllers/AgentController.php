@@ -50,6 +50,26 @@ class AgentController extends Controller
     }
 
     /**
+     * 获取所有 agent 及其关联的 agent_links（不分页）
+     */
+    public function listWithLinks(Request $request): JsonResponse
+    {
+        $request->validate([
+            'status' => 'nullable|string|in:active,inactive',
+        ]);
+
+        $query = Agent::query()->with('agentLinks')->orderBy('id', 'desc');
+
+        if ($request->filled('status')) {
+            $query->byStatus($request->status);
+        }
+
+        $agents = $query->get();
+
+        return $this->responseItem($agents);
+    }
+
+    /**
      * Display the specified agent.
      */
     public function show(Agent $agent): JsonResponse

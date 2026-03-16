@@ -217,6 +217,7 @@ Route::middleware('auth:sanctum')->group(function () {
            
            // Agents routes
            Route::get('agents', [AgentController::class, 'index']);
+           Route::get('agents/with-links', [AgentController::class, 'listWithLinks']);
            Route::post('agents', [AgentController::class, 'store']);
            Route::get('agents/{agent}', [AgentController::class, 'show']);
            Route::put('agents/{agent}', [AgentController::class, 'update']);
