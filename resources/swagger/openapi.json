@@ -10609,6 +10609,10 @@
                                                                 "type": "integer",
                                                                 "description": "有首次充值的新用户数"
                                                             },
+                                                            "registered_and_first_deposit_count": {
+                                                                "type": "integer",
+                                                                "description": "今天注册且有首充的人数"
+                                                            },
                                                             "deposit_created_users_count": {
                                                                 "type": "integer",
                                                                 "description": "创建充值订单人数"
@@ -10620,6 +10624,18 @@
                                                             "withdraw_completed_users_count": {
                                                                 "type": "integer",
                                                                 "description": "提现成功人数"
+                                                            },
+                                                            "deposit_created_count": {
+                                                                "type": "integer",
+                                                                "description": "创建充值订单个数"
+                                                            },
+                                                            "deposit_completed_count": {
+                                                                "type": "integer",
+                                                                "description": "完成充值订单个数"
+                                                            },
+                                                            "withdraw_completed_count": {
+                                                                "type": "integer",
+                                                                "description": "完成提现订单个数"
                                                             },
                                                             "registered_users_deposit_amount": {
                                                                 "type": "number",
