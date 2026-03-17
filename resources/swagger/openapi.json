@@ -10442,6 +10442,166 @@
                 }
             }
         },
+        "/opensearch/stats/daily": {
+            "get": {
+                "tags": [
+                    "OpenSearch"
+                ],
+                "summary": "按日统计（按时区聚合）",
+                "description": "按所给时区进行日期聚合，支持过滤 agent_id、agent_link_id、日期范围。返回每日：DAU、注册用户数、首充用户数、创建充值订单人数、充值成功人数、提现成功人数、今日注册用户充值金额、今日首充用户充值金额。",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "timezone",
+                        "in": "query",
+                        "description": "时区，如 Asia/Shanghai、UTC+8",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Asia/Shanghai"
+                        }
+                    },
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "description": "起始日期",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "description": "结束日期",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "agent_id",
+                        "in": "query",
+                        "description": "按代理 ID 筛选",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "agent_link_id",
+                        "in": "query",
+                        "description": "按推广链接 ID 筛选",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errmsg": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "description": "按日期分桶的每日统计",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "date": {
+                                                        "type": "string",
+                                                        "description": "日期 Y-m-d（按时区）"
+                                                    },
+                                                    "dau": {
+                                                        "type": "integer",
+                                                        "description": "当日有登录行为的用户数"
+                                                    },
+                                                    "registered_count": {
+                                                        "type": "integer",
+                                                        "description": "注册用户数"
+                                                    },
+                                                    "first_deposit_users_count": {
+                                                        "type": "integer",
+                                                        "description": "有首次充值的新用户数"
+                                                    },
+                                                    "deposit_created_users_count": {
+                                                        "type": "integer",
+                                                        "description": "创建充值订单人数"
+                                                    },
+                                                    "deposit_completed_users_count": {
+                                                        "type": "integer",
+                                                        "description": "充值成功人数"
+                                                    },
+                                                    "withdraw_completed_users_count": {
+                                                        "type": "integer",
+                                                        "description": "提现成功人数"
+                                                    },
+                                                    "registered_users_deposit_amount": {
+                                                        "type": "number",
+                                                        "description": "今日注册用户的充值金额"
+                                                    },
+                                                    "first_deposit_users_deposit_amount": {
+                                                        "type": "number",
+                                                        "description": "今日发生首充的用户的充值金额"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "未授权",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "参数校验失败（如缺少 timezone）",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "OpenSearch 未启用或连接失败",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/order-archives": {
             "get": {
                 "tags": [

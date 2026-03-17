@@ -234,4 +234,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
            // OpenSearch 统计
            Route::get('opensearch/stats/user-deposit-withdraw-totals', [OpenSearchStatsController::class, 'userDepositWithdrawTotals']);
+           Route::get('opensearch/stats/daily', [OpenSearchStatsController::class, 'dailyStats']);
        });
