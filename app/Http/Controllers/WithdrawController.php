@@ -146,9 +146,8 @@ class WithdrawController extends Controller
                 'amount' => $withdraw->actual_amount,
                 'symbol' => $withdraw->currency,
                 'coin_type' => $withdraw->payment_method?->currency_type,
-                'extra_info' => $withdraw->extra_info,
                 'user_ip' => $withdraw->user_ip,
-            ], [], 2, $withdraw->payment_method?->key);
+            ], $withdraw->extra_info, 2, $withdraw->payment_method?->key);
     
             if (!isset($resp['code']) || $resp['code'] != 0) {
                 DB::rollBack();
