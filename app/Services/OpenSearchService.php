@@ -5,9 +5,9 @@ namespace App\Services;
 use App\Models\Deposit;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use OpenSearch\Client;
 use OpenSearch\ClientBuilder;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 
 /**
@@ -30,13 +30,6 @@ class OpenSearchService
     {
         $this->enabled = config('opensearch.enabled', false);
         $this->indexPrefix = rtrim(config('opensearch.index_prefix', 'playapi'), '-');
-    }
-
-    protected function debug(string $message, array $context = []): void
-    {
-        if (config('opensearch.debug', false)) {
-            Log::debug('[OpenSearch] ' . $message, $context);
-        }
     }
 
     /**
@@ -114,7 +107,6 @@ class OpenSearchService
         }
 
         $client = $builder->build();
-        $this->debug('Client built', ['hosts' => $params['hosts'], 'auth' => isset($params['basicAuthentication'])]);
         return $client;
     }
 
@@ -153,9 +145,7 @@ class OpenSearchService
         }
 
         try {
-            $this->debug('Ping start');
             $client->ping();
-            $this->debug('Ping ok');
             return true;
         } catch (Throwable $e) {
             Log::warning('OpenSearch ping failed', [
@@ -191,18 +181,15 @@ class OpenSearchService
         }
 
         try {
-            $this->debug('Index document', ['index' => $indexName, 'id' => $id, 'document_keys' => array_keys($document)]);
             $response = $client->index($params);
             $responseArray = is_array($response) ? $response : (array) $response;
             $docId = $responseArray['_id'] ?? $id;
-            $this->debug('Index document ok', ['index' => $indexName, '_id' => $docId]);
 
             return [
                 'success' => true,
                 'id' => $docId,
             ];
         } catch (Throwable $e) {
-            $this->debug('Index document failed', ['index' => $indexName, 'error' => $e->getMessage()]);
             Log::error('OpenSearch index failed', [
                 'index' => $indexName,
                 'message' => $e->getMessage(),
@@ -246,7 +233,6 @@ class OpenSearchService
         }
 
         try {
-            $this->debug('Bulk index', ['index' => $indexName, 'count' => count($documents)]);
             $response = $client->bulk(['body' => $body]);
             $responseArray = is_array($response) ? $response : (array) $response;
 
@@ -263,14 +249,12 @@ class OpenSearchService
                 }
             }
 
-            $this->debug('Bulk index ok', ['index' => $indexName, 'indexed' => $indexed, 'errors_count' => count($errors)]);
             return [
                 'success' => empty($errors),
                 'indexed' => $indexed,
                 'errors' => $errors,
             ];
         } catch (Throwable $e) {
-            $this->debug('Bulk index failed', ['index' => $indexName, 'error' => $e->getMessage()]);
             Log::error('OpenSearch bulk index failed', [
                 'index' => $indexName,
                 'message' => $e->getMessage(),
@@ -300,7 +284,6 @@ class OpenSearchService
         $indexName = str_contains($index, '-') ? $index : $this->getIndexName($index);
 
         try {
-            $this->debug('Get document', ['index' => $indexName, 'id' => $id]);
             $response = $client->get([
                 'index' => $indexName,
                 'id' => $id,
@@ -315,7 +298,6 @@ class OpenSearchService
                 '_index' => $responseArray['_index'] ?? $indexName,
             ];
         } catch (Throwable $e) {
-            $this->debug('Get document failed', ['index' => $indexName, 'id' => $id, 'error' => $e->getMessage()]);
             $isNotFound = str_contains($e->getMessage(), '404') || str_contains($e->getMessage(), 'not_found');
             if (!$isNotFound) {
                 Log::error('OpenSearch get document failed', [
@@ -373,7 +355,6 @@ class OpenSearchService
         }
 
         try {
-            $this->debug('Search', ['indices' => $indexNames, 'query' => $params['body']]);
             $response = $client->search($params);
             $responseArray = is_array($response) ? $response : (array) $response;
 
@@ -382,7 +363,6 @@ class OpenSearchService
                 $total = $total['value'];
             }
 
-            $this->debug('Search ok', ['indices' => $indexNames, 'total' => (int) $total, 'hits_count' => count($responseArray['hits']['hits'] ?? [])]);
             return [
                 'success' => true,
                 'hits' => $responseArray['hits']['hits'] ?? [],
@@ -390,7 +370,6 @@ class OpenSearchService
                 'aggregations' => $responseArray['aggregations'] ?? [],
             ];
         } catch (Throwable $e) {
-            $this->debug('Search failed', ['indices' => $indexNames, 'error' => $e->getMessage()]);
             Log::error('OpenSearch search failed', [
                 'indices' => $indexNames,
                 'message' => $e->getMessage(),
@@ -523,7 +502,6 @@ class OpenSearchService
     public function indexEvent(string $eventType, array $payload, ?string $id = null): array
     {
         $index = $this->getIndexForEvent($eventType);
-        $this->debug('Index event', ['event_type' => $eventType, 'index' => $index, 'id' => $id, 'payload_keys' => array_keys($payload)]);
 
         $document = array_merge([
             'event_type' => $eventType,
