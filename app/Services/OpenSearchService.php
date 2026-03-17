@@ -699,7 +699,7 @@ class OpenSearchService
      * 过滤条件：agent_id, agent_link_id, date_from, date_to；聚合按给定 timezone 的日期分桶。
      *
      * @param  array  $options  timezone(必填), date_from, date_to, agent_id, agent_link_id
-     * @return array{success: bool, data?: array<int, array{date: string, dau: int, registered_count: int, first_deposit_users_count: int, registered_and_first_deposit_count: int, deposit_created_users_count: int, deposit_completed_users_count: int, withdraw_completed_users_count: int, deposit_created_count: int, deposit_completed_count: int, withdraw_completed_count: int, registered_users_deposit_amount: float, first_deposit_users_deposit_amount: float}>, error?: string}
+     * @return array{success: bool, data?: array<int, array{date: string, dau: int, registered_count: int, first_deposit_users_count: int, registered_and_first_deposit_count: int, deposit_completed_users_count: int, deposit_created_count: int, deposit_completed_count: int, withdraw_completed_count: int, deposit_amount: float, withdraw_amount: float, registered_users_deposit_amount: float, first_deposit_users_deposit_amount: float}>, error?: string}
      */
     public function getDailyStats(array $options = []): array
     {
@@ -762,7 +762,10 @@ class OpenSearchService
             'aggs' => [
                 'withdraw_completed' => [
                     'filter' => ['term' => ['event_type' => 'withdraw_completed']],
-                    'aggs' => ['users_count' => ['cardinality' => ['field' => 'user_id']]],
+                    'aggs' => [
+                        'users_count' => ['cardinality' => ['field' => 'user_id']],
+                        'total_amount' => ['sum' => ['field' => 'amount']],
+                    ],
                 ],
             ],
         ])];
@@ -854,12 +857,12 @@ class OpenSearchService
                 'registered_count' => (int) ($regBucket['registered_count']['value'] ?? 0),
                 'first_deposit_users_count' => (int) ($firstBucket['first_deposit_users_count']['value'] ?? 0),
                 'registered_and_first_deposit_count' => $registeredAndFirstDepositCount,
-                'deposit_created_users_count' => (int) ($depBucket['deposit_created']['users_count']['value'] ?? 0),
                 'deposit_completed_users_count' => (int) ($depBucket['deposit_completed']['users_count']['value'] ?? 0),
-                'withdraw_completed_users_count' => (int) ($withdrawBucket['withdraw_completed']['users_count']['value'] ?? 0),
                 'deposit_created_count' => (int) ($depBucket['deposit_created']['doc_count'] ?? 0),
                 'deposit_completed_count' => (int) ($depBucket['deposit_completed']['doc_count'] ?? 0),
                 'withdraw_completed_count' => (int) ($withdrawBucket['withdraw_completed']['doc_count'] ?? 0),
+                'deposit_amount' => round((float) ($depBucket['deposit_completed']['total_amount']['value'] ?? 0), 2),
+                'withdraw_amount' => round((float) ($withdrawBucket['withdraw_completed']['total_amount']['value'] ?? 0), 2),
                 'registered_users_deposit_amount' => round($registeredUsersDepositAmount, 2),
                 'first_deposit_users_deposit_amount' => round($firstDepositUsersDepositAmount, 2),
             ];

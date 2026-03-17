@@ -1,0 +1,59 @@
+{
+  "code": 0,
+  "errmsg": "",
+  "data": {
+    "items": [
+      {
+        "date": "2025-03-01",
+        "dau": 120,
+        "registered_count": 15,
+        "registered_and_first_deposit_count": 3,
+        "first_deposit_users_count": 8,
+        "deposit_completed_users_count": 20,
+        "deposit_created_count": 38,
+        "deposit_completed_count": 28,
+        "withdraw_completed_count": 15,
+        "deposit_amount": 4450.5,
+        "withdraw_amount": 2700.0,
+        "registered_users_deposit_amount": 1250.5,
+        "first_deposit_users_deposit_amount": 3200.0
+      },
+      {
+        "date": "2025-03-02",
+        "dau": 135,
+        "registered_count": 22,
+        "first_deposit_users_count": 11,
+        "registered_and_first_deposit_count": 5,
+        "deposit_completed_users_count": 26,
+        "deposit_created_count": 45,
+        "deposit_completed_count": 35,
+        "withdraw_completed_count": 18,
+        "deposit_amount": 5200.0,
+        "withdraw_amount": 3100.0,
+        "registered_users_deposit_amount": 2800.0,
+        "first_deposit_users_deposit_amount": 4100.5
+      },
+      {
+        "date": "2025-03-03",
+        "dau": 98,
+        "registered_count": 10,
+        "first_deposit_users_count": 6,
+        "registered_and_first_deposit_count": 2,
+        "deposit_completed_users_count": 15,
+        "deposit_created_count": 22,
+        "deposit_completed_count": 19,
+        "withdraw_completed_count": 11,
+        "deposit_amount": 2300.0,
+        "withdraw_amount": 1800.0,
+        "registered_users_deposit_amount": 800.0,
+        "first_deposit_users_deposit_amount": 1500.0
+      }
+    ]
+  },
+  "meta": {
+    "current_page": 1,
+    "last_page": 1,
+    "total": 3
+  },
+  "extra": null
+}

@@ -10490,7 +10490,7 @@
                     "OpenSearch"
                 ],
                 "summary": "按日统计（按时区聚合）",
-                "description": "按所给时区进行日期聚合，支持过滤 agent_id、agent_link_id、日期范围。返回每日：DAU、注册用户数、首充用户数、创建充值订单人数、充值成功人数、提现成功人数、今日注册用户充值金额、今日首充用户充值金额。",
+                "description": "按所给时区进行日期聚合，支持过滤 agent_id、agent_link_id、日期范围。返回每日：DAU、注册用户数、首充用户数、充值成功人数、总成功充值金额、总提现金额、今日注册用户充值金额、今日首充用户充值金额。",
                 "security": [
                     {
                         "sanctum": []
@@ -10613,17 +10613,9 @@
                                                                 "type": "integer",
                                                                 "description": "今天注册且有首充的人数"
                                                             },
-                                                            "deposit_created_users_count": {
-                                                                "type": "integer",
-                                                                "description": "创建充值订单人数"
-                                                            },
                                                             "deposit_completed_users_count": {
                                                                 "type": "integer",
                                                                 "description": "充值成功人数"
-                                                            },
-                                                            "withdraw_completed_users_count": {
-                                                                "type": "integer",
-                                                                "description": "提现成功人数"
                                                             },
                                                             "deposit_created_count": {
                                                                 "type": "integer",
@@ -10636,6 +10628,14 @@
                                                             "withdraw_completed_count": {
                                                                 "type": "integer",
                                                                 "description": "完成提现订单个数"
+                                                            },
+                                                            "deposit_amount": {
+                                                                "type": "number",
+                                                                "description": "总成功充值金额"
+                                                            },
+                                                            "withdraw_amount": {
+                                                                "type": "number",
+                                                                "description": "总提现金额"
                                                             },
                                                             "registered_users_deposit_amount": {
                                                                 "type": "number",
