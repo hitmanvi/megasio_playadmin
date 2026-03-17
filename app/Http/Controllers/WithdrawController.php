@@ -10,6 +10,7 @@ use App\Services\SopayService;
 use Carbon\Carbon;
 use App\Enums\Err;
 use Exception;
+use App\Services\BalanceService;
 
 class WithdrawController extends Controller
 {
@@ -178,6 +179,13 @@ class WithdrawController extends Controller
                 'note' => $request->note ?? $withdraw->note,
             ]);
 
+            // 返还用户余额
+            if ($withdraw->user && $withdraw->actual_amount > 0) {
+                $user = $withdraw->user;
+                $currency = $withdraw->currency;
+                $balanceService = new BalanceService();
+                $balanceService->rejectWithdraw($user->id, $currency, $withdraw->actual_amount, $withdraw->id);
+            }
             $withdraw->load(['payment_method', 'user']);
 
             return $this->responseItem($withdraw);
