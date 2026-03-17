@@ -145,7 +145,7 @@ class WithdrawController extends Controller
                 'out_trade_no' => $withdraw->order_no,
                 'amount' => $withdraw->actual_amount,
                 'symbol' => $withdraw->currency,
-                'coin_type' => $withdraw->currency_type,
+                'coin_type' => $withdraw->payment_method?->currency_type,
                 'extra_info' => $withdraw->extra_info,
                 'user_ip' => $withdraw->user_ip,
             ], [], 2, $withdraw->payment_method?->key);
@@ -180,11 +180,11 @@ class WithdrawController extends Controller
             ]);
 
             // 返还用户余额
-            if ($withdraw->user && $withdraw->amount > 0) {
+            if ($withdraw->user && $withdraw->actual_amount > 0) {
                 $user = $withdraw->user;
                 $currency = $withdraw->currency;
                 $balanceService = new BalanceService();
-                $balanceService->rejectWithdraw($user->id, $currency, $withdraw->amount, $withdraw->id);
+                $balanceService->rejectWithdraw($user->id, $currency, $withdraw->actual_amount, $withdraw->id);
             }
             $withdraw->load(['payment_method', 'user']);
 

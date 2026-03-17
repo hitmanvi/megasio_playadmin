@@ -86,7 +86,7 @@ class RedeemController extends Controller
             'out_trade_no' => $redeem->order_no,
             'amount' => $redeem->amount,
             'currency' => $redeem->currency,
-            'coin_type' => $redeem->currency_type,
+            'coin_type' => $redeem->payment_method?->currency_type,
             'extra_info' => $redeem->extra_info,
         ], [], 2, $redeem->payment_method->key);
 
