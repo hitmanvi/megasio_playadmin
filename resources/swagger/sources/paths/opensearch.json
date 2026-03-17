@@ -1,0 +1,93 @@
+{
+    "/opensearch/stats/user-deposit-withdraw-totals": {
+        "get": {
+            "tags": ["OpenSearch"],
+            "summary": "用户充提金额汇总",
+            "description": "从 OpenSearch 获取每个用户的充值总额、提现总额、成功充值总额、成功提现总额。需开启 OPENSEARCH_ENABLED 并配置连接。",
+            "security": [{ "sanctum": [] }],
+            "parameters": [
+                {
+                    "name": "uid",
+                    "in": "query",
+                    "description": "按用户 uid 筛选",
+                    "required": false,
+                    "schema": { "type": "string" }
+                },
+                {
+                    "name": "date_from",
+                    "in": "query",
+                    "description": "起始日期",
+                    "required": false,
+                    "schema": { "type": "string", "format": "date" }
+                },
+                {
+                    "name": "date_to",
+                    "in": "query",
+                    "description": "结束日期",
+                    "required": false,
+                    "schema": { "type": "string", "format": "date" }
+                },
+                {
+                    "name": "agent_id",
+                    "in": "query",
+                    "description": "按代理 ID 筛选",
+                    "required": false,
+                    "schema": { "type": "integer" }
+                },
+                {
+                    "name": "agent_link_id",
+                    "in": "query",
+                    "description": "按推广链接 ID 筛选",
+                    "required": false,
+                    "schema": { "type": "integer" }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "成功",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": { "type": "integer", "example": 0 },
+                                    "errmsg": { "type": "string" },
+                                    "data": {
+                                        "type": "array",
+                                        "description": "每用户一条：充值总额、提现总额、成功充值总额、成功提现总额等",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "user_id": { "type": "integer" },
+                                                "deposit_total": { "type": "number" },
+                                                "withdraw_total": { "type": "number" },
+                                                "deposit_completed_total": { "type": "number" },
+                                                "withdraw_completed_total": { "type": "number" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "未授权",
+                    "content": {
+                        "application/json": {
+                            "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "OpenSearch 未启用或连接失败",
+                    "content": {
+                        "application/json": {
+                            "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

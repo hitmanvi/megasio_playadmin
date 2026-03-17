@@ -180,11 +180,11 @@ class WithdrawController extends Controller
             ]);
 
             // 返还用户余额
-            if ($withdraw->user && $withdraw->actual_amount > 0) {
+            if ($withdraw->user && $withdraw->amount > 0) {
                 $user = $withdraw->user;
                 $currency = $withdraw->currency;
                 $balanceService = new BalanceService();
-                $balanceService->rejectWithdraw($user->id, $currency, $withdraw->actual_amount, $withdraw->id);
+                $balanceService->rejectWithdraw($user->id, $currency, $withdraw->amount, $withdraw->id);
             }
             $withdraw->load(['payment_method', 'user']);
 

@@ -31,6 +31,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\AgentLinkController;
 use App\Http\Controllers\SiteConfigController;
+use App\Http\Controllers\OpenSearchStatsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -230,4 +231,7 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('agent-links/{agentLink}', [AgentLinkController::class, 'show']);
            Route::put('agent-links/{agentLink}', [AgentLinkController::class, 'update']);
            Route::delete('agent-links/{agentLink}', [AgentLinkController::class, 'destroy']);
+
+           // OpenSearch 统计
+           Route::get('opensearch/stats/user-deposit-withdraw-totals', [OpenSearchStatsController::class, 'userDepositWithdrawTotals']);
        });
