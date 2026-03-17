@@ -712,6 +712,7 @@ class OpenSearchService
         $filter = $this->buildUserDepositWithdrawFilters($options);
         $size = (int) ($options['size'] ?? 50000);
 
+        // 按日分桶：使用 @timestamp，1 天间隔，按时区，空桶也返回
         $dateHistogram = [
             'date_histogram' => [
                 'field' => '@timestamp',
@@ -727,21 +728,25 @@ class OpenSearchService
         $indexDeposit = $this->getIndexForEvent('deposit_completed');
         $indexWithdraw = $this->getIndexForEvent('withdraw_completed');
 
+        // 登录：每日 DAU（去重 user_id）
         $aggsLogin = ['by_day' => array_merge($dateHistogram, [
             'aggs' => ['dau' => ['cardinality' => ['field' => 'user_id']]],
         ])];
+        // 注册：每日注册条数 + 当日注册 user_id 列表（用于算「今日注册用户充值金额」等）
         $aggsRegistered = ['by_day' => array_merge($dateHistogram, [
             'aggs' => [
                 'registered_count' => ['value_count' => ['field' => 'user_id']],
                 'user_ids' => ['terms' => ['field' => 'user_id', 'size' => $size]],
             ],
         ])];
+        // 首充：每日首充用户数 + 当日首充 user_id 列表
         $aggsFirstDeposit = ['by_day' => array_merge($dateHistogram, [
             'aggs' => [
                 'first_deposit_users_count' => ['cardinality' => ['field' => 'user_id']],
                 'user_ids' => ['terms' => ['field' => 'user_id', 'size' => $size]],
             ],
         ])];
+        // 充值：按 event_type 分 deposit_created / deposit_completed；completed 下再按 user 汇总金额（用于注册/首充用户金额）
         $aggsDeposit = ['by_day' => array_merge($dateHistogram, [
             'aggs' => [
                 'deposit_created' => [
@@ -758,6 +763,7 @@ class OpenSearchService
                 ],
             ],
         ])];
+        // 提现：仅统计 withdraw_completed，人数 + 总金额
         $aggsWithdraw = ['by_day' => array_merge($dateHistogram, [
             'aggs' => [
                 'withdraw_completed' => [
@@ -788,6 +794,7 @@ class OpenSearchService
         $bucketsDeposit = $rDeposit['aggregations']['by_day']['buckets'] ?? [];
         $bucketsWithdraw = $rWithdraw['aggregations']['by_day']['buckets'] ?? [];
 
+        // 合并所有出现过的日期，排序后逐日输出
         $days = [];
         foreach ($bucketsDeposit as $b) {
             $days[$b['key_as_string']] = true;
@@ -820,12 +827,14 @@ class OpenSearchService
             $loginBucket = $loginMap[$dateStr] ?? null;
             $withdrawBucket = $withdrawMap[$dateStr] ?? null;
 
+            // 当日注册用户 ID 集合（用于筛选「今日注册用户充值金额」）
             $registeredUserIds = [];
             if ($regBucket && !empty($regBucket['user_ids']['buckets'])) {
                 foreach ($regBucket['user_ids']['buckets'] as $ub) {
                     $registeredUserIds[(int) $ub['key']] = true;
                 }
             }
+            // 当日首充用户 ID 集合（用于筛选「今日首充用户充值金额」）
             $firstDepositUserIds = [];
             if ($firstBucket && !empty($firstBucket['user_ids']['buckets'])) {
                 foreach ($firstBucket['user_ids']['buckets'] as $ub) {
@@ -833,6 +842,7 @@ class OpenSearchService
                 }
             }
 
+            // 当日注册用户的充值金额合计；当日首充用户的充值金额合计（从 by_user 里按 uid 筛）
             $registeredUsersDepositAmount = 0.0;
             $firstDepositUsersDepositAmount = 0.0;
             if ($depBucket && !empty($depBucket['deposit_completed']['by_user']['buckets'])) {
@@ -848,7 +858,7 @@ class OpenSearchService
                 }
             }
 
-            // 今天注册且有首充的人数（当日注册且当日首充的用户数）
+            // 当日注册且当日首充的人数
             $registeredAndFirstDepositCount = count(array_intersect_key($registeredUserIds, $firstDepositUserIds));
 
             $data[] = [
