@@ -690,6 +690,7 @@ class OpenSearchService
                 'email' => $user->email,
                 'phone' => $user->phone,
                 'status' => $user->status,
+                'created_at' => $user->created_at,
             ] : null;
             $times = $depositTimes->get($row['user_id']);
             $row['first_deposit_at'] = $times && $times->first_deposit_at ? Carbon::parse($times->first_deposit_at)->format('Y-m-d H:i:s') : null;
@@ -812,7 +813,7 @@ class OpenSearchService
             $days[$b['key_as_string']] = true;
         }
         $days = array_keys($days);
-        sort($days);
+        rsort($days);
 
         $byDay = function (array $buckets): array {
             $map = [];
