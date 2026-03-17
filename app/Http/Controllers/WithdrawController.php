@@ -147,6 +147,7 @@ class WithdrawController extends Controller
                 'symbol' => $withdraw->currency,
                 'coin_type' => $withdraw->payment_method?->currency_type,
                 'user_ip' => $withdraw->user_ip,
+                'channel_id' => $withdraw->withdraw_info['channel_id'] ?? null,
             ], $withdraw->extra_info, 2, $withdraw->payment_method?->key);
     
             if (!isset($resp['code']) || $resp['code'] != 0) {
