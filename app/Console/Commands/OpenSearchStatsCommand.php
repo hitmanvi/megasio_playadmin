@@ -86,9 +86,12 @@ class OpenSearchStatsCommand extends Command
         }
 
         $this->table(
-            ['user_id', 'deposit_total', 'deposit_completed_total', 'withdraw_total', 'withdraw_completed_total'],
+            ['user_id', 'name', 'first_deposit_at', 'last_deposit_at', 'deposit_total', 'deposit_completed_total', 'withdraw_total', 'withdraw_completed_total'],
             array_map(fn ($row) => [
                 $row['user_id'],
+                $row['user']['name'] ?? '-',
+                $row['first_deposit_at'] ?? '-',
+                $row['last_deposit_at'] ?? '-',
                 $row['deposit_total'] ?? 0,
                 $row['deposit_completed_total'] ?? 0,
                 $row['withdraw_total'] ?? 0,

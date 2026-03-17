@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Deposit;
+use App\Models\User;
 use Carbon\Carbon;
 use OpenSearch\Client;
 use OpenSearch\ClientBuilder;
@@ -596,10 +598,10 @@ class OpenSearchService
 
     /**
      * 获取用户充提金额汇总（从 OpenSearch 聚合）
-     * 每个用户一条数据：充值总额、提现总额、成功充值总额、成功提现总额
+     * 每个用户一条数据：充值/提现金额、用户基本信息；首次/末次成功充值时间从数据库取（与请求时间范围无关）。
      *
      * @param  array  $options  size, uid, date_from, date_to, agent_id, agent_link_id, timezone
-     * @return array{success: bool, data?: array<int, array{user_id: int, deposit_total: float, withdraw_total: float, deposit_completed_total: float, withdraw_completed_total: float}>, error?: string}
+     * @return array{success: bool, data?: array<int, array{user_id: int, user: array|null, first_deposit_at: string|null, last_deposit_at: string|null, deposit_total: float, withdraw_total: float, deposit_completed_total: float, withdraw_completed_total: float}>, error?: string}
      */
     public function getUserDepositWithdrawTotals(array $options = []): array
     {
@@ -662,10 +664,11 @@ class OpenSearchService
         $users = [];
         foreach ($depositBuckets as $b) {
             $userId = (int) $b['key'];
+            $completed = $b['completed'] ?? [];
             $users[$userId] = [
                 'user_id' => $userId,
                 'deposit_total' => (float) ($b['total']['value'] ?? 0),
-                'deposit_completed_total' => (float) ($b['completed']['sum_amount']['value'] ?? 0),
+                'deposit_completed_total' => (float) ($completed['sum_amount']['value'] ?? 0),
                 'withdraw_total' => 0.0,
                 'withdraw_completed_total' => 0.0,
             ];
@@ -687,6 +690,34 @@ class OpenSearchService
 
         $data = array_values($users);
         usort($data, fn ($a, $b) => $a['user_id'] <=> $b['user_id']);
+
+        $userIds = array_column($data, 'user_id');
+
+        // 从数据库取各用户首次/末次成功充值时间（与请求时间范围无关）
+        $depositTimes = Deposit::query()
+            ->whereIn('user_id', $userIds)
+            ->whereNotNull('completed_at')
+            ->selectRaw('user_id, MIN(completed_at) as first_deposit_at, MAX(completed_at) as last_deposit_at')
+            ->groupBy('user_id')
+            ->get()
+            ->keyBy('user_id');
+
+        // 批量拉取用户信息并合并
+        $usersMap = User::whereIn('id', $userIds)->get()->keyBy('id');
+        foreach ($data as &$row) {
+            $user = $usersMap->get($row['user_id']);
+            $row['user'] = $user ? [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'status' => $user->status,
+            ] : null;
+            $times = $depositTimes->get($row['user_id']);
+            $row['first_deposit_at'] = $times && $times->first_deposit_at ? Carbon::parse($times->first_deposit_at)->format('Y-m-d H:i:s') : null;
+            $row['last_deposit_at'] = $times && $times->last_deposit_at ? Carbon::parse($times->last_deposit_at)->format('Y-m-d H:i:s') : null;
+        }
+        unset($row);
 
         return [
             'success' => true,

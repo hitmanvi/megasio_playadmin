@@ -3,7 +3,7 @@
         "get": {
             "tags": ["OpenSearch"],
             "summary": "用户充提金额汇总",
-            "description": "从 OpenSearch 获取每个用户的充值总额、提现总额、成功充值总额、成功提现总额。支持分页。需开启 OPENSEARCH_ENABLED 并配置连接。",
+            "description": "从 OpenSearch 获取每个用户的充值/提现金额、首次/末次成功充值时间及用户基本信息。支持分页。需开启 OPENSEARCH_ENABLED 并配置连接。",
             "security": [{ "sanctum": [] }],
             "parameters": [
                 {
@@ -75,7 +75,21 @@
                                                 "items": {
                                                     "type": "object",
                                                     "properties": {
-                                                        "user_id": { "type": "integer" },
+                                                        "user_id": { "type": "integer", "description": "用户 ID" },
+                                                        "user": {
+                                                            "type": "object",
+                                                            "nullable": true,
+                                                            "description": "用户基本信息",
+                                                            "properties": {
+                                                                "id": { "type": "integer" },
+                                                                "name": { "type": "string" },
+                                                                "email": { "type": "string", "nullable": true },
+                                                                "phone": { "type": "string", "nullable": true },
+                                                                "status": { "type": "string" }
+                                                            }
+                                                        },
+                                                        "first_deposit_at": { "type": "string", "format": "date-time", "nullable": true, "description": "首次成功充值时间（来自数据库，与请求时间范围无关）" },
+                                                        "last_deposit_at": { "type": "string", "format": "date-time", "nullable": true, "description": "最后一次成功充值时间（来自数据库，与请求时间范围无关）" },
                                                         "deposit_total": { "type": "number" },
                                                         "withdraw_total": { "type": "number" },
                                                         "deposit_completed_total": { "type": "number" },
