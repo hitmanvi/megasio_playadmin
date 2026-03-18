@@ -33,6 +33,17 @@ class OpenSearchService
     }
 
     /**
+     * 记录发往 OpenSearch 的请求（需 OPENSEARCH_LOG_REQUESTS=true）
+     */
+    protected function logOpenSearchRequest(string $operation, array $params): void
+    {
+        if (! config('opensearch.log_requests', false)) {
+            return;
+        }
+        Log::info('[OpenSearch] request: ' . $operation, $params);
+    }
+
+    /**
      * 规范化 host：https 无端口时补 :443，避免 opensearch-php 错误使用 9200（AWS OpenSearch 兼容）
      */
     protected function normalizeHost(string $host): string
@@ -145,6 +156,7 @@ class OpenSearchService
         }
 
         try {
+            $this->logOpenSearchRequest('ping', []);
             $client->ping();
             return true;
         } catch (Throwable $e) {
@@ -179,6 +191,8 @@ class OpenSearchService
         if ($id !== null) {
             $params['id'] = $id;
         }
+
+        $this->logOpenSearchRequest('index', $params);
 
         try {
             $response = $client->index($params);
@@ -232,6 +246,17 @@ class OpenSearchService
             return ['success' => true, 'indexed' => 0, 'errors' => []];
         }
 
+        $bulkParams = ['body' => $body];
+        if (count($body) > 40) {
+            $bulkParams = [
+                'body' => array_merge(
+                    array_slice($body, 0, 20),
+                    ['_truncated' => true, '_total_lines' => count($body)]
+                ),
+            ];
+        }
+        $this->logOpenSearchRequest('bulk', ['index' => $indexName, ...$bulkParams]);
+
         try {
             $response = $client->bulk(['body' => $body]);
             $responseArray = is_array($response) ? $response : (array) $response;
@@ -283,11 +308,11 @@ class OpenSearchService
 
         $indexName = str_contains($index, '-') ? $index : $this->getIndexName($index);
 
+        $getParams = ['index' => $indexName, 'id' => $id];
+        $this->logOpenSearchRequest('get', $getParams);
+
         try {
-            $response = $client->get([
-                'index' => $indexName,
-                'id' => $id,
-            ]);
+            $response = $client->get($getParams);
             $responseArray = is_array($response) ? $response : (array) $response;
 
             return [
@@ -354,6 +379,8 @@ class OpenSearchService
             $params['body']['_source'] = $options['_source'];
         }
 
+        $this->logOpenSearchRequest('search', $params);
+
         try {
             $response = $client->search($params);
             $responseArray = is_array($response) ? $response : (array) $response;
@@ -415,11 +442,11 @@ class OpenSearchService
             $body['mappings'] = $mappings;
         }
 
+        $createParams = ['index' => $indexName, 'body' => $body];
+        $this->logOpenSearchRequest('indices.create', $createParams);
+
         try {
-            $client->indices()->create([
-                'index' => $indexName,
-                'body' => $body,
-            ]);
+            $client->indices()->create($createParams);
             return ['success' => true];
         } catch (Throwable $e) {
             if (str_contains($e->getMessage(), 'resource_already_exists')) {
@@ -457,11 +484,11 @@ class OpenSearchService
             ...$template,
         ];
 
+        $tplParams = ['name' => $name, 'body' => $body];
+        $this->logOpenSearchRequest('indices.putIndexTemplate', $tplParams);
+
         try {
-            $client->indices()->putIndexTemplate([
-                'name' => $name,
-                'body' => $body,
-            ]);
+            $client->indices()->putIndexTemplate($tplParams);
             return ['success' => true];
         } catch (Throwable $e) {
             Log::error('OpenSearch put index template failed', [
@@ -484,8 +511,11 @@ class OpenSearchService
 
         $indexName = str_contains($index, '-') ? $index : $this->getIndexName($index);
 
+        $existsParams = ['index' => $indexName];
+        $this->logOpenSearchRequest('indices.exists', $existsParams);
+
         try {
-            return $client->indices()->exists(['index' => $indexName]);
+            return $client->indices()->exists($existsParams);
         } catch (Throwable $e) {
             return false;
         }
