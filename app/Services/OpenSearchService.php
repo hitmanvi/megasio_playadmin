@@ -597,12 +597,12 @@ class OpenSearchService
         $must = [];
         $timezone = $this->normalizeTimezone($options['timezone'] ?? 'UTC');
 
-        // uid 可能是 keyword、也可能是 text（需 uid.keyword）；term 打在 text 的 uid 上对整串不匹配
+        // uid 为 text + .keyword 时只有 term uid.keyword 能精确匹配整串；纯 keyword 时用 term uid
         if (array_key_exists('uid', $options) && $options['uid'] !== null && $options['uid'] !== '') {
             $uidStr = trim((string) $options['uid']);
             $should = [
-                ['term' => ['uid' => $uidStr]],
                 ['term' => ['uid.keyword' => $uidStr]],
+                ['term' => ['uid' => $uidStr]],
                 ['match_phrase' => ['uid' => $uidStr]],
             ];
             if (ctype_digit($uidStr)) {

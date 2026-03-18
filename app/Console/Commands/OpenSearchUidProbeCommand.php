@@ -57,9 +57,13 @@ class OpenSearchUidProbeCommand extends Command
             }
 
             $mapping = $service->getIndexMapping($index);
-            $this->line('  <fg=gray>mapping</> uid: '.$this->formatFieldMapping($mapping['uid'] ?? null).'  user_id: '.$this->formatFieldMapping($mapping['user_id'] ?? null));
+            $uidMapping = $this->formatFieldMapping($mapping['uid'] ?? null);
+            $userIdMapping = $this->formatFieldMapping($mapping['user_id'] ?? null);
+            $this->line("  mapping uid: {$uidMapping}  user_id: {$userIdMapping}");
             if (isset($mapping['uid']) && ($mapping['uid']['type'] ?? '') === 'text' && empty($mapping['uid']['fields']['keyword'] ?? null)) {
                 $this->warn('  ⚠ uid 为 text 且无 .keyword 子字段时，term 查整串会匹配不到，建议重建 index 或加 keyword 子字段');
+            } elseif (! empty($mapping['uid']['fields']['keyword'])) {
+                $this->line('  <fg=gray>→ 精确筛选使用 uid.keyword（接口已支持）</>');
             }
 
             $withUid = $this->safeTotal($service, $index, ['exists' => ['field' => 'uid']]);
