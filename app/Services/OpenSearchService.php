@@ -720,6 +720,7 @@ class OpenSearchService
                 'phone' => $user->phone,
                 'status' => $user->status,
                 'created_at' => $user->created_at,
+                'uid' => $user->uid,
             ] : null;
             $times = $depositTimes->get($row['user_id']);
             $row['first_deposit_at'] = $times && $times->first_deposit_at ? Carbon::parse($times->first_deposit_at)->format('Y-m-d H:i:s') : null;
