@@ -570,8 +570,25 @@ class OpenSearchService
         $must = [];
         $timezone = $this->normalizeTimezone($options['timezone'] ?? 'UTC');
 
-        if (!empty($options['uid'])) {
-            $must[] = ['term' => ['uid' => (string) $options['uid']]];
+        // uid 可能是 keyword、也可能是 text（需 uid.keyword）；term 打在 text 的 uid 上对整串不匹配
+        if (array_key_exists('uid', $options) && $options['uid'] !== null && $options['uid'] !== '') {
+            $uidStr = trim((string) $options['uid']);
+            $should = [
+                ['term' => ['uid' => $uidStr]],
+                ['term' => ['uid.keyword' => $uidStr]],
+                ['match_phrase' => ['uid' => $uidStr]],
+            ];
+            if (ctype_digit($uidStr)) {
+                $should[] = ['term' => ['user_id' => (int) $uidStr]];
+            }
+            try {
+                $resolvedUserId = User::query()->where('uid', $uidStr)->value('id');
+                if ($resolvedUserId) {
+                    $should[] = ['term' => ['user_id' => (int) $resolvedUserId]];
+                }
+            } catch (Throwable) {
+            }
+            $must[] = ['bool' => ['should' => $should, 'minimum_should_match' => 1]];
         }
         if (array_key_exists('agent_id', $options) && $options['agent_id'] !== '' && $options['agent_id'] !== null) {
             $must[] = ['term' => ['agent_id' => (int) $options['agent_id']]];
