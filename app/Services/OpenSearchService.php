@@ -411,7 +411,7 @@ class OpenSearchService
     /**
      * 多 index 聚合搜索（便捷方法）
      *
-     * @param  array  $indexPatterns  ['events-*', 'events-deposit'] 等
+     * @param  array  $indexPatterns  ['events-*', 'events-deposit-completed'] 等
      * @param  array  $query  查询
      * @param  array  $options  选项
      */
@@ -619,69 +619,43 @@ class OpenSearchService
         }
 
         $size = (int) ($options['size'] ?? 10000);
-        $depositIndex = $this->getIndexForEvent('deposit_completed');
-        $withdrawIndex = $this->getIndexForEvent('withdraw_completed');
+        $indexDepositCreated = $this->getIndexForEvent('deposit_created');
+        $indexDepositCompleted = $this->getIndexForEvent('deposit_completed');
+        $indexWithdrawCreated = $this->getIndexForEvent('withdraw_created');
+        $indexWithdrawCompleted = $this->getIndexForEvent('withdraw_completed');
 
         $query = $this->buildUserDepositWithdrawFilters($options);
 
-        $depositAggs = [
+        $byUserSum = [
             'by_user' => [
-                'terms' => [
-                    'field' => 'user_id',
-                    'size' => $size,
-                ],
-                'aggs' => [
-                    'total' => ['sum' => ['field' => 'amount']],
-                    'completed' => [
-                        'filter' => ['term' => ['event_type' => 'deposit_completed']],
-                        'aggs' => ['sum_amount' => ['sum' => ['field' => 'amount']]],
-                    ],
-                ],
+                'terms' => ['field' => 'user_id', 'size' => $size],
+                'aggs' => ['sum_amount' => ['sum' => ['field' => 'amount']]],
             ],
         ];
 
-        $withdrawAggs = [
-            'by_user' => [
-                'terms' => [
-                    'field' => 'user_id',
-                    'size' => $size,
-                ],
-                'aggs' => [
-                    'total' => ['sum' => ['field' => 'amount']],
-                    'completed' => [
-                        'filter' => ['term' => ['event_type' => 'withdraw_completed']],
-                        'aggs' => ['sum_amount' => ['sum' => ['field' => 'amount']]],
-                    ],
-                ],
-            ],
-        ];
+        $rDepCreated = $this->search($indexDepositCreated, $query, ['size' => 0, 'aggs' => $byUserSum]);
+        $rDepCompleted = $this->search($indexDepositCompleted, $query, ['size' => 0, 'aggs' => $byUserSum]);
+        $rWdrCreated = $this->search($indexWithdrawCreated, $query, ['size' => 0, 'aggs' => $byUserSum]);
+        $rWdrCompleted = $this->search($indexWithdrawCompleted, $query, ['size' => 0, 'aggs' => $byUserSum]);
 
-        $depositResult = $this->search($depositIndex, $query, ['size' => 0, 'aggs' => $depositAggs]);
-        $withdrawResult = $this->search($withdrawIndex, $query, ['size' => 0, 'aggs' => $withdrawAggs]);
-
-        if (!$depositResult['success']) {
-            return ['success' => false, 'error' => $depositResult['error'] ?? 'Deposit aggregation failed'];
+        foreach (['rDepCreated' => $rDepCreated, 'rDepCompleted' => $rDepCompleted, 'rWdrCreated' => $rWdrCreated, 'rWdrCompleted' => $rWdrCompleted] as $name => $r) {
+            if (!$r['success']) {
+                return ['success' => false, 'error' => $r['error'] ?? $name . ' aggregation failed'];
+            }
         }
-        if (!$withdrawResult['success']) {
-            return ['success' => false, 'error' => $withdrawResult['error'] ?? 'Withdraw aggregation failed'];
-        }
-
-        $depositBuckets = $depositResult['aggregations']['by_user']['buckets'] ?? [];
-        $withdrawBuckets = $withdrawResult['aggregations']['by_user']['buckets'] ?? [];
 
         $users = [];
-        foreach ($depositBuckets as $b) {
+        foreach ($rDepCreated['aggregations']['by_user']['buckets'] ?? [] as $b) {
             $userId = (int) $b['key'];
-            $completed = $b['completed'] ?? [];
             $users[$userId] = [
                 'user_id' => $userId,
-                'deposit_total' => (float) ($b['total']['value'] ?? 0),
-                'deposit_completed_total' => (float) ($completed['sum_amount']['value'] ?? 0),
+                'deposit_total' => (float) ($b['sum_amount']['value'] ?? 0),
+                'deposit_completed_total' => 0.0,
                 'withdraw_total' => 0.0,
                 'withdraw_completed_total' => 0.0,
             ];
         }
-        foreach ($withdrawBuckets as $b) {
+        foreach ($rDepCompleted['aggregations']['by_user']['buckets'] ?? [] as $b) {
             $userId = (int) $b['key'];
             if (!isset($users[$userId])) {
                 $users[$userId] = [
@@ -692,8 +666,33 @@ class OpenSearchService
                     'withdraw_completed_total' => 0.0,
                 ];
             }
-            $users[$userId]['withdraw_total'] = (float) ($b['total']['value'] ?? 0);
-            $users[$userId]['withdraw_completed_total'] = (float) ($b['completed']['sum_amount']['value'] ?? 0);
+            $users[$userId]['deposit_completed_total'] = (float) ($b['sum_amount']['value'] ?? 0);
+        }
+        foreach ($rWdrCreated['aggregations']['by_user']['buckets'] ?? [] as $b) {
+            $userId = (int) $b['key'];
+            if (!isset($users[$userId])) {
+                $users[$userId] = [
+                    'user_id' => $userId,
+                    'deposit_total' => 0.0,
+                    'deposit_completed_total' => 0.0,
+                    'withdraw_total' => 0.0,
+                    'withdraw_completed_total' => 0.0,
+                ];
+            }
+            $users[$userId]['withdraw_total'] = (float) ($b['sum_amount']['value'] ?? 0);
+        }
+        foreach ($rWdrCompleted['aggregations']['by_user']['buckets'] ?? [] as $b) {
+            $userId = (int) $b['key'];
+            if (!isset($users[$userId])) {
+                $users[$userId] = [
+                    'user_id' => $userId,
+                    'deposit_total' => 0.0,
+                    'deposit_completed_total' => 0.0,
+                    'withdraw_total' => 0.0,
+                    'withdraw_completed_total' => 0.0,
+                ];
+            }
+            $users[$userId]['withdraw_completed_total'] = (float) ($b['sum_amount']['value'] ?? 0);
         }
 
         $data = array_values($users);
@@ -765,8 +764,9 @@ class OpenSearchService
         $indexLogin = $this->getIndexForEvent('user_logged_in');
         $indexRegistered = $this->getIndexForEvent('user_registered');
         $indexFirstDeposit = $this->getIndexForEvent('first_deposit_completed');
-        $indexDeposit = $this->getIndexForEvent('deposit_completed');
-        $indexWithdraw = $this->getIndexForEvent('withdraw_completed');
+        $indexDepositCreated = $this->getIndexForEvent('deposit_created');
+        $indexDepositCompleted = $this->getIndexForEvent('deposit_completed');
+        $indexWithdrawCompleted = $this->getIndexForEvent('withdraw_completed');
 
         // 登录：每日 DAU（去重 user_id）
         $aggsLogin = ['by_day' => array_merge($dateHistogram, [
@@ -786,43 +786,32 @@ class OpenSearchService
                 'user_ids' => ['terms' => ['field' => 'user_id', 'size' => $size]],
             ],
         ])];
-        // 充值：按 event_type 分 deposit_created / deposit_completed；completed 下再按 user 汇总金额（用于注册/首充用户金额）
-        $aggsDeposit = ['by_day' => array_merge($dateHistogram, [
+        // 充值创建：独立 index events-deposit-created，桶 doc_count 即当日创建条数
+        $aggsDepositCreated = ['by_day' => $dateHistogram];
+        // 充值成功：独立 index events-deposit-completed，全为成功单
+        $aggsDepositCompleted = ['by_day' => array_merge($dateHistogram, [
             'aggs' => [
-                'deposit_created' => [
-                    'filter' => ['term' => ['event_type' => 'deposit_created']],
-                    'aggs' => ['users_count' => ['cardinality' => ['field' => 'user_id']]],
-                ],
-                'deposit_completed' => [
-                    'filter' => ['term' => ['event_type' => 'deposit_completed']],
-                    'aggs' => [
-                        'users_count' => ['cardinality' => ['field' => 'user_id']],
-                        'total_amount' => ['sum' => ['field' => 'amount']],
-                        'by_user' => ['terms' => ['field' => 'user_id', 'size' => $size], 'aggs' => ['sum_amount' => ['sum' => ['field' => 'amount']]]],
-                    ],
-                ],
+                'users_count' => ['cardinality' => ['field' => 'user_id']],
+                'total_amount' => ['sum' => ['field' => 'amount']],
+                'by_user' => ['terms' => ['field' => 'user_id', 'size' => $size], 'aggs' => ['sum_amount' => ['sum' => ['field' => 'amount']]]],
             ],
         ])];
-        // 提现：仅统计 withdraw_completed，人数 + 总金额
-        $aggsWithdraw = ['by_day' => array_merge($dateHistogram, [
+        // 提现成功：独立 index events-withdraw-completed
+        $aggsWithdrawCompleted = ['by_day' => array_merge($dateHistogram, [
             'aggs' => [
-                'withdraw_completed' => [
-                    'filter' => ['term' => ['event_type' => 'withdraw_completed']],
-                    'aggs' => [
-                        'users_count' => ['cardinality' => ['field' => 'user_id']],
-                        'total_amount' => ['sum' => ['field' => 'amount']],
-                    ],
-                ],
+                'users_count' => ['cardinality' => ['field' => 'user_id']],
+                'total_amount' => ['sum' => ['field' => 'amount']],
             ],
         ])];
 
         $rLogin = $this->search($indexLogin, $filter, ['size' => 0, 'aggs' => $aggsLogin]);
         $rRegistered = $this->search($indexRegistered, $filter, ['size' => 0, 'aggs' => $aggsRegistered]);
         $rFirstDeposit = $this->search($indexFirstDeposit, $filter, ['size' => 0, 'aggs' => $aggsFirstDeposit]);
-        $rDeposit = $this->search($indexDeposit, $filter, ['size' => 0, 'aggs' => $aggsDeposit]);
-        $rWithdraw = $this->search($indexWithdraw, $filter, ['size' => 0, 'aggs' => $aggsWithdraw]);
+        $rDepositCreated = $this->search($indexDepositCreated, $filter, ['size' => 0, 'aggs' => $aggsDepositCreated]);
+        $rDepositCompleted = $this->search($indexDepositCompleted, $filter, ['size' => 0, 'aggs' => $aggsDepositCompleted]);
+        $rWithdraw = $this->search($indexWithdrawCompleted, $filter, ['size' => 0, 'aggs' => $aggsWithdrawCompleted]);
 
-        foreach (['rLogin' => $rLogin, 'rRegistered' => $rRegistered, 'rFirstDeposit' => $rFirstDeposit, 'rDeposit' => $rDeposit, 'rWithdraw' => $rWithdraw] as $name => $r) {
+        foreach (['rLogin' => $rLogin, 'rRegistered' => $rRegistered, 'rFirstDeposit' => $rFirstDeposit, 'rDepositCreated' => $rDepositCreated, 'rDepositCompleted' => $rDepositCompleted, 'rWithdraw' => $rWithdraw] as $name => $r) {
             if (!$r['success']) {
                 return ['success' => false, 'error' => $r['error'] ?? $name . ' aggregation failed'];
             }
@@ -831,12 +820,13 @@ class OpenSearchService
         $bucketsLogin = $rLogin['aggregations']['by_day']['buckets'] ?? [];
         $bucketsRegistered = $rRegistered['aggregations']['by_day']['buckets'] ?? [];
         $bucketsFirstDeposit = $rFirstDeposit['aggregations']['by_day']['buckets'] ?? [];
-        $bucketsDeposit = $rDeposit['aggregations']['by_day']['buckets'] ?? [];
+        $bucketsDepositCreated = $rDepositCreated['aggregations']['by_day']['buckets'] ?? [];
+        $bucketsDepositCompleted = $rDepositCompleted['aggregations']['by_day']['buckets'] ?? [];
         $bucketsWithdraw = $rWithdraw['aggregations']['by_day']['buckets'] ?? [];
 
         // 合并所有出现过的日期，排序后逐日输出
         $days = [];
-        foreach ($bucketsDeposit as $b) {
+        foreach (array_merge($bucketsDepositCreated, $bucketsDepositCompleted) as $b) {
             $days[$b['key_as_string']] = true;
         }
         foreach (array_merge($bucketsLogin, $bucketsRegistered, $bucketsFirstDeposit, $bucketsWithdraw) as $b) {
@@ -855,7 +845,8 @@ class OpenSearchService
 
         $regMap = $byDay($bucketsRegistered);
         $firstMap = $byDay($bucketsFirstDeposit);
-        $depositMap = $byDay($bucketsDeposit);
+        $depCreatedMap = $byDay($bucketsDepositCreated);
+        $depCompletedMap = $byDay($bucketsDepositCompleted);
         $loginMap = $byDay($bucketsLogin);
         $withdrawMap = $byDay($bucketsWithdraw);
 
@@ -863,7 +854,8 @@ class OpenSearchService
         foreach ($days as $dateStr) {
             $regBucket = $regMap[$dateStr] ?? null;
             $firstBucket = $firstMap[$dateStr] ?? null;
-            $depBucket = $depositMap[$dateStr] ?? null;
+            $depCreatedBucket = $depCreatedMap[$dateStr] ?? null;
+            $depCompletedBucket = $depCompletedMap[$dateStr] ?? null;
             $loginBucket = $loginMap[$dateStr] ?? null;
             $withdrawBucket = $withdrawMap[$dateStr] ?? null;
 
@@ -885,8 +877,8 @@ class OpenSearchService
             // 当日注册用户的充值金额合计；当日首充用户的充值金额合计（从 by_user 里按 uid 筛）
             $registeredUsersDepositAmount = 0.0;
             $firstDepositUsersDepositAmount = 0.0;
-            if ($depBucket && !empty($depBucket['deposit_completed']['by_user']['buckets'])) {
-                foreach ($depBucket['deposit_completed']['by_user']['buckets'] as $ub) {
+            if ($depCompletedBucket && !empty($depCompletedBucket['by_user']['buckets'])) {
+                foreach ($depCompletedBucket['by_user']['buckets'] as $ub) {
                     $uid = (int) $ub['key'];
                     $sum = (float) ($ub['sum_amount']['value'] ?? 0);
                     if (isset($registeredUserIds[$uid])) {
@@ -903,16 +895,16 @@ class OpenSearchService
 
             $data[] = [
                 'date' => $dateStr,
-                'dau' => (int) ($loginBucket['dau']['value'] ?? 0),
-                'registered_count' => (int) ($regBucket['registered_count']['value'] ?? 0),
-                'first_deposit_users_count' => (int) ($firstBucket['first_deposit_users_count']['value'] ?? 0),
+                'dau' => (int) (($loginBucket ?? [])['dau']['value'] ?? 0),
+                'registered_count' => (int) (($regBucket ?? [])['registered_count']['value'] ?? 0),
+                'first_deposit_users_count' => (int) (($firstBucket ?? [])['first_deposit_users_count']['value'] ?? 0),
                 'registered_and_first_deposit_count' => $registeredAndFirstDepositCount,
-                'deposit_completed_users_count' => (int) ($depBucket['deposit_completed']['users_count']['value'] ?? 0),
-                'deposit_created_count' => (int) ($depBucket['deposit_created']['doc_count'] ?? 0),
-                'deposit_completed_count' => (int) ($depBucket['deposit_completed']['doc_count'] ?? 0),
-                'withdraw_completed_count' => (int) ($withdrawBucket['withdraw_completed']['doc_count'] ?? 0),
-                'deposit_amount' => round((float) ($depBucket['deposit_completed']['total_amount']['value'] ?? 0), 2),
-                'withdraw_amount' => round((float) ($withdrawBucket['withdraw_completed']['total_amount']['value'] ?? 0), 2),
+                'deposit_completed_users_count' => (int) (($depCompletedBucket ?? [])['users_count']['value'] ?? 0),
+                'deposit_created_count' => (int) (($depCreatedBucket ?? [])['doc_count'] ?? 0),
+                'deposit_completed_count' => (int) (($depCompletedBucket ?? [])['doc_count'] ?? 0),
+                'withdraw_completed_count' => (int) (($withdrawBucket ?? [])['doc_count'] ?? 0),
+                'deposit_amount' => round((float) (($depCompletedBucket ?? [])['total_amount']['value'] ?? 0), 2),
+                'withdraw_amount' => round((float) (($withdrawBucket ?? [])['total_amount']['value'] ?? 0), 2),
                 'registered_users_deposit_amount' => round($registeredUsersDepositAmount, 2),
                 'first_deposit_users_deposit_amount' => round($firstDepositUsersDepositAmount, 2),
             ];
