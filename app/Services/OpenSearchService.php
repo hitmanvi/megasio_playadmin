@@ -113,9 +113,9 @@ class OpenSearchService
             );
         }
 
-        if ($logger = Log::getLogger()) {
-            $builder->setLogger($logger);
-        }
+        // if ($logger = Log::getLogger()) {
+        //     $builder->setLogger($logger);
+        // }
 
         $client = $builder->build();
         return $client;
