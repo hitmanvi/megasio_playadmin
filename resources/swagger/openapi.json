@@ -10353,7 +10353,7 @@
                     {
                         "name": "uid",
                         "in": "query",
-                        "description": "按用户 uid 筛选",
+                        "description": "按用户筛选：可传业务 uid（OpenSearch 文档 uid 或库表 uid 解析到 user_id）；纯数字时同时按 user_id 匹配（事件常只存 user_id）",
                         "required": false,
                         "schema": {
                             "type": "string"
