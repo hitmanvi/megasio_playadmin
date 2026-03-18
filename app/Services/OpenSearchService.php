@@ -522,6 +522,33 @@ class OpenSearchService
     }
 
     /**
+     * 获取 index 的 mapping（用于检查 uid 等字段类型）
+     * 返回合并后的 properties，格式 ['uid' => ['type' => 'keyword'], 'user_id' => ['type' => 'long'], ...]
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public function getIndexMapping(string $index): array
+    {
+        $client = $this->getClient();
+        if (!$client) {
+            return [];
+        }
+
+        $indexName = str_contains($index, '-') ? $index : $this->getIndexName($index);
+
+        try {
+            $response = $client->indices()->getMapping(['index' => $indexName]);
+            $responseArray = is_array($response) ? $response : (array) $response;
+            $indexMapping = $responseArray[$indexName]['mappings'] ?? $responseArray[$indexName] ?? [];
+            $props = $indexMapping['properties'] ?? [];
+
+            return is_array($props) ? $props : [];
+        } catch (Throwable) {
+            return [];
+        }
+    }
+
+    /**
      * 上报事件到 OpenSearch（便捷方法）
      *
      * @param  string  $eventType  事件类型，对应 config.event_indices

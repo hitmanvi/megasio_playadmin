@@ -6,7 +6,7 @@ use App\Services\OpenSearchService;
 use Illuminate\Console\Command;
 
 /**
- * 检查充提相关 index 文档是否带 uid 字段，并可选用 uid 测 getUserDepositWithdrawTotals。
+ * 检查充提相关 index：mapping 里 uid/user_id 字段类型、文档是否带 uid、抽样内容；可选用 uid 测 getUserDepositWithdrawTotals。
  */
 class OpenSearchUidProbeCommand extends Command
 {
@@ -14,7 +14,7 @@ class OpenSearchUidProbeCommand extends Command
                             {--uid= : 测试该值传给 getUserDepositWithdrawTotals 的返回条数与首条摘要}
                             {--sample=3 : 每个 index 抽样打印的文档数}';
 
-    protected $description = '检查充提 OpenSearch 文档是否含 uid，并测试按 uid 拉取用户汇总';
+    protected $description = '检查充提 index 的 uid 字段 mapping 与文档情况，并可选测试按 uid 拉取用户汇总';
 
     private const EVENT_KEYS = [
         'deposit_created' => '充值创建 events-deposit-created',
@@ -54,6 +54,12 @@ class OpenSearchUidProbeCommand extends Command
                 $this->newLine();
 
                 continue;
+            }
+
+            $mapping = $service->getIndexMapping($index);
+            $this->line('  <fg=gray>mapping</> uid: '.$this->formatFieldMapping($mapping['uid'] ?? null).'  user_id: '.$this->formatFieldMapping($mapping['user_id'] ?? null));
+            if (isset($mapping['uid']) && ($mapping['uid']['type'] ?? '') === 'text' && empty($mapping['uid']['fields']['keyword'] ?? null)) {
+                $this->warn('  ⚠ uid 为 text 且无 .keyword 子字段时，term 查整串会匹配不到，建议重建 index 或加 keyword 子字段');
             }
 
             $withUid = $this->safeTotal($service, $index, ['exists' => ['field' => 'uid']]);
@@ -139,5 +145,18 @@ class OpenSearchUidProbeCommand extends Command
         }
 
         return $r['hits'] ?? [];
+    }
+
+    private function formatFieldMapping(?array $field): string
+    {
+        if ($field === null || ! is_array($field)) {
+            return '<fg=red>(无)</>';
+        }
+        $type = $field['type'] ?? '?';
+        $out = $type;
+        if (! empty($field['fields']['keyword']['type'])) {
+            $out .= ' + .keyword';
+        }
+        return $out;
     }
 }
