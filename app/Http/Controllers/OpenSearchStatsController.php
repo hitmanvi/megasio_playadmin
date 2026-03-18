@@ -24,6 +24,8 @@ class OpenSearchStatsController extends Controller
         $request->validate([
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
+            'sort_by' => 'nullable|string|in:user_id,deposit_total,deposit_completed_total,withdraw_total,withdraw_completed_total,deposit_minus_withdraw,deposit_completed_minus_withdraw_completed',
+            'sort_order' => 'nullable|string|in:asc,desc',
         ]);
 
         $service = new OpenSearchService();
@@ -60,6 +62,11 @@ class OpenSearchStatsController extends Controller
         }
 
         $all = $result['data'] ?? [];
+        OpenSearchService::sortUserDepositWithdrawTotalsData(
+            $all,
+            (string) $request->input('sort_by', 'user_id'),
+            strtolower((string) $request->input('sort_order', 'asc')) === 'desc'
+        );
         $paginator = $this->paginateArray($all, $request->input('page', 1), $request->input('per_page', 15));
 
         return $this->responseListWithPaginator($paginator);

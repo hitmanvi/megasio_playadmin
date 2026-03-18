@@ -3,7 +3,7 @@
         "get": {
             "tags": ["OpenSearch"],
             "summary": "用户充提金额汇总",
-            "description": "从 OpenSearch 获取每个用户的充值/提现金额、首次/末次成功充值时间及用户基本信息。支持分页。需开启 OPENSEARCH_ENABLED 并配置连接。",
+            "description": "从 OpenSearch 获取每个用户的充值/提现金额、首次/末次成功充值时间及用户基本信息。支持分页与排序。需开启 OPENSEARCH_ENABLED 并配置连接。",
             "security": [{ "sanctum": [] }],
             "parameters": [
                 {
@@ -54,6 +54,32 @@
                     "description": "按推广链接 ID 筛选",
                     "required": false,
                     "schema": { "type": "integer" }
+                },
+                {
+                    "name": "sort_by",
+                    "in": "query",
+                    "description": "排序字段：user_id（默认）| deposit_total | deposit_completed_total | withdraw_total | withdraw_completed_total | deposit_minus_withdraw（充值创建总额-提现创建总额）| deposit_completed_minus_withdraw_completed（成功充值-成功提现）",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "enum": [
+                            "user_id",
+                            "deposit_total",
+                            "deposit_completed_total",
+                            "withdraw_total",
+                            "withdraw_completed_total",
+                            "deposit_minus_withdraw",
+                            "deposit_completed_minus_withdraw_completed"
+                        ],
+                        "default": "user_id"
+                    }
+                },
+                {
+                    "name": "sort_order",
+                    "in": "query",
+                    "description": "asc 升序 / desc 降序",
+                    "required": false,
+                    "schema": { "type": "string", "enum": ["asc", "desc"], "default": "asc" }
                 }
             ],
             "responses": {
@@ -71,7 +97,7 @@
                                         "properties": {
                                             "items": {
                                                 "type": "array",
-                                                "description": "当前页：每用户一条",
+                                                "description": "当前页：每用户一条（已按 sort_by/sort_order 排序）",
                                                 "items": {
                                                     "type": "object",
                                                     "properties": {

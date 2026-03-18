@@ -734,6 +734,61 @@ class OpenSearchService
     }
 
     /**
+     * 用户充提汇总列表排序（分页前调用）
+     *
+     * sort_by: user_id | deposit_total | deposit_completed_total | withdraw_total | withdraw_completed_total |
+     *          deposit_minus_withdraw (= deposit_total - withdraw_total) |
+     *          deposit_completed_minus_withdraw_completed (= deposit_completed_total - withdraw_completed_total)
+     *
+     * @param  array<int, array<string, mixed>>  $rows
+     */
+    public static function sortUserDepositWithdrawTotalsData(array &$rows, string $sortBy, bool $desc = false): void
+    {
+        $allowed = [
+            'user_id',
+            'deposit_total',
+            'deposit_completed_total',
+            'withdraw_total',
+            'withdraw_completed_total',
+            'deposit_minus_withdraw',
+            'deposit_completed_minus_withdraw_completed',
+        ];
+        if (! in_array($sortBy, $allowed, true)) {
+            $sortBy = 'user_id';
+        }
+
+        $value = function (array $row) use ($sortBy): float {
+            $dt = (float) ($row['deposit_total'] ?? 0);
+            $dct = (float) ($row['deposit_completed_total'] ?? 0);
+            $wt = (float) ($row['withdraw_total'] ?? 0);
+            $wct = (float) ($row['withdraw_completed_total'] ?? 0);
+
+            return match ($sortBy) {
+                'deposit_total' => $dt,
+                'deposit_completed_total' => $dct,
+                'withdraw_total' => $wt,
+                'withdraw_completed_total' => $wct,
+                'deposit_minus_withdraw' => $dt - $wt,
+                'deposit_completed_minus_withdraw_completed' => $dct - $wct,
+                default => (float) ($row['user_id'] ?? 0),
+            };
+        };
+
+        usort($rows, function ($a, $b) use ($sortBy, $desc, $value) {
+            if ($sortBy === 'user_id') {
+                $cmp = ((int) ($a['user_id'] ?? 0)) <=> ((int) ($b['user_id'] ?? 0));
+            } else {
+                $cmp = $value($a) <=> $value($b);
+                if ($cmp === 0) {
+                    $cmp = ((int) ($a['user_id'] ?? 0)) <=> ((int) ($b['user_id'] ?? 0));
+                }
+            }
+
+            return $desc ? -$cmp : $cmp;
+        });
+    }
+
+    /**
      * 按日统计（按时区聚合）
      * 过滤条件：agent_id, agent_link_id, date_from, date_to；聚合按给定 timezone 的日期分桶。
      *

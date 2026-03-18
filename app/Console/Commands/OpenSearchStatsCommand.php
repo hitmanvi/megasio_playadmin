@@ -15,6 +15,8 @@ class OpenSearchStatsCommand extends Command
                             {--agent-id= : 按代理 ID 筛选}
                             {--agent-link-id= : 按推广链接 ID 筛选}
                             {--uid= : 按用户 uid 筛选（仅 totals）}
+                            {--sort-by=user_id : totals 排序字段: user_id, deposit_total, deposit_completed_total, withdraw_total, withdraw_completed_total, deposit_minus_withdraw, deposit_completed_minus_withdraw_completed}
+                            {--sort-order=asc : totals 排序方向 asc|desc}
                             {--json : 以 JSON 输出}';
 
     protected $description = '查看 OpenSearch 统计数据（测试用）';
@@ -73,6 +75,12 @@ class OpenSearchStatsCommand extends Command
         }
 
         $data = $result['data'] ?? [];
+        OpenSearchService::sortUserDepositWithdrawTotalsData(
+            $data,
+            (string) $this->option('sort-by'),
+            strtolower((string) $this->option('sort-order')) === 'desc'
+        );
+
         if ($this->option('json')) {
             $this->line(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
