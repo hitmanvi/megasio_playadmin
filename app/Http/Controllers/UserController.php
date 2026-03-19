@@ -96,7 +96,7 @@ class UserController extends Controller
         $query->orderBy('created_at', 'desc');
 
         $perPage = $request->get('per_page', 15);
-        $users = $query->paginate($perPage);
+        $users = $query->with(['agentLink.agent', 'inviter', 'tags'])->paginate($perPage);
 
         return $this->responseListWithPaginator($users, null);
     }

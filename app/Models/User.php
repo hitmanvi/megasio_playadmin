@@ -111,6 +111,14 @@ class User extends Model
     }
 
     /**
+     * Get the inviter (the user who invited this user, via invitation where this user is invitee).
+     */
+    public function inviter(): HasOneThrough
+    {
+        return $this->hasOneThrough(User::class, Invitation::class, 'invitee_id', 'id', 'id', 'inviter_id');
+    }
+
+    /**
      * Get the tags for the user.
      */
     public function tags(): BelongsToMany
