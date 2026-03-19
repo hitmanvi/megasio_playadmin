@@ -583,7 +583,7 @@
                 "Tags"
             ],
             "summary": "Sync user tags",
-            "description": "Replace all tags for a user with the given tag IDs",
+            "description": "Replace all tags for a user with the given tag IDs. Empty tag_ids [] removes all tags.",
             "security": [
                 {
                     "sanctum": []
@@ -615,7 +615,8 @@
                                     "items": {
                                         "type": "integer"
                                     },
-                                    "description": "Array of tag IDs to sync"
+                                    "description": "Tag IDs to set (replaces existing). Use [] to clear all tags.",
+                                    "minItems": 0
                                 }
                             }
                         }

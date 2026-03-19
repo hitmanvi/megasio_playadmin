@@ -166,7 +166,7 @@ class TagController extends Controller
     public function syncUserTags(Request $request, User $user): JsonResponse
     {
         $validated = $request->validate([
-            'tag_ids' => 'required|array',
+            'tag_ids' => 'present|array',
             'tag_ids.*' => 'integer',
         ]);
 
