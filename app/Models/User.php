@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -54,6 +55,14 @@ class User extends Model
     }
 
     /**
+     * Scope to filter by uid (exact match).
+     */
+    public function scopeByUid($query, $uid)
+    {
+        return $query->where('uid', $uid);
+    }
+
+    /**
      * Scope to filter by status.
      */
     public function scopeByStatus($query, $status)
@@ -91,6 +100,14 @@ class User extends Model
     public function isActive(): bool
     {
         return $this->status === self::STATUS_ACTIVE;
+    }
+
+    /**
+     * Get the agent link for the user (one agent has many agent_links).
+     */
+    public function agentLink(): BelongsTo
+    {
+        return $this->belongsTo(AgentLink::class, 'agent_link_id');
     }
 
     /**
@@ -132,6 +149,14 @@ class User extends Model
     public function kyc(): HasOne
     {
         return $this->hasOne(Kyc::class);
+    }
+
+    /**
+     * Get the balances for the user.
+     */
+    public function balances(): HasMany
+    {
+        return $this->hasMany(Balance::class);
     }
 }
 

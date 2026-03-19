@@ -10353,7 +10353,7 @@
                     {
                         "name": "uid",
                         "in": "query",
-                        "description": "按用户筛选：可传业务 uid（OpenSearch 文档 uid 或库表 uid 解析到 user_id）；纯数字时同时按 user_id 匹配（事件常只存 user_id）",
+                        "description": "按用户 uid 筛选",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -14507,6 +14507,51 @@
                         }
                     },
                     {
+                        "name": "uid",
+                        "in": "query",
+                        "description": "Filter users by uid (exact match)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Filter users by email (partial match)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "agent_id",
+                        "in": "query",
+                        "description": "Filter users by agent ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "agent_link_id",
+                        "in": "query",
+                        "description": "Filter users by agent link ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "tag_id",
+                        "in": "query",
+                        "description": "Filter users that have this tag",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "name": "status",
                         "in": "query",
                         "description": "Filter users by status",
@@ -14517,6 +14562,54 @@
                                 "active",
                                 "banned"
                             ]
+                        }
+                    },
+                    {
+                        "name": "registered_at_from",
+                        "in": "query",
+                        "description": "Filter users registered on or after this date (Y-m-d)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "registered_at_to",
+                        "in": "query",
+                        "description": "Filter users registered on or before this date (Y-m-d)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "balance_min",
+                        "in": "query",
+                        "description": "Filter users with total balance (available + frozen) >= this value",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "balance_max",
+                        "in": "query",
+                        "description": "Filter users with total balance (available + frozen) <= this value",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "balance_currency",
+                        "in": "query",
+                        "description": "When set, balance_min/balance_max apply to this currency only",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 16
                         }
                     },
                     {
