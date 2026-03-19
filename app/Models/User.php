@@ -19,7 +19,15 @@ class User extends Model
         'password',
         'status',
         'ban_reason',
+        'last_active_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'last_active_at' => 'datetime',
+        ];
+    }
 
     /**
      * User status constants.

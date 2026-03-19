@@ -47,6 +47,12 @@
                 "description": "Reason for banning the user",
                 "nullable": true
             },
+            "last_active_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Last active time",
+                "nullable": true
+            },
             "created_at": {
                 "type": "string",
                 "format": "date-time",

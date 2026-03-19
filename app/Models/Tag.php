@@ -22,6 +22,7 @@ class Tag extends Model
         'sort_id' => 'integer',
     ];
 
+    const PAID_NAME = 'Paid';
     /**
      * Get the users that have this tag.
      */
