@@ -44,7 +44,9 @@
                     "in": "query",
                     "description": "Filter users that have this tag",
                     "required": false,
+
                     "schema": {
+
                         "type": "integer"
                     }
                 },

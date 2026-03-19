@@ -14527,10 +14527,24 @@
                     {
                         "name": "tag_id",
                         "in": "query",
-                        "description": "Filter users that have this tag",
+                        "description": "Filter users that have this tag (single; prefer tag_ids for multiple)",
                         "required": false,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "tag_ids",
+                        "in": "query",
+                        "description": "Filter users that have any of these tags (repeat param: tag_ids[]=1&tag_ids[]=2)",
+                        "required": false,
+                        "style": "form",
+                        "explode": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
                         }
                     },
                     {

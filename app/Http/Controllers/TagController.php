@@ -50,7 +50,7 @@ class TagController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:megasio_play_api.tags,name',
+            'name' => 'required|string|max:255',
             'display_name' => 'nullable|string|max:255',
             'color' => 'nullable|string|max:20',
             'description' => 'nullable|string|max:255',
@@ -84,7 +84,7 @@ class TagController extends Controller
     public function update(Request $request, Tag $tag): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'nullable|string|max:255|unique:megasio_play_api.tags,name,' . $tag->id,
+            'name' => 'nullable|string|max:255',
             'display_name' => 'nullable|string|max:255',
             'color' => 'nullable|string|max:20',
             'description' => 'nullable|string|max:255',
@@ -133,7 +133,7 @@ class TagController extends Controller
     {
         $validated = $request->validate([
             'tag_ids' => 'required|array',
-            'tag_ids.*' => 'integer|exists:megasio_play_api.tags,id',
+            'tag_ids.*' => 'integer',
         ]);
 
         $user->tags()->syncWithoutDetaching($validated['tag_ids']);
@@ -150,7 +150,7 @@ class TagController extends Controller
     {
         $validated = $request->validate([
             'tag_ids' => 'required|array',
-            'tag_ids.*' => 'integer|exists:megasio_play_api.tags,id',
+            'tag_ids.*' => 'integer',
         ]);
 
         $user->tags()->detach($validated['tag_ids']);
@@ -167,7 +167,7 @@ class TagController extends Controller
     {
         $validated = $request->validate([
             'tag_ids' => 'required|array',
-            'tag_ids.*' => 'integer|exists:megasio_play_api.tags,id',
+            'tag_ids.*' => 'integer',
         ]);
 
         $user->tags()->sync($validated['tag_ids']);
