@@ -56,7 +56,7 @@ class UserController extends Controller
 
         if ($request->filled('tag_id')) {
             $query->whereHas('tags', function ($q) use ($request) {
-                $q->where('id', $request->tag_id);
+                $q->where('megasio_play_api.tags.id', $request->tag_id);
             });
         }
 
