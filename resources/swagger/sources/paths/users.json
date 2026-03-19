@@ -15,25 +15,7 @@
                 {
                     "name": "account",
                     "in": "query",
-                    "description": "Filter users by email or phone",
-                    "required": false,
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "uid",
-                    "in": "query",
-                    "description": "Filter users by uid (exact match)",
-                    "required": false,
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "name": "email",
-                    "in": "query",
-                    "description": "Filter users by email (partial match)",
+                    "description": "Filter by account: uid (exact match) or email/phone (partial match)",
                     "required": false,
                     "schema": {
                         "type": "string"

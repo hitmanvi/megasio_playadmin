@@ -55,6 +55,18 @@ class User extends Model
     }
 
     /**
+     * Scope to filter by account: uid (exact) or email/phone (partial).
+     */
+    public function scopeByAccount($query, $value)
+    {
+        return $query->where(function ($q) use ($value) {
+            $q->where('uid', $value)
+              ->orWhere('email', 'like', "%{$value}%")
+              ->orWhere('phone', 'like', "%{$value}%");
+        });
+    }
+
+    /**
      * Scope to filter by uid (exact match).
      */
     public function scopeByUid($query, $uid)

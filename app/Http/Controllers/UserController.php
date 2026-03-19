@@ -15,8 +15,6 @@ class UserController extends Controller
     {
         $request->validate([
             'account' => 'nullable|string',
-            'uid' => 'nullable|string',
-            'email' => 'nullable|string',
             'agent_id' => 'nullable|integer',
             'agent_link_id' => 'nullable|integer',
             'tag_id' => 'nullable|integer',
@@ -33,15 +31,7 @@ class UserController extends Controller
         $query = User::query();
 
         if ($request->filled('account')) {
-            $query->byEmailOrPhone($request->account);
-        }
-
-        if ($request->filled('uid')) {
-            $query->byUid($request->uid);
-        }
-
-        if ($request->filled('email')) {
-            $query->byEmail($request->email);
+            $query->byAccount($request->account);
         }
 
         if ($request->filled('agent_id')) {
