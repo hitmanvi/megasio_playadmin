@@ -287,6 +287,76 @@
             }
         }
     },
+    "/users/{uid}/metas": {
+        "get": {
+            "tags": [
+                "Users"
+            ],
+            "summary": "Get user metas",
+            "description": "Returns user_metas for the user, grouped by key (each key maps to an array of value strings, newest first). Path uses users.uid.",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "uid",
+                    "in": "path",
+                    "description": "User uid (users.uid)",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "User metas retrieved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/UserMetasResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "User not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
     "/users/{user}/ban": {
         "post": {
             "tags": [

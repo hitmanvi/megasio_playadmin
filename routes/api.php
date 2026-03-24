@@ -16,6 +16,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WithdrawController;
 use App\Http\Controllers\UserActivityController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserMetaController;
 use App\Http\Controllers\UserPaymentExtraInfoController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\KycController;
@@ -134,6 +135,7 @@ Route::middleware('auth:sanctum')->group(function () {
            // Users routes
            Route::get('users', [UserController::class, 'index']);
            Route::get('users/{uid}', [UserController::class, 'show']);
+           Route::get('users/{uid}/metas', [UserMetaController::class, 'show']);
            Route::post('users/{user}/ban', [UserController::class, 'ban']);
            Route::post('users/{user}/unban', [UserController::class, 'unban']);
            Route::get('user-payment-extra-infos', [UserPaymentExtraInfoController::class, 'index']);

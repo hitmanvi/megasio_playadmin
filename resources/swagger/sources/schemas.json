@@ -239,6 +239,29 @@
             }
         }
     },
+    "UserMetasResponse": {
+        "type": "object",
+        "description": "Payload in data for GET /users/{uid}/metas",
+        "properties": {
+            "uid": {
+                "type": "string",
+                "nullable": true
+            },
+            "user_id": {
+                "type": "integer"
+            },
+            "metas": {
+                "type": "object",
+                "description": "Key -> list of value strings (newest first per key)",
+                "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
     "UserPaymentExtraInfo": {
         "type": "object",
         "description": "User saved payment field snapshot (from deposit/withdraw extra_info)",
