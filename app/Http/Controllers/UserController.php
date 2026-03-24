@@ -12,10 +12,11 @@ use Illuminate\Support\Arr;
 class UserController extends Controller
 {
     /**
-     * User detail for admin (grouped sections).
+     * User detail for admin (grouped sections). Resolved by users.uid.
      */
-    public function show(User $user): JsonResponse
+    public function show(string $uid): JsonResponse
     {
+        $user = User::query()->where('uid', $uid)->firstOrFail();
         $user->load(['agentLink.agent', 'inviter', 'kyc', 'balances', 'userVip', 'tags']);
 
         $firstCompleted = Deposit::query()

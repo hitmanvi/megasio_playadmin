@@ -217,13 +217,13 @@
             }
         }
     },
-    "/users/{user}": {
+    "/users/{uid}": {
         "get": {
             "tags": [
                 "Users"
             ],
             "summary": "Get user detail",
-            "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter), finance (balances, total deposit/withdraw by currency), VIP from user_vips + level config",
+            "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter), finance (balances, total deposit/withdraw by currency), VIP from user_vips + level config. Path uses users.uid (not numeric id).",
             "security": [
                 {
                     "sanctum": []
@@ -231,12 +231,12 @@
             ],
             "parameters": [
                 {
-                    "name": "user",
+                    "name": "uid",
                     "in": "path",
-                    "description": "User ID",
+                    "description": "User uid (users.uid)",
                     "required": true,
                     "schema": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             ],

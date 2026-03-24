@@ -67,7 +67,7 @@
     },
     "UserDetail": {
         "type": "object",
-        "description": "Grouped admin user detail response (data field of GET /users/{user})",
+        "description": "Grouped admin user detail response (data field of GET /users/{uid})",
         "properties": {
             "activity": {
                 "type": "object",
