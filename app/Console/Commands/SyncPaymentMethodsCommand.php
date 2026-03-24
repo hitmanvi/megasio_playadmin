@@ -161,7 +161,7 @@ class SyncPaymentMethodsCommand extends Command
             // Prepare data
             $data = [
                 'key' => $paymentData['id'],
-                'name' => $paymentData['name'],
+                'name' => $paymentData['type'],
                 'currency' => $currency,
                 'currency_type' => $currency,
                 'type' => $type,
