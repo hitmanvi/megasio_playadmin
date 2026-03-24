@@ -137,6 +137,10 @@
         {
             "name": "Agents",
             "description": "Agent (promotion) management endpoints"
+        },
+        {
+            "name": "Bonus Tasks",
+            "description": "User bonus task records"
         }
     ]
 }

@@ -19,6 +19,7 @@ use App\Http\Controllers\UserPaymentExtraInfoController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\KycController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\BonusTaskController;
 use App\Http\Controllers\BundleController;
 use App\Http\Controllers\BundlePurchaseController;
 use App\Http\Controllers\RedeemController;
@@ -132,6 +133,7 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::post('users/{user}/ban', [UserController::class, 'ban']);
            Route::post('users/{user}/unban', [UserController::class, 'unban']);
            Route::get('user-payment-extra-infos', [UserPaymentExtraInfoController::class, 'index']);
+           Route::get('bonus-tasks', [BonusTaskController::class, 'index']);
            
            // Currencies routes
            Route::get('currencies', [CurrencyController::class, 'index']);

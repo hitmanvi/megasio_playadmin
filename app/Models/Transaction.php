@@ -56,6 +56,23 @@ class Transaction extends Model
      */
     const STATUS_COMPLETED = 'COMPLETED';
 
+
+        /**
+     * 计入用户「奖励」流水的类型（余额增加、非充值/游戏派彩等）
+     *
+     * @return list<string>
+     */
+    public static function rewardCreditTypes(): array
+    {
+        return [
+            self::TYPE_CHECK_IN_REWARD,
+            self::TYPE_BONUS_TASK_REWARD,
+            self::TYPE_INVITATION_REWARD,
+            self::TYPE_VIP_LEVEL_UP_REWARD,
+            self::TYPE_WEEKLY_CASHBACK,
+        ];
+    }
+
     /**
      * Get the user that owns the transaction.
      */

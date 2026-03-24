@@ -6,6 +6,7 @@ use App\Models\Deposit;
 use App\Models\User;
 use App\Models\UserPaymentExtraInfo;
 use App\Models\Withdraw;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -106,6 +107,7 @@ class UserController extends Controller
                 ])->values()->all(),
             ],
             'vip' => $this->vipDetail($user),
+            'bonus' => (new UserService)->getRewardTotalsByCategory($user->id),
         ];
 
         return $this->responseItem($data);

@@ -235,6 +235,29 @@
                         "nullable": true,
                         "additionalProperties": true,
                         "description": "From user_vips: record (level, exp), current_level / benefits / next_level from VipLevel config"
+                    },
+                    "bonus": {
+                        "type": "object",
+                        "description": "Reward credit totals from completed transactions (UserService::getRewardTotalsByCategory)",
+                        "properties": {
+                            "categories": {
+                                "type": "object",
+                                "description": "Per category (check_in, bonus_task, invitation, vip_level_up, weekly_cashback): currency code -> total amount",
+                                "additionalProperties": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "number"
+                                    }
+                                }
+                            },
+                            "total_by_currency": {
+                                "type": "object",
+                                "description": "Sum of all reward categories per currency",
+                                "additionalProperties": {
+                                    "type": "number"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -263,6 +286,73 @@
                         "type": "object",
                         "additionalProperties": true,
                         "description": "Per-field { value, read_only }"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "BonusTask": {
+                "type": "object",
+                "description": "User bonus wagering task",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "task_no": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bonus_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "cap_bonus": {
+                        "type": "string",
+                        "description": "Decimal as string"
+                    },
+                    "base_bonus": {
+                        "type": "string"
+                    },
+                    "last_bonus": {
+                        "type": "string"
+                    },
+                    "need_wager": {
+                        "type": "string"
+                    },
+                    "wager": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "active",
+                            "completed",
+                            "claimed",
+                            "expired",
+                            "cancelled",
+                            "depleted"
+                        ]
+                    },
+                    "currency": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "expired_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
                     },
                     "created_at": {
                         "type": "string",
@@ -2535,6 +2625,10 @@
         {
             "name": "Agents",
             "description": "Agent (promotion) management endpoints"
+        },
+        {
+            "name": "Bonus Tasks",
+            "description": "User bonus task records"
         }
     ],
     "paths": {
@@ -5563,6 +5657,127 @@
                     },
                     "404": {
                         "description": "Blacklist entry not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bonus-tasks": {
+            "get": {
+                "tags": [
+                    "Bonus Tasks"
+                ],
+                "summary": "List bonus tasks",
+                "description": "Paginated bonus_tasks; optional filter by users.id",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "Filter by user id (users.id)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errmsg": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/BonusTask"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                }
+                                            }
+                                        },
+                                        "extra": {
+                                            "type": "null"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -15022,7 +15237,7 @@
                     "Users"
                 ],
                 "summary": "Get user detail",
-                "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter), payment_extra_info (counts by type), finance (balances, total deposit/withdraw by currency), VIP from user_vips + level config. Path uses users.uid (not numeric id).",
+                "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter), payment_extra_info (counts by type), finance (balances, total deposit/withdraw by currency), VIP from user_vips + level config, bonus (reward totals by category from transactions). Path uses users.uid (not numeric id).",
                 "security": [
                     {
                         "sanctum": []

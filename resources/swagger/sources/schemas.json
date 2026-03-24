@@ -213,6 +213,29 @@
                 "nullable": true,
                 "additionalProperties": true,
                 "description": "From user_vips: record (level, exp), current_level / benefits / next_level from VipLevel config"
+            },
+            "bonus": {
+                "type": "object",
+                "description": "Reward credit totals from completed transactions (UserService::getRewardTotalsByCategory)",
+                "properties": {
+                    "categories": {
+                        "type": "object",
+                        "description": "Per category (check_in, bonus_task, invitation, vip_level_up, weekly_cashback): currency code -> total amount",
+                        "additionalProperties": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    "total_by_currency": {
+                        "type": "object",
+                        "description": "Sum of all reward categories per currency",
+                        "additionalProperties": {
+                            "type": "number"
+                        }
+                    }
+                }
             }
         }
     },
@@ -241,6 +264,73 @@
                 "type": "object",
                 "additionalProperties": true,
                 "description": "Per-field { value, read_only }"
+            },
+            "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            },
+            "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            }
+        }
+    },
+    "BonusTask": {
+        "type": "object",
+        "description": "User bonus wagering task",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "user_id": {
+                "type": "integer"
+            },
+            "task_no": {
+                "type": "string",
+                "nullable": true
+            },
+            "bonus_name": {
+                "type": "string",
+                "nullable": true
+            },
+            "cap_bonus": {
+                "type": "string",
+                "description": "Decimal as string"
+            },
+            "base_bonus": {
+                "type": "string"
+            },
+            "last_bonus": {
+                "type": "string"
+            },
+            "need_wager": {
+                "type": "string"
+            },
+            "wager": {
+                "type": "string"
+            },
+            "status": {
+                "type": "string",
+                "enum": [
+                    "pending",
+                    "active",
+                    "completed",
+                    "claimed",
+                    "expired",
+                    "cancelled",
+                    "depleted"
+                ]
+            },
+            "currency": {
+                "type": "string",
+                "nullable": true
+            },
+            "expired_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
             },
             "created_at": {
                 "type": "string",
