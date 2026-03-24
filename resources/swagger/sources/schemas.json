@@ -344,6 +344,80 @@
             }
         }
     },
+    "Transaction": {
+        "type": "object",
+        "description": "Wallet ledger row; list responses may include loaded user",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "user_id": {
+                "type": "integer"
+            },
+            "user": {
+                "nullable": true,
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/User"
+                    }
+                ]
+            },
+            "currency": {
+                "type": "string"
+            },
+            "amount": {
+                "type": "string",
+                "description": "Decimal as string"
+            },
+            "balance": {
+                "type": "string",
+                "description": "Balance after transaction"
+            },
+            "type": {
+                "type": "string",
+                "enum": [
+                    "DEPOSIT",
+                    "WITHDRAWAL",
+                    "WITHDRAWAL_UNFREEZE",
+                    "REFUND",
+                    "BET",
+                    "PAYOUT",
+                    "CHECK_IN_REWARD",
+                    "BONUS_TASK_REWARD",
+                    "INVITATION_REWARD",
+                    "VIP_LEVEL_UP_REWARD",
+                    "WEEKLY_CASHBACK"
+                ]
+            },
+            "status": {
+                "type": "string",
+                "example": "COMPLETED"
+            },
+            "related_entity_id": {
+                "type": "string",
+                "nullable": true
+            },
+            "notes": {
+                "type": "string",
+                "nullable": true
+            },
+            "transaction_time": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            },
+            "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            },
+            "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            }
+        }
+    },
     "Currency": {
         "type": "object",
         "properties": {

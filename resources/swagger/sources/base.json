@@ -67,6 +67,10 @@
             "description": "Deposit management endpoints"
         },
         {
+            "name": "Transactions",
+            "description": "User wallet transaction ledger"
+        },
+        {
             "name": "Withdraws",
             "description": "Withdraw management endpoints"
         },

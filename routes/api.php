@@ -12,6 +12,7 @@ use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\GameCategoryController;
 use App\Http\Controllers\DepositController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WithdrawController;
 use App\Http\Controllers\UserActivityController;
 use App\Http\Controllers\UserController;
@@ -117,6 +118,9 @@ Route::middleware('auth:sanctum')->group(function () {
            // Deposits routes
            Route::get('deposits', [DepositController::class, 'index']);
            Route::post('deposits/{deposit}/resolve', [DepositController::class, 'resolve']);
+
+           // Transactions routes
+           Route::get('transactions', [TransactionController::class, 'index']);
            
            // Withdraws routes
            Route::get('withdraws', [WithdrawController::class, 'index']);
