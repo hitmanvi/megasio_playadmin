@@ -15,6 +15,7 @@ use App\Http\Controllers\DepositController;
 use App\Http\Controllers\WithdrawController;
 use App\Http\Controllers\UserActivityController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserPaymentExtraInfoController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\KycController;
 use App\Http\Controllers\SettingController;
@@ -130,6 +131,7 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('users/{uid}', [UserController::class, 'show']);
            Route::post('users/{user}/ban', [UserController::class, 'ban']);
            Route::post('users/{user}/unban', [UserController::class, 'unban']);
+           Route::get('user-payment-extra-infos', [UserPaymentExtraInfoController::class, 'index']);
            
            // Currencies routes
            Route::get('currencies', [CurrencyController::class, 'index']);

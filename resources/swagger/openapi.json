@@ -176,6 +176,20 @@
                             }
                         }
                     },
+                    "payment_extra_info": {
+                        "type": "object",
+                        "description": "Count of user_payment_extra_infos rows by type",
+                        "properties": {
+                            "deposit": {
+                                "type": "integer",
+                                "minimum": 0
+                            },
+                            "withdraw": {
+                                "type": "integer",
+                                "minimum": 0
+                            }
+                        }
+                    },
                     "finance": {
                         "type": "object",
                         "properties": {
@@ -221,6 +235,44 @@
                         "nullable": true,
                         "additionalProperties": true,
                         "description": "From user_vips: record (level, exp), current_level / benefits / next_level from VipLevel config"
+                    }
+                }
+            },
+            "UserPaymentExtraInfo": {
+                "type": "object",
+                "description": "User saved payment field snapshot (from deposit/withdraw extra_info)",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "payment_methods.name at sync time"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "deposit",
+                            "withdraw"
+                        ]
+                    },
+                    "data": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Per-field { value, read_only }"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
                     }
                 }
             },
@@ -14505,6 +14557,127 @@
                 }
             }
         },
+        "/user-payment-extra-infos": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "List user payment extra_info records",
+                "description": "Paginated list of user_payment_extra_infos for a given users.id",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "Filter by user id (users.id)",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errmsg": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/UserPaymentExtraInfo"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                }
+                                            }
+                                        },
+                                        "extra": {
+                                            "type": "null"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/user-tag-logs": {
             "get": {
                 "tags": [
@@ -14849,7 +15022,7 @@
                     "Users"
                 ],
                 "summary": "Get user detail",
-                "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter), finance (balances, total deposit/withdraw by currency), VIP from user_vips + level config. Path uses users.uid (not numeric id).",
+                "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter), payment_extra_info (counts by type), finance (balances, total deposit/withdraw by currency), VIP from user_vips + level config. Path uses users.uid (not numeric id).",
                 "security": [
                     {
                         "sanctum": []

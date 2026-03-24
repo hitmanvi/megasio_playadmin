@@ -154,6 +154,20 @@
                     }
                 }
             },
+            "payment_extra_info": {
+                "type": "object",
+                "description": "Count of user_payment_extra_infos rows by type",
+                "properties": {
+                    "deposit": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "withdraw": {
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                }
+            },
             "finance": {
                 "type": "object",
                 "properties": {
@@ -199,6 +213,44 @@
                 "nullable": true,
                 "additionalProperties": true,
                 "description": "From user_vips: record (level, exp), current_level / benefits / next_level from VipLevel config"
+            }
+        }
+    },
+    "UserPaymentExtraInfo": {
+        "type": "object",
+        "description": "User saved payment field snapshot (from deposit/withdraw extra_info)",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "user_id": {
+                "type": "integer"
+            },
+            "name": {
+                "type": "string",
+                "description": "payment_methods.name at sync time"
+            },
+            "type": {
+                "type": "string",
+                "enum": [
+                    "deposit",
+                    "withdraw"
+                ]
+            },
+            "data": {
+                "type": "object",
+                "additionalProperties": true,
+                "description": "Per-field { value, read_only }"
+            },
+            "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            },
+            "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
             }
         }
     },

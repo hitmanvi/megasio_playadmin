@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Deposit;
 use App\Models\User;
+use App\Models\UserPaymentExtraInfo;
 use App\Models\Withdraw;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -45,6 +46,14 @@ class UserController extends Controller
             ->groupBy('currency')
             ->get();
 
+        $paymentExtraInfoByType = UserPaymentExtraInfo::query()
+            ->where('user_id', $user->id)
+            ->selectRaw('type, COUNT(*) as aggregate')
+            ->groupBy('type')
+            ->pluck('aggregate', 'type')
+            ->map(fn ($c) => (int) $c)
+            ->all();
+
         $kyc = $user->kyc;
 
         $data = [
@@ -55,6 +64,7 @@ class UserController extends Controller
                 'latest_deposit_at' => $latestCompleted?->completed_at?->format('Y-m-d H:i:s'),
             ],
             'profile' => [
+                'id' => $user->id,
                 'status' => $user->status,
                 'tags' => $user->tags,
                 'email' => $user->email,
@@ -80,6 +90,10 @@ class UserController extends Controller
                 'agent_link' => $user->agentLink,
                 'inviter' => $this->publicUserSummary($user->inviter),
             ],
+            'payment_extra_info' => array_merge([
+                UserPaymentExtraInfo::TYPE_DEPOSIT => 0,
+                UserPaymentExtraInfo::TYPE_WITHDRAW => 0,
+            ], $paymentExtraInfoByType),
             'finance' => [
                 'balances' => $user->balances,
                 'total_deposit_by_currency' => $depositTotals->map(fn ($row) => [
