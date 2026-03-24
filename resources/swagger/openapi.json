@@ -119,6 +119,21 @@
                     "profile": {
                         "type": "object",
                         "properties": {
+                            "status": {
+                                "type": "string",
+                                "description": "User account status",
+                                "enum": [
+                                    "active",
+                                    "banned"
+                                ]
+                            },
+                            "tags": {
+                                "type": "array",
+                                "description": "Tags attached to the user",
+                                "items": {
+                                    "$ref": "#/components/schemas/Tag"
+                                }
+                            },
                             "email": {
                                 "type": "string",
                                 "nullable": true

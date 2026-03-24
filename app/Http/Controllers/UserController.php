@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function show(User $user): JsonResponse
     {
-        $user->load(['agentLink.agent', 'inviter', 'kyc', 'balances', 'userVip']);
+        $user->load(['agentLink.agent', 'inviter', 'kyc', 'balances', 'userVip', 'tags']);
 
         $firstCompleted = Deposit::query()
             ->where('user_id', $user->id)
@@ -54,6 +54,8 @@ class UserController extends Controller
                 'latest_deposit_at' => $latestCompleted?->completed_at?->format('Y-m-d H:i:s'),
             ],
             'profile' => [
+                'status' => $user->status,
+                'tags' => $user->tags,
                 'email' => $user->email,
                 'phone' => $user->phone,
                 'birthdate' => $kyc?->birthdate,
