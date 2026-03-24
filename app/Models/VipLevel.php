@@ -71,4 +71,51 @@ class VipLevel extends Model
         }
         return $query->where('group_id', $groupId);
     }
+
+    /**
+     * Ordered distinct level numbers (for UserVip rank / progression).
+     *
+     * @return list<int>
+     */
+    public static function levelKeys(): array
+    {
+        return static::query()
+            ->orderBy('level')
+            ->pluck('level')
+            ->unique()
+            ->values()
+            ->map(fn ($v) => (int) $v)
+            ->all();
+    }
+
+    public static function requiredExpFor(int $level): float
+    {
+        $exp = static::query()->where('level', $level)->value('required_exp');
+
+        return $exp !== null ? (float) $exp : 0.0;
+    }
+
+    /**
+     * Snapshot for a level row (used by UserVip).
+     *
+     * @return array<string, mixed>|null
+     */
+    public static function infoForLevel(int $level): ?array
+    {
+        $row = static::query()->where('level', $level)->with('group')->first();
+        if ($row === null) {
+            return null;
+        }
+
+        return [
+            'level' => (int) $row->level,
+            'group_id' => $row->group_id,
+            'required_exp' => (float) $row->required_exp,
+            'description' => $row->description,
+            'benefits' => $row->benefits ?? [],
+            'sort_id' => $row->sort_id,
+            'enabled' => (bool) $row->enabled,
+            'group' => $row->group?->toArray(),
+        ];
+    }
 }

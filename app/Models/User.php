@@ -186,5 +186,13 @@ class User extends Model
     {
         return $this->hasMany(Balance::class);
     }
+
+    /**
+     * Get the user's VIP progress record (level, exp).
+     */
+    public function userVip(): HasOne
+    {
+        return $this->hasOne(UserVip::class, 'user_id');
+    }
 }
 

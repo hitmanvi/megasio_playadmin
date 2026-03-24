@@ -65,6 +65,128 @@
             }
         }
     },
+    "UserDetail": {
+        "type": "object",
+        "description": "Grouped admin user detail response (data field of GET /users/{user})",
+        "properties": {
+            "activity": {
+                "type": "object",
+                "properties": {
+                    "registered_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "first_deposit_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "last_active_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "latest_deposit_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "profile": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "birthdate": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "From KYC when present"
+                    },
+                    "kyc": {
+                        "type": "object",
+                        "nullable": true,
+                        "additionalProperties": true
+                    }
+                }
+            },
+            "referral": {
+                "type": "object",
+                "properties": {
+                    "agent": {
+                        "nullable": true,
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Agent"
+                            }
+                        ]
+                    },
+                    "agent_link": {
+                        "nullable": true,
+                        "additionalProperties": true
+                    },
+                    "inviter": {
+                        "type": "object",
+                        "nullable": true,
+                        "additionalProperties": true
+                    }
+                }
+            },
+            "finance": {
+                "type": "object",
+                "properties": {
+                    "balances": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "total_deposit_by_currency": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "currency": {
+                                    "type": "string"
+                                },
+                                "total": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "total_withdraw_by_currency": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "currency": {
+                                    "type": "string"
+                                },
+                                "total": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "vip": {
+                "type": "object",
+                "nullable": true,
+                "additionalProperties": true,
+                "description": "From user_vips: record (level, exp), current_level / benefits / next_level from VipLevel config"
+            }
+        }
+    },
     "Currency": {
         "type": "object",
         "properties": {

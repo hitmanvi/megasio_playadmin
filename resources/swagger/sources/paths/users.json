@@ -217,6 +217,76 @@
             }
         }
     },
+    "/users/{user}": {
+        "get": {
+            "tags": [
+                "Users"
+            ],
+            "summary": "Get user detail",
+            "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter), finance (balances, total deposit/withdraw by currency), VIP from user_vips + level config",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "user",
+                    "in": "path",
+                    "description": "User ID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "User detail retrieved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/UserDetail"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "User not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
     "/users/{user}/ban": {
         "post": {
             "tags": [

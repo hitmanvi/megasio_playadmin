@@ -2,12 +2,129 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Deposit;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\Withdraw;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class UserController extends Controller
 {
+    /**
+     * User detail for admin (grouped sections).
+     */
+    public function show(User $user): JsonResponse
+    {
+        $user->load(['agentLink.agent', 'inviter', 'kyc', 'balances', 'userVip']);
+
+        $firstCompleted = Deposit::query()
+            ->where('user_id', $user->id)
+            ->whereNotNull('completed_at')
+            ->orderBy('completed_at')
+            ->first(['completed_at']);
+
+        $latestCompleted = Deposit::query()
+            ->where('user_id', $user->id)
+            ->whereNotNull('completed_at')
+            ->orderByDesc('completed_at')
+            ->first(['completed_at']);
+
+        $depositTotals = Deposit::query()
+            ->where('user_id', $user->id)
+            ->whereNotNull('completed_at')
+            ->selectRaw('currency, SUM(COALESCE(actual_amount, amount)) as total')
+            ->groupBy('currency')
+            ->get();
+
+        $withdrawTotals = Withdraw::query()
+            ->where('user_id', $user->id)
+            ->where('status', Withdraw::STATUS_COMPLETED)
+            ->selectRaw('currency, SUM(COALESCE(actual_amount, amount)) as total')
+            ->groupBy('currency')
+            ->get();
+
+        $kyc = $user->kyc;
+
+        $data = [
+            'activity' => [
+                'registered_at' => $user->created_at?->format('Y-m-d H:i:s'),
+                'first_deposit_at' => $firstCompleted?->completed_at?->format('Y-m-d H:i:s'),
+                'last_active_at' => $user->last_active_at?->format('Y-m-d H:i:s'),
+                'latest_deposit_at' => $latestCompleted?->completed_at?->format('Y-m-d H:i:s'),
+            ],
+            'profile' => [
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'birthdate' => $kyc?->birthdate,
+                'kyc' => $kyc ? Arr::only($kyc->toArray(), [
+                    'id',
+                    'user_id',
+                    'name',
+                    'birthdate',
+                    'document_number',
+                    'status',
+                    'reject_reason',
+                    'document_front',
+                    'document_back',
+                    'selfie',
+                    'created_at',
+                    'updated_at',
+                ]) : null,
+            ],
+            'referral' => [
+                'agent' => $user->agentLink?->agent,
+                'agent_link' => $user->agentLink,
+                'inviter' => $this->publicUserSummary($user->inviter),
+            ],
+            'finance' => [
+                'balances' => $user->balances,
+                'total_deposit_by_currency' => $depositTotals->map(fn ($row) => [
+                    'currency' => $row->currency,
+                    'total' => (string) $row->total,
+                ])->values()->all(),
+                'total_withdraw_by_currency' => $withdrawTotals->map(fn ($row) => [
+                    'currency' => $row->currency,
+                    'total' => (string) $row->total,
+                ])->values()->all(),
+            ],
+            'vip' => $this->vipDetail($user),
+        ];
+
+        return $this->responseItem($data);
+    }
+
+    private function publicUserSummary(?User $user): ?array
+    {
+        if ($user === null) {
+            return null;
+        }
+
+        return Arr::only($user->toArray(), ['id', 'uid', 'name', 'email', 'phone', 'status']);
+    }
+
+    private function vipDetail(User $user): ?array
+    {
+        $uv = $user->userVip;
+        if ($uv === null) {
+            return null;
+        }
+
+        return [
+            'user_vip' => [
+                'id' => $uv->id,
+                'user_id' => $uv->user_id,
+                'level' => $uv->level,
+                'exp' => (string) $uv->exp,
+                'created_at' => $uv->created_at?->format('Y-m-d H:i:s'),
+                'updated_at' => $uv->updated_at?->format('Y-m-d H:i:s'),
+            ],
+            'current_level' => $uv->getCurrentLevelInfo(),
+            'benefits' => $uv->getBenefits(),
+            'next_level' => $uv->getNextLevelInfo(),
+        ];
+    }
+
     /**
      * Get users list with filtering and pagination
      */
