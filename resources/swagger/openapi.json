@@ -5966,7 +5966,7 @@
                     "Bonus Tasks"
                 ],
                 "summary": "List bonus tasks",
-                "description": "Paginated bonus_tasks; optional filter by users.id",
+                "description": "Paginated bonus_tasks; optional filters by users.id and status",
                 "security": [
                     {
                         "sanctum": []
@@ -5980,6 +5980,24 @@
                         "required": false,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by bonus_tasks.status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "active",
+                                "completed",
+                                "claimed",
+                                "expired",
+                                "cancelled",
+                                "depleted"
+                            ]
                         }
                     },
                     {
