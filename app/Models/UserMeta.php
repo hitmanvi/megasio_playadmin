@@ -198,7 +198,7 @@ class UserMeta extends Model
         }
 
         if (is_array($ids)) {
-            return $ids;
+            return $ids === [] ? new \stdClass() : $ids;
         }
 
         if (is_object($ids)) {
