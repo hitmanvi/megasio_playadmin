@@ -276,6 +276,45 @@
                     }
                 }
             },
+            "InvitationRewardStats": {
+                "type": "object",
+                "description": "Payload in data for GET /users/{uid}/invitation-rewards/stats",
+                "properties": {
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "uid": {
+                        "type": "string"
+                    },
+                    "invite_count": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "invitations where this user is inviter"
+                    },
+                    "total_reward_amount": {
+                        "type": "string",
+                        "description": "Sum of reward_amount for this user (inviter) where status is paid"
+                    },
+                    "deposit_starter_reward_count": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Paid invitation_rewards with source_type=deposit_starter"
+                    },
+                    "deposit_advanced_reward_count": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Paid invitation_rewards with source_type=deposit_advanced"
+                    },
+                    "rewards_by_source_type": {
+                        "type": "object",
+                        "description": "source_type -> sum of reward_amount (status=paid only)",
+                        "additionalProperties": {
+                            "type": "string",
+                            "description": "Total paid reward amount for this source_type"
+                        }
+                    }
+                }
+            },
             "UserMetasResponse": {
                 "type": "object",
                 "description": "Payload in data for GET /users/{uid}/metas",
@@ -16053,6 +16092,76 @@
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/UserDetail"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{uid}/invitation-rewards/stats": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Invitation reward stats for inviter",
+                "description": "Stats for a user as inviter: total paid invitation rewards, reward totals by source_type, invite count, and paid counts for deposit_starter / deposit_advanced. Path uses users.uid.",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "uid",
+                        "in": "path",
+                        "description": "User uid (users.uid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stats retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errmsg": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/InvitationRewardStats"
                                         }
                                     }
                                 }

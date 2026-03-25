@@ -287,6 +287,76 @@
             }
         }
     },
+    "/users/{uid}/invitation-rewards/stats": {
+        "get": {
+            "tags": [
+                "Users"
+            ],
+            "summary": "Invitation reward stats for inviter",
+            "description": "Stats for a user as inviter: total paid invitation rewards, reward totals by source_type, invite count, and paid counts for deposit_starter / deposit_advanced. Path uses users.uid.",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "uid",
+                    "in": "path",
+                    "description": "User uid (users.uid)",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Stats retrieved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/InvitationRewardStats"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "User not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
     "/users/{uid}/metas": {
         "get": {
             "tags": [
