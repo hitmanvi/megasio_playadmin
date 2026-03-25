@@ -5,13 +5,23 @@
                 "Deposits"
             ],
             "summary": "Get deposits list",
-            "description": "Get paginated list of deposits with optional filtering",
+            "description": "Get paginated list of deposits with optional filtering (user_id, account, order_no, etc.)",
             "security": [
                 {
                     "sanctum": []
                 }
             ],
             "parameters": [
+                {
+                    "name": "user_id",
+                    "in": "query",
+                    "description": "Filter by users.id",
+                    "required": false,
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1
+                    }
+                },
                 {
                     "name": "account",
                     "in": "query",
