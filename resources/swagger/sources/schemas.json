@@ -423,6 +423,10 @@
                 "additionalProperties": true,
                 "description": "Per-field { value, read_only }"
             },
+            "duplicate_across_user": {
+                "type": "boolean",
+                "description": "Whether this snapshot is flagged as duplicated across users"
+            },
             "created_at": {
                 "type": "string",
                 "format": "date-time",

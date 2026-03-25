@@ -28,4 +28,36 @@ class UserPaymentExtraInfoController extends Controller
 
         return $this->responseListWithPaginator($paginator, null);
     }
+
+    /**
+     * Update a user_payment_extra_infos row.
+     */
+    public function update(Request $request, UserPaymentExtraInfo $userPaymentExtraInfo): JsonResponse
+    {
+        $request->validate([
+            'name' => 'nullable|string|max:255',
+            'type' => 'nullable|string|in:deposit,withdraw',
+            'data' => 'nullable|array',
+            'duplicate_across_user' => 'nullable|boolean',
+        ]);
+
+        $userPaymentExtraInfo->update($request->only([
+            'name',
+            'type',
+            'data',
+            'duplicate_across_user',
+        ]));
+
+        return $this->responseItem($userPaymentExtraInfo->fresh());
+    }
+
+    /**
+     * Delete a user_payment_extra_infos row.
+     */
+    public function destroy(UserPaymentExtraInfo $userPaymentExtraInfo): JsonResponse
+    {
+        $userPaymentExtraInfo->delete();
+
+        return $this->responseItem(['deleted' => true]);
+    }
 }
