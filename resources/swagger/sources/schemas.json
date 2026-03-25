@@ -151,6 +151,21 @@
                         "type": "object",
                         "nullable": true,
                         "additionalProperties": true
+                    },
+                    "invite_count": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Number of invitations where this user is inviter (invitations.inviter_id)"
+                    },
+                    "invitation_reward_deposit_bonus_starter_count": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "invitation_rewards rows for this user: source_type=deposit, related_id=deposit_bonus_starter"
+                    },
+                    "invitation_reward_deposit_bonus_advanced_count": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "invitation_rewards rows for this user: source_type=deposit, related_id=deposit_bonus_advanced"
                     }
                 }
             },

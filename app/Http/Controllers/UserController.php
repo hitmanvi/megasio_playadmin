@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Deposit;
+use App\Models\Invitation;
+use App\Models\InvitationReward;
 use App\Models\User;
 use App\Models\UserPaymentExtraInfo;
 use App\Models\Withdraw;
@@ -57,6 +59,18 @@ class UserController extends Controller
 
         $kyc = $user->kyc;
 
+        $inviteCount = Invitation::query()->where('inviter_id', $user->id)->count();
+        $invitationRewardDepositStarterCount = InvitationReward::query()
+            ->where('user_id', $user->id)
+            ->where('source_type', InvitationReward::SOURCE_TYPE_DEPOSIT)
+            ->where('related_id', 'deposit_bonus_starter')
+            ->count();
+        $invitationRewardDepositAdvancedCount = InvitationReward::query()
+            ->where('user_id', $user->id)
+            ->where('source_type', InvitationReward::SOURCE_TYPE_DEPOSIT)
+            ->where('related_id', 'deposit_bonus_advanced')
+            ->count();
+
         $data = [
             'activity' => [
                 'registered_at' => $user->created_at?->format('Y-m-d H:i:s'),
@@ -90,6 +104,9 @@ class UserController extends Controller
                 'agent' => $user->agentLink?->agent,
                 'agent_link' => $user->agentLink,
                 'inviter' => $this->publicUserSummary($user->inviter),
+                'invite_count' => $inviteCount,
+                'invitation_reward_deposit_bonus_starter_count' => $invitationRewardDepositStarterCount,
+                'invitation_reward_deposit_bonus_advanced_count' => $invitationRewardDepositAdvancedCount,
             ],
             'payment_extra_info' => array_merge([
                 UserPaymentExtraInfo::TYPE_DEPOSIT => 0,
