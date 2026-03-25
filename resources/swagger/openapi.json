@@ -487,6 +487,19 @@
                     }
                 }
             },
+            "TransactionTypesResponse": {
+                "type": "object",
+                "description": "Payload in data for GET /transactions/types",
+                "properties": {
+                    "types": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Transaction type strings (TYPE_* constants), sorted"
+                    }
+                }
+            },
             "Transaction": {
                 "type": "object",
                 "description": "Wallet ledger row; list responses may include loaded user",
@@ -15093,6 +15106,55 @@
                     },
                     "422": {
                         "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions/types": {
+            "get": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "List transaction types",
+                "description": "Returns all distinct transactions.type values defined as TYPE_* constants on the Transaction model (sorted).",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Types retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errmsg": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/TransactionTypesResponse"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "content": {
                             "application/json": {
                                 "schema": {

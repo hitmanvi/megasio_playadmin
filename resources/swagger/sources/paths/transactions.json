@@ -184,5 +184,54 @@
                 }
             }
         }
+    },
+    "/transactions/types": {
+        "get": {
+            "tags": [
+                "Transactions"
+            ],
+            "summary": "List transaction types",
+            "description": "Returns all distinct transactions.type values defined as TYPE_* constants on the Transaction model (sorted).",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Types retrieved successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/TransactionTypesResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

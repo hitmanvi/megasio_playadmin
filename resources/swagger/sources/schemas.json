@@ -465,6 +465,19 @@
             }
         }
     },
+    "TransactionTypesResponse": {
+        "type": "object",
+        "description": "Payload in data for GET /transactions/types",
+        "properties": {
+            "types": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "Transaction type strings (TYPE_* constants), sorted"
+            }
+        }
+    },
     "Transaction": {
         "type": "object",
         "description": "Wallet ledger row; list responses may include loaded user",

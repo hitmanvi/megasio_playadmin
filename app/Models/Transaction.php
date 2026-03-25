@@ -56,8 +56,26 @@ class Transaction extends Model
      */
     const STATUS_COMPLETED = 'COMPLETED';
 
+    /**
+     * All transaction type values (public TYPE_* string constants), sorted.
+     *
+     * @return list<string>
+     */
+    public static function allTypes(): array
+    {
+        $values = [];
+        foreach ((new \ReflectionClass(self::class))->getConstants() as $name => $value) {
+            if (str_starts_with($name, 'TYPE_') && is_string($value)) {
+                $values[] = $value;
+            }
+        }
+        $values = array_values(array_unique($values));
+        sort($values);
 
-        /**
+        return $values;
+    }
+
+    /**
      * 计入用户「奖励」流水的类型（余额增加、非充值/游戏派彩等）
      *
      * @return list<string>

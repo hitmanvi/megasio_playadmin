@@ -9,6 +9,16 @@ use Illuminate\Http\Request;
 class TransactionController extends Controller
 {
     /**
+     * List of transaction type values (for filters / UI).
+     */
+    public function types(): JsonResponse
+    {
+        return $this->responseItem([
+            'types' => Transaction::allTypes(),
+        ]);
+    }
+
+    /**
      * Paginated transactions with optional filters.
      */
     public function index(Request $request): JsonResponse
