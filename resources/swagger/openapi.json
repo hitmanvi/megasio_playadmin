@@ -18217,10 +18217,22 @@
                     "Withdraws"
                 ],
                 "summary": "Get withdraw counts by status",
-                "description": "Get counts of withdraws grouped by status: pending, processing, and other",
+                "description": "Get counts of withdraws grouped by status (pending, processing). Optional user_id limits counts to that users.id.",
                 "security": [
                     {
                         "sanctum": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "If set, only count withdraws for this users.id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
                     }
                 ],
                 "responses": {

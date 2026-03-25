@@ -200,10 +200,21 @@ class WithdrawController extends Controller
     /**
      * Get withdraw counts by status groups
      */
-    public function counts(): JsonResponse
+    public function counts(Request $request): JsonResponse
     {
-        $pendingCount = Withdraw::where('status', Withdraw::STATUS_PENDING)->count();
-        $processingCount = Withdraw::where('status', Withdraw::STATUS_PROCESSING)->count();
+        $request->validate([
+            'user_id' => 'nullable|integer|min:1',
+        ]);
+
+        $pendingCount = Withdraw::query()
+            ->when($request->filled('user_id'), fn ($q) => $q->where('user_id', $request->integer('user_id')))
+            ->where('status', Withdraw::STATUS_PENDING)
+            ->count();
+
+        $processingCount = Withdraw::query()
+            ->when($request->filled('user_id'), fn ($q) => $q->where('user_id', $request->integer('user_id')))
+            ->where('status', Withdraw::STATUS_PROCESSING)
+            ->count();
 
         return $this->responseItem([
             'pending' => $pendingCount,
