@@ -5,7 +5,7 @@
                 "Bonus Tasks"
             ],
             "summary": "List bonus tasks",
-            "description": "Paginated bonus_tasks; optional filters by users.id and status",
+            "description": "Paginated bonus_tasks; optional filters by users.id and status (single value or multiple)",
             "security": [
                 {
                     "sanctum": []
@@ -24,18 +24,39 @@
                 {
                     "name": "status",
                     "in": "query",
-                    "description": "Filter by bonus_tasks.status",
+                    "description": "Filter by bonus_tasks.status (repeat param or array for multiple)",
                     "required": false,
+                    "style": "form",
+                    "explode": true,
                     "schema": {
-                        "type": "string",
-                        "enum": [
-                            "pending",
-                            "active",
-                            "completed",
-                            "claimed",
-                            "expired",
-                            "cancelled",
-                            "depleted"
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "enum": [
+                                    "pending",
+                                    "active",
+                                    "completed",
+                                    "claimed",
+                                    "expired",
+                                    "cancelled",
+                                    "depleted"
+                                ]
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "enum": [
+                                        "pending",
+                                        "active",
+                                        "completed",
+                                        "claimed",
+                                        "expired",
+                                        "cancelled",
+                                        "depleted"
+                                    ]
+                                }
+                            }
                         ]
                     }
                 },
