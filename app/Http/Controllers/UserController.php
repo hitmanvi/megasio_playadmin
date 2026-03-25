@@ -98,6 +98,7 @@ class UserController extends Controller
             ],
             'profile' => [
                 'id' => $user->id,
+                'uid' => $user->uid,
                 'status' => $user->status,
                 'tags' => $user->tags,
                 'email' => $user->email,
