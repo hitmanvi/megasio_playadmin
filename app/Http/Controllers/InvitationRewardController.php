@@ -6,6 +6,8 @@ use App\Models\Invitation;
 use App\Models\InvitationReward;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class InvitationRewardController extends Controller
 {
@@ -57,5 +59,62 @@ class InvitationRewardController extends Controller
             'deposit_advanced_reward_count' => $depositAdvancedRewardCount,
             'rewards_by_source_type' => $rewardsBySourceType,
         ]);
+    }
+
+    /**
+     * Paginated invitation rows for a user as inviter, each with invitation_rewards summed by source_type.
+     */
+    public function aggregatesByInvitation(Request $request, string $uid): JsonResponse
+    {
+        $request->validate([
+            'page' => 'nullable|integer|min:1',
+            'per_page' => 'nullable|integer|min:1|max:100',
+        ]);
+
+        $user = User::query()->where('uid', $uid)->firstOrFail();
+        $perPage = (int) $request->get('per_page', 15);
+
+        $paginator = Invitation::query()
+            ->where('inviter_id', $user->id)
+            ->with('invitee')
+            ->orderByDesc('id')
+            ->paginate($perPage);
+
+        $invitationIds = $paginator->getCollection()->pluck('id')->all();
+
+        $byInvitationAndSource = [];
+        if ($invitationIds !== []) {
+            $rows = InvitationReward::query()
+                ->whereIn('invitation_id', $invitationIds)
+                ->selectRaw('invitation_id, source_type, SUM(reward_amount) as total')
+                ->groupBy('invitation_id', 'source_type')
+                ->get();
+
+            foreach ($rows as $row) {
+                $byInvitationAndSource[$row->invitation_id][$row->source_type] = (string) $row->total;
+            }
+        }
+
+        $items = $paginator->getCollection()->map(function (Invitation $invitation) use ($byInvitationAndSource) {
+            $map = $byInvitationAndSource[$invitation->id] ?? [];
+
+            return [
+                'invitation_id' => $invitation->id,
+                'inviter_id' => $invitation->inviter_id,
+                'invitee_id' => $invitation->invitee_id,
+                'invitation_status' => $invitation->status,
+                'total_reward' => (string) $invitation->total_reward,
+                'created_at' => $invitation->created_at?->format('Y-m-d H:i:s'),
+                'updated_at' => $invitation->updated_at?->format('Y-m-d H:i:s'),
+                'invitee' => $invitation->invitee
+                    ? Arr::only($invitation->invitee->toArray(), ['id', 'uid', 'name', 'email', 'phone', 'status'])
+                    : null,
+                'rewards_by_source_type' => empty($map) ? new \stdClass() : $map,
+            ];
+        });
+
+        $paginator->setCollection($items);
+
+        return $this->responseListWithPaginator($paginator, null);
     }
 }

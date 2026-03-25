@@ -144,6 +144,7 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('users', [UserController::class, 'index']);
            Route::get('users/{uid}', [UserController::class, 'show']);
            Route::get('users/{uid}/invitation-rewards/stats', [InvitationRewardController::class, 'stats']);
+           Route::get('users/{uid}/invitation-rewards/aggregates', [InvitationRewardController::class, 'aggregatesByInvitation']);
            Route::get('users/{uid}/metas', [UserMetaController::class, 'show']);
            Route::post('users/{user}/ban', [UserController::class, 'ban']);
            Route::post('users/{user}/unban', [UserController::class, 'unban']);

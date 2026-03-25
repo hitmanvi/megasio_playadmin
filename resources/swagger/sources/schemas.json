@@ -293,6 +293,50 @@
             }
         }
     },
+    "InvitationRewardAggregateByInvitationItem": {
+        "type": "object",
+        "description": "One invitation row for an inviter with invitation_rewards summed by source_type (all statuses)",
+        "properties": {
+            "invitation_id": {
+                "type": "integer"
+            },
+            "inviter_id": {
+                "type": "integer"
+            },
+            "invitee_id": {
+                "type": "integer"
+            },
+            "invitation_status": {
+                "type": "string",
+                "description": "invitations.status (active/inactive)"
+            },
+            "total_reward": {
+                "type": "string",
+                "description": "Cached total on invitations row"
+            },
+            "created_at": {
+                "type": "string",
+                "nullable": true
+            },
+            "updated_at": {
+                "type": "string",
+                "nullable": true
+            },
+            "invitee": {
+                "type": "object",
+                "nullable": true,
+                "description": "Subset of invitee user fields",
+                "additionalProperties": true
+            },
+            "rewards_by_source_type": {
+                "type": "object",
+                "description": "source_type -> sum(reward_amount) for this invitation_id (pending + paid)",
+                "additionalProperties": {
+                    "type": "string"
+                }
+            }
+        }
+    },
     "UserMetasResponse": {
         "type": "object",
         "description": "Payload in data for GET /users/{uid}/metas",
