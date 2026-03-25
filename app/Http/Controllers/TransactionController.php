@@ -14,7 +14,7 @@ class TransactionController extends Controller
     public function index(Request $request): JsonResponse
     {
         $request->validate([
-            'user_id' => 'nullable|integer|exists:megasio_play_api.users,id',
+            'user_id' => 'nullable|integer',
             'currency' => 'nullable|string|max:32',
             'type' => 'nullable|string|max:64',
             'status' => 'nullable|string|max:32',
