@@ -171,7 +171,7 @@
             },
             "payment_extra_info": {
                 "type": "object",
-                "description": "Count of user_payment_extra_infos rows by type",
+                "description": "Counts from user_payment_extra_infos for this user: by type (deposit/withdraw) and rows with duplicate_across_user=true",
                 "properties": {
                     "deposit": {
                         "type": "integer",
@@ -180,6 +180,11 @@
                     "withdraw": {
                         "type": "integer",
                         "minimum": 0
+                    },
+                    "duplicate_across_user": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Number of rows where duplicate_across_user is true"
                     }
                 }
             },

@@ -57,6 +57,11 @@ class UserController extends Controller
             ->map(fn ($c) => (int) $c)
             ->all();
 
+        $paymentExtraInfoDuplicateAcrossUserCount = UserPaymentExtraInfo::query()
+            ->where('user_id', $user->id)
+            ->where('duplicate_across_user', true)
+            ->count();
+
         $kyc = $user->kyc;
 
         $inviteCount = Invitation::query()->where('inviter_id', $user->id)->count();
@@ -109,7 +114,9 @@ class UserController extends Controller
             'payment_extra_info' => array_merge([
                 UserPaymentExtraInfo::TYPE_DEPOSIT => 0,
                 UserPaymentExtraInfo::TYPE_WITHDRAW => 0,
-            ], $paymentExtraInfoByType),
+            ], $paymentExtraInfoByType, [
+                'duplicate_across_user' => $paymentExtraInfoDuplicateAcrossUserCount,
+            ]),
             'finance' => [
                 'balances' => $user->balances,
                 'total_deposit_by_currency' => $depositTotals->map(fn ($row) => [

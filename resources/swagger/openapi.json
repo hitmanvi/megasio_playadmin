@@ -193,7 +193,7 @@
                     },
                     "payment_extra_info": {
                         "type": "object",
-                        "description": "Count of user_payment_extra_infos rows by type",
+                        "description": "Counts from user_payment_extra_infos for this user: by type (deposit/withdraw) and rows with duplicate_across_user=true",
                         "properties": {
                             "deposit": {
                                 "type": "integer",
@@ -202,6 +202,11 @@
                             "withdraw": {
                                 "type": "integer",
                                 "minimum": 0
+                            },
+                            "duplicate_across_user": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "description": "Number of rows where duplicate_across_user is true"
                             }
                         }
                     },
@@ -16173,7 +16178,7 @@
                     "Users"
                 ],
                 "summary": "Get user detail",
-                "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter, invite_count, invitation_reward deposit bonus starter/advanced counts), payment_extra_info (counts by type), finance (balances, total deposit/withdraw by currency), VIP from user_vips + level config, bonus (reward totals by category from transactions). Path uses users.uid (not numeric id).",
+                "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter, invite_count, invitation_reward deposit bonus starter/advanced counts), payment_extra_info (counts by type + duplicate_across_user), finance (balances, total deposit/withdraw by currency), VIP from user_vips + level config, bonus (reward totals by category from transactions). Path uses users.uid (not numeric id).",
                 "security": [
                     {
                         "sanctum": []

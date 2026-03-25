@@ -17,6 +17,7 @@ class UserPaymentExtraInfo extends Model
         'name',
         'type',
         'data',
+        'duplicate_across_user',
     ];
 
     protected function casts(): array
@@ -24,6 +25,7 @@ class UserPaymentExtraInfo extends Model
         return [
             'user_id' => 'integer',
             'data' => 'array',
+            'duplicate_across_user' => 'boolean',
         ];
     }
 
