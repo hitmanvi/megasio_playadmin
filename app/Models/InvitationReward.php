@@ -9,7 +9,8 @@ class InvitationReward extends Model
 {
     protected $table = 'megasio_play_api.invitation_rewards';
     // 奖励来源类型
-    const SOURCE_TYPE_DEPOSIT = 'deposit';    // 被邀请人充值奖励
+    const SOURCE_TYPE_DEPOSIT_STARTER = 'deposit_starter';      // 被邀请人充值奖励（新手档，对应 deposit_bonus_starter）
+    const SOURCE_TYPE_DEPOSIT_ADVANCED = 'deposit_advanced';   // 被邀请人充值奖励（进阶档，对应 deposit_bonus_advanced）
     const SOURCE_TYPE_BET = 'bet';
     const SOURCE_TYPE_VIP = 'vip';
 

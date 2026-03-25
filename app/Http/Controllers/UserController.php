@@ -62,13 +62,11 @@ class UserController extends Controller
         $inviteCount = Invitation::query()->where('inviter_id', $user->id)->count();
         $invitationRewardDepositStarterCount = InvitationReward::query()
             ->where('user_id', $user->id)
-            ->where('source_type', InvitationReward::SOURCE_TYPE_DEPOSIT)
-            ->where('related_id', 'deposit_bonus_starter')
+            ->where('source_type', InvitationReward::SOURCE_TYPE_DEPOSIT_STARTER)
             ->count();
         $invitationRewardDepositAdvancedCount = InvitationReward::query()
             ->where('user_id', $user->id)
-            ->where('source_type', InvitationReward::SOURCE_TYPE_DEPOSIT)
-            ->where('related_id', 'deposit_bonus_advanced')
+            ->where('source_type', InvitationReward::SOURCE_TYPE_DEPOSIT_ADVANCED)
             ->count();
 
         $data = [

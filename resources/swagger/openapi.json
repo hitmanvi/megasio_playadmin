@@ -182,12 +182,12 @@
                             "invitation_reward_deposit_bonus_starter_count": {
                                 "type": "integer",
                                 "minimum": 0,
-                                "description": "invitation_rewards rows for this user: source_type=deposit, related_id=deposit_bonus_starter"
+                                "description": "invitation_rewards rows for this user: source_type=deposit_starter"
                             },
                             "invitation_reward_deposit_bonus_advanced_count": {
                                 "type": "integer",
                                 "minimum": 0,
-                                "description": "invitation_rewards rows for this user: source_type=deposit, related_id=deposit_bonus_advanced"
+                                "description": "invitation_rewards rows for this user: source_type=deposit_advanced"
                             }
                         }
                     },
