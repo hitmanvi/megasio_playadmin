@@ -6,6 +6,7 @@ use App\Models\Deposit;
 use App\Models\Invitation;
 use App\Models\InvitationReward;
 use App\Models\User;
+use App\Models\UserMeta;
 use App\Models\UserPaymentExtraInfo;
 use App\Models\Withdraw;
 use App\Services\UserService;
@@ -74,6 +75,20 @@ class UserController extends Controller
             ->where('source_type', InvitationReward::SOURCE_TYPE_DEPOSIT_ADVANCED)
             ->count();
 
+        $registerInfoRaw = UserMeta::query()
+            ->where('user_id', $user->id)
+            ->where('key', UserMeta::KEY_REGISTER_INFO)
+            ->latest('id')
+            ->value('value');
+        $registerInfoDeviceIds = UserMeta::rawDeviceIdsFromMetaValue($registerInfoRaw);
+
+        $latestInfoRaw = UserMeta::query()
+            ->where('user_id', $user->id)
+            ->where('key', UserMeta::KEY_LATEST_INFO)
+            ->latest('id')
+            ->value('value');
+        $latestInfoDeviceIds = UserMeta::rawDeviceIdsFromMetaValue($latestInfoRaw);
+
         $data = [
             'activity' => [
                 'registered_at' => $user->created_at?->format('Y-m-d H:i:s'),
@@ -117,6 +132,10 @@ class UserController extends Controller
             ], $paymentExtraInfoByType, [
                 'duplicate_across_user' => $paymentExtraInfoDuplicateAcrossUserCount,
             ]),
+            'user_meta_device_ids' => [
+                'register_info' => $registerInfoDeviceIds,
+                'latest_info' => $latestInfoDeviceIds,
+            ],
             'finance' => [
                 'balances' => $user->balances,
                 'total_deposit_by_currency' => $depositTotals->map(fn ($row) => [

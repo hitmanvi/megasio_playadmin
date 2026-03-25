@@ -9,10 +9,10 @@ use Illuminate\Support\Collection;
 class UserMeta extends Model
 {
     protected $table = 'megasio_play_api.user_metas';
-    /** 注册时设备/环境信息（JSON，可多条历史） */
+    /** 注册时设备/环境信息（JSON） */
     public const KEY_REGISTER_INFO = 'register_info';
 
-    /** 最近一次上报的设备/环境信息（JSON，覆盖更新） */
+    /** 最近一次上报的设备/环境信息（JSON） */
     public const KEY_LATEST_INFO = 'latest_info';
 
     /**
@@ -172,5 +172,39 @@ class UserMeta extends Model
             ->distinct()
             ->pluck('user_id')
             ->toArray();
+    }
+
+    /**
+     * Return the device_ids field from user_metas.value JSON as decoded (no reshaping).
+     */
+    public static function rawDeviceIdsFromMetaValue(?string $raw): array|\stdClass
+    {
+        if ($raw === null || $raw === '') {
+            return new \stdClass();
+        }
+
+        $decoded = json_decode($raw);
+        if (json_last_error() !== JSON_ERROR_NONE || ! is_object($decoded)) {
+            return new \stdClass();
+        }
+
+        if (! property_exists($decoded, 'device_ids')) {
+            return new \stdClass();
+        }
+
+        $ids = $decoded->device_ids;
+        if ($ids === null) {
+            return new \stdClass();
+        }
+
+        if (is_array($ids)) {
+            return $ids;
+        }
+
+        if (is_object($ids)) {
+            return $ids;
+        }
+
+        return new \stdClass();
     }
 }

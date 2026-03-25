@@ -210,6 +210,38 @@
                             }
                         }
                     },
+                    "user_meta_device_ids": {
+                        "type": "object",
+                        "description": "The device_ids field from user_metas.value JSON, decoded as-is (empty object if missing)",
+                        "properties": {
+                            "register_info": {
+                                "description": "device_ids from latest register_info row",
+                                "oneOf": [
+                                    {
+                                        "type": "object",
+                                        "additionalProperties": true
+                                    },
+                                    {
+                                        "type": "array",
+                                        "items": []
+                                    }
+                                ]
+                            },
+                            "latest_info": {
+                                "description": "device_ids from latest latest_info row",
+                                "oneOf": [
+                                    {
+                                        "type": "object",
+                                        "additionalProperties": true
+                                    },
+                                    {
+                                        "type": "array",
+                                        "items": []
+                                    }
+                                ]
+                            }
+                        }
+                    },
                     "finance": {
                         "type": "object",
                         "properties": {
@@ -16178,7 +16210,7 @@
                     "Users"
                 ],
                 "summary": "Get user detail",
-                "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter, invite_count, invitation_reward deposit bonus starter/advanced counts), payment_extra_info (counts by type + duplicate_across_user), finance (balances, total deposit/withdraw by currency), VIP from user_vips + level config, bonus (reward totals by category from transactions). Path uses users.uid (not numeric id).",
+                "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter, invite_count, invitation_reward deposit bonus starter/advanced counts), payment_extra_info (counts by type + duplicate_across_user), user_meta_device_ids (register_info / latest_info), finance (balances, total deposit/withdraw by currency), VIP from user_vips + level config, bonus (reward totals by category from transactions). Path uses users.uid (not numeric id).",
                 "security": [
                     {
                         "sanctum": []
