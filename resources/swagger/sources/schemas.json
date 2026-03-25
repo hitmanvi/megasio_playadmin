@@ -1415,6 +1415,45 @@
             }
         }
     },
+    "PaymentMethodFieldConfig": {
+        "type": "object",
+        "description": "Shared field definitions for payment methods (deposit/withdraw)",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "name": {
+                "type": "string",
+                "description": "Config key / display name"
+            },
+            "deposit_fields": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                }
+            },
+            "withdraw_fields": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                }
+            },
+            "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            },
+            "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            }
+        }
+    },
     "Deposit": {
         "type": "object",
         "properties": {

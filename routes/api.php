@@ -9,6 +9,7 @@ use App\Http\Controllers\GameGroupController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderArchiveController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\PaymentMethodFieldConfigController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\GameCategoryController;
 use App\Http\Controllers\DepositController;
@@ -115,6 +116,12 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('payment-methods/{paymentMethod}', [PaymentMethodController::class, 'show']);
            Route::put('payment-methods/{paymentMethod}', [PaymentMethodController::class, 'update']);
            Route::post('payment-methods/sync', [PaymentMethodController::class, 'sync']);
+
+           Route::get('payment-method-field-configs', [PaymentMethodFieldConfigController::class, 'index']);
+           Route::post('payment-method-field-configs', [PaymentMethodFieldConfigController::class, 'store']);
+           Route::get('payment-method-field-configs/{paymentMethodFieldConfig}', [PaymentMethodFieldConfigController::class, 'show']);
+           Route::put('payment-method-field-configs/{paymentMethodFieldConfig}', [PaymentMethodFieldConfigController::class, 'update']);
+           Route::delete('payment-method-field-configs/{paymentMethodFieldConfig}', [PaymentMethodFieldConfigController::class, 'destroy']);
            
            // Deposits routes
            Route::get('deposits', [DepositController::class, 'index']);
