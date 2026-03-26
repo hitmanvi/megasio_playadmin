@@ -1,0 +1,47 @@
+---
+description: API 返回中关联数组与索引数组的区分及 JSON 形态
+globs: **/Http/Controllers/**/*.php,**/Services/**/*.php
+alwaysApply: false
+---
+
+# 关联数组 vs 普通数组（JSON 返回）
+
+PHP 的 `json_encode` 规则：**字符串键的关联数组 → JSON 对象 `{}`**，**连续数字键的索引数组 → JSON 数组 `[]`**。构造 `response()->json()` / `responseItem` 的 `data` 时要按接口语义选用，避免前端把「动态键映射」误当成「列表」。
+
+## 动态键映射 / 字典（应为 JSON object）
+
+- 典型：`source_type => 金额`、`currency => 计数`、OpenAPI 里 `additionalProperties` 或固定键名对象。
+- **空字典**：需要 `{}` 时不要返回 `[]`。空 PHP 数组 `[]` 会编成 `[]`，应使用 `new \stdClass()`（或 `(object) []`）表示空对象。
+- **空数组也要对象时**：例如业务约定「device_ids 始终是 object」，空数组 `[]` 应转为 `new \stdClass()` 再返回。
+
+```php
+// ❌ BAD：语义是 map，但空时变成 JSON 数组
+'rewards_by_source_type' => $map, // $map === [] → []
+
+// ✅ GOOD
+'rewards_by_source_type' => $map === [] ? new \stdClass() : $map,
+```
+
+## 列表（应为 JSON array）
+
+- 典型：分页 `items`、按顺序展示的同构元素列表。
+- `collect()->map()->all()` 若键不连续，可能得到对象式 JSON；需要列表时用 **`->values()`** 或 **`array_values()`** 重建 0..n-1 索引。
+
+```php
+// ✅ GOOD
+'items' => $rows->map(fn ($r) => [...])->values()->all(),
+```
+
+## OpenAPI 与实现一致
+
+- Schema 声明为 `type: object` + `additionalProperties` 时，实现侧应对应关联数组或 `stdClass`，**不要用空 `[]` 表示「无键」**。
+- Schema 声明为 `type: array` 时，实现侧应为索引数组并注意 `values()`。
+
+## 快速判断
+
+| 语义           | PHP 空值写法              | JSON   |
+|----------------|---------------------------|--------|
+| 键值映射       | `new \stdClass()`         | `{}`   |
+| 有序列表       | `[]`                      | `[]`   |
+| 非空映射       | `['a' => 1]`              | `{"a":1}` |
+| 非空列表       | `[1, 2]` / `array_values` | `[1,2]` |
