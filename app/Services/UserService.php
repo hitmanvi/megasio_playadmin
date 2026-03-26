@@ -68,9 +68,14 @@ class UserService
             ksort($categories[$key]);
         }
         ksort($totalByCurrency);
-                
+        // 如果某个category下没有任何币种（为空数组），则去掉该category
+        foreach ($categories as $key => $byCurrency) {
+            if (empty($byCurrency)) {
+                $categories[$key] = new \stdClass();
+            }
+        }
         return [
-            'categories' => $categories,
+            'categories' => $categories ?? new \stdClass(),
             'total_by_currency' => $totalByCurrency,
         ];
     }
