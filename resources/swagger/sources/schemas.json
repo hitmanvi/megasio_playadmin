@@ -97,6 +97,12 @@
             "profile": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "uid": {
+                        "type": "string"
+                    },
                     "status": {
                         "type": "string",
                         "description": "User account status",
@@ -104,6 +110,12 @@
                             "active",
                             "banned"
                         ]
+                    },
+                    "withdraw_enabled": {
+                        "type": "boolean"
+                    },
+                    "deposit_enabled": {
+                        "type": "boolean"
                     },
                     "tags": {
                         "type": "array",

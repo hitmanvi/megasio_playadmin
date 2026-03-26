@@ -20,12 +20,16 @@ class User extends Model
         'status',
         'ban_reason',
         'last_active_at',
+        'withdraw_enabled',
+        'deposit_enabled',
     ];
 
     protected function casts(): array
     {
         return [
             'last_active_at' => 'datetime',
+            'withdraw_enabled' => 'boolean',
+            'deposit_enabled' => 'boolean',
         ];
     }
 

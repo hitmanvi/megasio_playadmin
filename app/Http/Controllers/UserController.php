@@ -100,6 +100,8 @@ class UserController extends Controller
                 'id' => $user->id,
                 'uid' => $user->uid,
                 'status' => $user->status,
+                'withdraw_enabled' => (bool) $user->withdraw_enabled,
+                'deposit_enabled' => (bool) $user->deposit_enabled,
                 'tags' => $user->tags,
                 'email' => $user->email,
                 'phone' => $user->phone,
@@ -267,6 +269,24 @@ class UserController extends Controller
         $users = $query->with(['agentLink.agent', 'inviter', 'tags'])->paginate($perPage);
 
         return $this->responseListWithPaginator($users, null);
+    }
+
+    /**
+     * Partial update by users.id (e.g. withdraw_enabled, deposit_enabled).
+     */
+    public function update(Request $request, User $user): JsonResponse
+    {
+        $request->validate([
+            'withdraw_enabled' => 'nullable|boolean',
+            'deposit_enabled' => 'nullable|boolean',
+        ]);
+
+        $user->update($request->only([
+            'withdraw_enabled',
+            'deposit_enabled',
+        ]));
+
+        return $this->responseItem($user->fresh());
     }
 
     /**
