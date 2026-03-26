@@ -152,6 +152,7 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('user-payment-extra-infos', [UserPaymentExtraInfoController::class, 'index']);
            Route::put('user-payment-extra-infos/{userPaymentExtraInfo}', [UserPaymentExtraInfoController::class, 'update']);
            Route::delete('user-payment-extra-infos/{userPaymentExtraInfo}', [UserPaymentExtraInfoController::class, 'destroy']);
+           Route::get('bonus-tasks/stats', [BonusTaskController::class, 'stats']);
            Route::get('bonus-tasks', [BonusTaskController::class, 'index']);
            
            // Currencies routes

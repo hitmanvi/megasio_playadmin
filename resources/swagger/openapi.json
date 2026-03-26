@@ -461,6 +461,24 @@
                     }
                 }
             },
+            "BonusTaskStats": {
+                "type": "object",
+                "description": "Payload in data for GET /bonus-tasks/stats",
+                "properties": {
+                    "total_base_bonus": {
+                        "type": "string",
+                        "description": "SUM(base_bonus) for matching rows"
+                    },
+                    "total_claimed": {
+                        "type": "string",
+                        "description": "SUM(base_bonus) only for rows with status=claimed"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "description": "Present when filtered by user_id"
+                    }
+                }
+            },
             "BonusTask": {
                 "type": "object",
                 "description": "User bonus wagering task",
@@ -6091,6 +6109,76 @@
                                         },
                                         "extra": {
                                             "type": "null"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bonus-tasks/stats": {
+            "get": {
+                "tags": [
+                    "Bonus Tasks"
+                ],
+                "summary": "Bonus task aggregates",
+                "description": "total_base_bonus (sum of base_bonus for all matching rows) and total_claimed (sum of base_bonus where status=claimed). Optional user_id scopes both.",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "If set, only include bonus_tasks for this users.id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stats retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errmsg": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/BonusTaskStats"
                                         }
                                     }
                                 }

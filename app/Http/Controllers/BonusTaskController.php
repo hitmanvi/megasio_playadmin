@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BonusTask;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+
 class BonusTaskController extends Controller
 {
     /** @return list<string> */
@@ -68,5 +69,36 @@ class BonusTaskController extends Controller
         $paginator = $query->paginate($perPage);
 
         return $this->responseListWithPaginator($paginator, null);
+    }
+
+    /**
+     * Aggregate base_bonus total and base_bonus sum for rows with status=claimed only.
+     */
+    public function stats(Request $request): JsonResponse
+    {
+        $request->validate([
+            'user_id' => 'nullable|integer',
+        ]);
+
+        $query = BonusTask::query();
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->integer('user_id'));
+        }
+
+        $claimed = BonusTask::STATUS_CLAIMED;
+        $row = (clone $query)->selectRaw(
+            'SUM(COALESCE(base_bonus, 0)) as total_base_bonus, SUM(CASE WHEN status = ? THEN COALESCE(base_bonus, 0) ELSE 0 END) as total_claimed',
+            [$claimed]
+        )->first();
+
+        $data = [
+            'total_base_bonus' => (string) ($row->total_base_bonus ?? 0),
+            'total_claimed' => (string) ($row->total_claimed ?? 0),
+        ];
+        if ($request->filled('user_id')) {
+            $data['user_id'] = $request->integer('user_id');
+        }
+
+        return $this->responseItem($data);
     }
 }

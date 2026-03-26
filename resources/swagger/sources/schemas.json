@@ -439,6 +439,24 @@
             }
         }
     },
+    "BonusTaskStats": {
+        "type": "object",
+        "description": "Payload in data for GET /bonus-tasks/stats",
+        "properties": {
+            "total_base_bonus": {
+                "type": "string",
+                "description": "SUM(base_bonus) for matching rows"
+            },
+            "total_claimed": {
+                "type": "string",
+                "description": "SUM(base_bonus) only for rows with status=claimed"
+            },
+            "user_id": {
+                "type": "integer",
+                "description": "Present when filtered by user_id"
+            }
+        }
+    },
     "BonusTask": {
         "type": "object",
         "description": "User bonus wagering task",
