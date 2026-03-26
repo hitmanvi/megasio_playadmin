@@ -24,6 +24,7 @@ use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\KycController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\BonusTaskController;
+use App\Http\Controllers\WeeklyCashbackController;
 use App\Http\Controllers\BundleController;
 use App\Http\Controllers\BundlePurchaseController;
 use App\Http\Controllers\RedeemController;
@@ -155,6 +156,8 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::delete('user-payment-extra-infos/{userPaymentExtraInfo}', [UserPaymentExtraInfoController::class, 'destroy']);
            Route::get('bonus-tasks/stats', [BonusTaskController::class, 'stats']);
            Route::get('bonus-tasks', [BonusTaskController::class, 'index']);
+           Route::get('weekly-cashbacks/stats', [WeeklyCashbackController::class, 'stats']);
+           Route::get('weekly-cashbacks', [WeeklyCashbackController::class, 'index']);
            
            // Currencies routes
            Route::get('currencies', [CurrencyController::class, 'index']);

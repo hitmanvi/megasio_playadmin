@@ -145,6 +145,10 @@
         {
             "name": "Bonus Tasks",
             "description": "User bonus task records"
+        },
+        {
+            "name": "Weekly Cashback",
+            "description": "Weekly cashback records"
         }
     ]
 }

@@ -469,6 +469,104 @@
             }
         }
     },
+    "WeeklyCashbackClaimedByCurrency": {
+        "type": "object",
+        "properties": {
+            "currency": {
+                "type": "string",
+                "description": "weekly_cashbacks.currency (empty string if null)"
+            },
+            "total": {
+                "type": "string",
+                "description": "SUM(amount) for status=claimed in this currency"
+            }
+        }
+    },
+    "WeeklyCashbackStats": {
+        "type": "object",
+        "description": "Payload in data for GET /weekly-cashbacks/stats",
+        "properties": {
+            "total_claimed_by_currency": {
+                "type": "array",
+                "description": "Claimed amount totals grouped by currency",
+                "items": {
+                    "$ref": "#/components/schemas/WeeklyCashbackClaimedByCurrency"
+                }
+            },
+            "user_id": {
+                "type": "integer",
+                "description": "Present when filtered by user_id"
+            }
+        }
+    },
+    "WeeklyCashback": {
+        "type": "object",
+        "description": "User weekly cashback period record; list may include loaded user",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "user_id": {
+                "type": "integer"
+            },
+            "user": {
+                "nullable": true,
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/User"
+                    }
+                ]
+            },
+            "period": {
+                "type": "integer",
+                "description": "Period identifier (e.g. week number)"
+            },
+            "currency": {
+                "type": "string",
+                "nullable": true
+            },
+            "wager": {
+                "type": "string",
+                "description": "Decimal as string"
+            },
+            "payout": {
+                "type": "string",
+                "description": "Decimal as string"
+            },
+            "status": {
+                "type": "string",
+                "enum": [
+                    "active",
+                    "claimable",
+                    "claimed",
+                    "expired"
+                ]
+            },
+            "rate": {
+                "type": "string",
+                "description": "Decimal as string"
+            },
+            "amount": {
+                "type": "string",
+                "description": "Decimal as string"
+            },
+            "claimed_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            },
+            "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            },
+            "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            }
+        }
+    },
     "BonusTask": {
         "type": "object",
         "description": "User bonus wagering task",
