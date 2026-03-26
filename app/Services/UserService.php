@@ -76,7 +76,7 @@ class UserService
         }
         return [
             'categories' => $categories ?? new \stdClass(),
-            'total_by_currency' => $totalByCurrency,
+            'total_by_currency' => $totalByCurrency ?? new \stdClass(),
         ];
     }
 }
