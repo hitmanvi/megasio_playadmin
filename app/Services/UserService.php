@@ -68,7 +68,7 @@ class UserService
             ksort($categories[$key]);
         }
         ksort($totalByCurrency);
-
+                
         return [
             'categories' => $categories,
             'total_by_currency' => $totalByCurrency,
