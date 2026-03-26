@@ -51,6 +51,7 @@ class InvitationRewardController extends Controller
             $rewardsBySourceType[$row->source_type] = (string) $row->total;
         }
 
+
         return $this->responseItem([
             'user_id' => $user->id,
             'uid' => $user->uid,
@@ -58,7 +59,7 @@ class InvitationRewardController extends Controller
             'total_reward_amount' => $totalRewardAmount,
             'deposit_starter_reward_count' => $depositStarterRewardCount,
             'deposit_advanced_reward_count' => $depositAdvancedRewardCount,
-            'rewards_by_source_type' => $rewardsBySourceType,
+            'rewards_by_source_type' => $rewardsBySourceType === [] ? new \stdClass() : $rewardsBySourceType,
         ]);
     }
 
