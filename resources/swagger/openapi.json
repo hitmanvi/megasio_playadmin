@@ -541,7 +541,19 @@
                     },
                     "period": {
                         "type": "integer",
-                        "description": "Period identifier (e.g. week number)"
+                        "description": "ISO week code: isoWeekYear * 100 + isoWeek (same as dateToPeriod)"
+                    },
+                    "period_start_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true,
+                        "description": "Monday 00:00:00 start of the ISO week (app timezone); null if period is invalid"
+                    },
+                    "period_end_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true,
+                        "description": "Sunday end of day end of the ISO week (app timezone); null if period is invalid"
                     },
                     "currency": {
                         "type": "string",
