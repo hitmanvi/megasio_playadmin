@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\Rule;
 
 class InvitationRewardController extends Controller
 {
@@ -69,13 +70,31 @@ class InvitationRewardController extends Controller
         $request->validate([
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
+            'account' => 'nullable|string',
+            'status' => [
+                'nullable',
+                'string',
+                Rule::in([Invitation::STATUS_ACTIVE, Invitation::STATUS_INACTIVE]),
+            ],
         ]);
 
         $user = User::query()->where('uid', $uid)->firstOrFail();
         $perPage = (int) $request->get('per_page', 15);
 
-        $paginator = Invitation::query()
-            ->where('inviter_id', $user->id)
+        $query = Invitation::query()
+            ->where('inviter_id', $user->id);
+
+        if ($request->filled('account')) {
+            $query->whereHas('invitee', function ($q) use ($request) {
+                $q->byAccount(trim((string) $request->account));
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->string('status'));
+        }
+
+        $paginator = $query
             ->with('invitee')
             ->orderByDesc('id')
             ->paginate($perPage);

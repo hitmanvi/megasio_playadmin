@@ -463,7 +463,7 @@
                 "Users"
             ],
             "summary": "Invitation rewards aggregated by invitation",
-            "description": "Paginated invitations where the user is inviter; each item includes rewards_by_source_type (SUM(reward_amount) per invitation_rewards.source_type for that invitation). Path uses users.uid.",
+            "description": "Paginated invitations where the user is inviter; each item includes rewards_by_source_type (SUM(reward_amount) per invitation_rewards.source_type for that invitation). Optional account filters invitee by users.uid (exact) or email/phone (partial, same as user list). Optional status filters invitations.status (active/inactive). Path uses users.uid.",
             "security": [
                 {
                     "sanctum": []
@@ -477,6 +477,28 @@
                     "required": true,
                     "schema": {
                         "type": "string"
+                    }
+                },
+                {
+                    "name": "account",
+                    "in": "query",
+                    "description": "Filter invitee: users.uid exact match, or email/phone partial (User::byAccount)",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "status",
+                    "in": "query",
+                    "description": "Filter invitations.status",
+                    "required": false,
+                    "schema": {
+                        "type": "string",
+                        "enum": [
+                            "active",
+                            "inactive"
+                        ]
                     }
                 },
                 {
@@ -565,6 +587,16 @@
                 },
                 "404": {
                     "description": "User not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "422": {
+                    "description": "Validation error",
                     "content": {
                         "application/json": {
                             "schema": {
