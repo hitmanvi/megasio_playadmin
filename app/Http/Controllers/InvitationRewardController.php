@@ -75,7 +75,7 @@ class InvitationRewardController extends Controller
             'status' => [
                 'nullable',
                 'string',
-                Rule::in([Invitation::STATUS_ACTIVE, Invitation::STATUS_INACTIVE]),
+                Rule::in([User::STATUS_ACTIVE, User::STATUS_BANNED]),
             ],
         ]);
 
@@ -85,14 +85,15 @@ class InvitationRewardController extends Controller
         $query = Invitation::query()
             ->where('inviter_id', $user->id);
 
-        if ($request->filled('account')) {
+        if ($request->filled('account') || $request->filled('status')) {
             $query->whereHas('invitee', function ($q) use ($request) {
-                $q->byAccount(trim((string) $request->account));
+                if ($request->filled('account')) {
+                    $q->byAccount(trim((string) $request->account));
+                }
+                if ($request->filled('status')) {
+                    $q->where('status', $request->string('status'));
+                }
             });
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->string('status'));
         }
 
         $paginator = $query
