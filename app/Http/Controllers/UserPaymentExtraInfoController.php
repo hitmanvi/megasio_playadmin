@@ -14,7 +14,7 @@ class UserPaymentExtraInfoController extends Controller
     public function index(Request $request): JsonResponse
     {
         $request->validate([
-            'user_id' => 'required|integer|exists:megasio_play_api.users,id',
+            'user_id' => 'required|integer',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
