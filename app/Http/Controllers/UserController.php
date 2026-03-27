@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Deposit;
 use App\Models\Invitation;
 use App\Models\InvitationReward;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserMeta;
 use App\Models\UserPaymentExtraInfo;
+use App\Models\WeeklyCashback;
 use App\Models\Withdraw;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
@@ -155,6 +157,31 @@ class UserController extends Controller
         return $this->responseItem($data);
     }
 
+    /**
+     * VIP-related bonus totals: weekly cashback (from weekly_cashbacks) + VIP level-up rewards (from transactions).
+     */
+    public function vipBonusStats(string $uid): JsonResponse
+    {
+        $user = User::query()->where('uid', $uid)->firstOrFail();
+
+        $weeklyClaimed = $this->sumWeeklyCashbackAmountByCurrency($user->id, WeeklyCashback::STATUS_CLAIMED);
+        $weeklyExpired = $this->sumWeeklyCashbackAmountByCurrency($user->id, WeeklyCashback::STATUS_EXPIRED);
+        $levelUpCash = $this->sumCompletedTransactionAmountByCurrency(
+            $user->id,
+            Transaction::TYPE_VIP_LEVEL_UP_REWARD
+        );
+        $totalReward = $this->mergeCurrencyAmountLists($weeklyClaimed, $levelUpCash);
+
+        return $this->responseItem([
+            'user_id' => $user->id,
+            'uid' => $user->uid,
+            'total_reward_by_currency' => $totalReward,
+            'weekly_cashback_expired_by_currency' => $weeklyExpired,
+            'weekly_cashback_claimed_by_currency' => $weeklyClaimed,
+            'vip_level_up_reward_by_currency' => $levelUpCash,
+        ]);
+    }
+
     private function decodedUserMetaValue(?string $raw): mixed
     {
         if ($raw === null || $raw === '') {
@@ -163,6 +190,67 @@ class UserController extends Controller
         $decoded = json_decode($raw, true);
 
         return json_last_error() === JSON_ERROR_NONE ? $decoded : null;
+    }
+
+    /**
+     * @return list<array{currency: string, total: string}>
+     */
+    private function sumWeeklyCashbackAmountByCurrency(int $userId, string $status): array
+    {
+        $rows = WeeklyCashback::query()
+            ->where('user_id', $userId)
+            ->where('status', $status)
+            ->selectRaw('currency, SUM(COALESCE(amount, 0)) as total')
+            ->groupBy('currency')
+            ->orderBy('currency')
+            ->get();
+
+        return $rows->map(fn ($row) => [
+            'currency' => strtoupper((string) ($row->currency ?? '')),
+            'total' => (string) $row->total,
+        ])->values()->all();
+    }
+
+    /**
+     * @return list<array{currency: string, total: string}>
+     */
+    private function sumCompletedTransactionAmountByCurrency(int $userId, string $type): array
+    {
+        $rows = Transaction::query()
+            ->where('user_id', $userId)
+            ->where('status', Transaction::STATUS_COMPLETED)
+            ->where('type', $type)
+            ->selectRaw('currency, SUM(COALESCE(amount, 0)) as total')
+            ->groupBy('currency')
+            ->orderBy('currency')
+            ->get();
+
+        return $rows->map(fn ($row) => [
+            'currency' => strtoupper((string) ($row->currency ?? '')),
+            'total' => (string) $row->total,
+        ])->values()->all();
+    }
+
+    /**
+     * @param  list<array{currency: string, total: string}>  $a
+     * @param  list<array{currency: string, total: string}>  $b
+     * @return list<array{currency: string, total: string}>
+     */
+    private function mergeCurrencyAmountLists(array $a, array $b): array
+    {
+        $map = [];
+        foreach ([$a, $b] as $list) {
+            foreach ($list as $row) {
+                $c = $row['currency'];
+                $map[$c] = bcadd($map[$c] ?? '0', (string) $row['total'], 8);
+            }
+        }
+        ksort($map);
+
+        return collect($map)->map(fn (string $total, string $currency) => [
+            'currency' => $currency,
+            'total' => $total,
+        ])->values()->all();
     }
 
     private function publicUserSummary(?User $user): ?array

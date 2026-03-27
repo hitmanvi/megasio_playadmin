@@ -366,6 +366,46 @@
                     }
                 }
             },
+            "UserVipBonusStats": {
+                "type": "object",
+                "description": "Payload in data for GET /users/{uid}/vip-bonus-stats: weekly_cashbacks (claimed/expired) + VIP level-up cash from completed transactions",
+                "properties": {
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "uid": {
+                        "type": "string"
+                    },
+                    "total_reward_by_currency": {
+                        "type": "array",
+                        "description": "Per currency: weekly_cashback claimed + VIP_LEVEL_UP_REWARD (completed)",
+                        "items": {
+                            "$ref": "#/components/schemas/WeeklyCashbackClaimedByCurrency"
+                        }
+                    },
+                    "weekly_cashback_expired_by_currency": {
+                        "type": "array",
+                        "description": "SUM(weekly_cashbacks.amount) where status=expired",
+                        "items": {
+                            "$ref": "#/components/schemas/WeeklyCashbackClaimedByCurrency"
+                        }
+                    },
+                    "weekly_cashback_claimed_by_currency": {
+                        "type": "array",
+                        "description": "SUM(weekly_cashbacks.amount) where status=claimed",
+                        "items": {
+                            "$ref": "#/components/schemas/WeeklyCashbackClaimedByCurrency"
+                        }
+                    },
+                    "vip_level_up_reward_by_currency": {
+                        "type": "array",
+                        "description": "SUM(transactions.amount) where type=VIP_LEVEL_UP_REWARD and status=COMPLETED",
+                        "items": {
+                            "$ref": "#/components/schemas/WeeklyCashbackClaimedByCurrency"
+                        }
+                    }
+                }
+            },
             "InvitationRewardAggregateByInvitationItem": {
                 "type": "object",
                 "description": "One invitation row for an inviter with invitation_rewards summed by source_type (all statuses)",
@@ -16858,6 +16898,76 @@
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/InvitationRewardStats"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{uid}/vip-bonus-stats": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "VIP bonus stats for user",
+                "description": "Totals by currency: weekly cashback claimed and expired from weekly_cashbacks; VIP level-up cash from completed transactions (VIP_LEVEL_UP_REWARD); total_reward is claimed weekly cashback + level-up cash. Path uses users.uid.",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "uid",
+                        "in": "path",
+                        "description": "User uid (users.uid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stats retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errmsg": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserVipBonusStats"
                                         }
                                     }
                                 }

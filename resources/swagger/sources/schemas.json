@@ -344,6 +344,46 @@
             }
         }
     },
+    "UserVipBonusStats": {
+        "type": "object",
+        "description": "Payload in data for GET /users/{uid}/vip-bonus-stats: weekly_cashbacks (claimed/expired) + VIP level-up cash from completed transactions",
+        "properties": {
+            "user_id": {
+                "type": "integer"
+            },
+            "uid": {
+                "type": "string"
+            },
+            "total_reward_by_currency": {
+                "type": "array",
+                "description": "Per currency: weekly_cashback claimed + VIP_LEVEL_UP_REWARD (completed)",
+                "items": {
+                    "$ref": "#/components/schemas/WeeklyCashbackClaimedByCurrency"
+                }
+            },
+            "weekly_cashback_expired_by_currency": {
+                "type": "array",
+                "description": "SUM(weekly_cashbacks.amount) where status=expired",
+                "items": {
+                    "$ref": "#/components/schemas/WeeklyCashbackClaimedByCurrency"
+                }
+            },
+            "weekly_cashback_claimed_by_currency": {
+                "type": "array",
+                "description": "SUM(weekly_cashbacks.amount) where status=claimed",
+                "items": {
+                    "$ref": "#/components/schemas/WeeklyCashbackClaimedByCurrency"
+                }
+            },
+            "vip_level_up_reward_by_currency": {
+                "type": "array",
+                "description": "SUM(transactions.amount) where type=VIP_LEVEL_UP_REWARD and status=COMPLETED",
+                "items": {
+                    "$ref": "#/components/schemas/WeeklyCashbackClaimedByCurrency"
+                }
+            }
+        }
+    },
     "InvitationRewardAggregateByInvitationItem": {
         "type": "object",
         "description": "One invitation row for an inviter with invitation_rewards summed by source_type (all statuses)",
