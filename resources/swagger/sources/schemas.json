@@ -200,12 +200,13 @@
                     }
                 }
             },
-            "user_meta_device_ids": {
+            "user_meta": {
                 "type": "object",
-                "description": "The device_ids field from user_metas.value JSON, decoded as-is (empty object if missing)",
+                "description": "Latest user_metas.value per key, JSON-decoded; null if no row or empty value",
                 "properties": {
                     "register_info": {
-                        "description": "device_ids from latest register_info row",
+                        "nullable": true,
+                        "description": "Decoded value from latest register_info row",
                         "oneOf": [
                             {
                                 "type": "object",
@@ -218,7 +219,8 @@
                         ]
                     },
                     "latest_info": {
-                        "description": "device_ids from latest latest_info row",
+                        "nullable": true,
+                        "description": "Decoded value from latest latest_info row",
                         "oneOf": [
                             {
                                 "type": "object",

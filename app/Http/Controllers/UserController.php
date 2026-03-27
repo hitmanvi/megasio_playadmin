@@ -80,14 +80,12 @@ class UserController extends Controller
             ->where('key', UserMeta::KEY_REGISTER_INFO)
             ->latest('id')
             ->value('value');
-        $registerInfoDeviceIds = UserMeta::rawDeviceIdsFromMetaValue($registerInfoRaw);
 
         $latestInfoRaw = UserMeta::query()
             ->where('user_id', $user->id)
             ->where('key', UserMeta::KEY_LATEST_INFO)
             ->latest('id')
             ->value('value');
-        $latestInfoDeviceIds = UserMeta::rawDeviceIdsFromMetaValue($latestInfoRaw);
 
         $data = [
             'activity' => [
@@ -135,9 +133,9 @@ class UserController extends Controller
             ], $paymentExtraInfoByType, [
                 'duplicate_across_user' => $paymentExtraInfoDuplicateAcrossUserCount,
             ]),
-            'user_meta_device_ids' => [
-                'register_info' => $registerInfoDeviceIds,
-                'latest_info' => $latestInfoDeviceIds,
+            'user_meta' => [
+                'register_info' => $this->decodedUserMetaValue($registerInfoRaw),
+                'latest_info' => $this->decodedUserMetaValue($latestInfoRaw),
             ],
             'finance' => [
                 'balances' => $user->balances,
@@ -155,6 +153,16 @@ class UserController extends Controller
         ];
 
         return $this->responseItem($data);
+    }
+
+    private function decodedUserMetaValue(?string $raw): mixed
+    {
+        if ($raw === null || $raw === '') {
+            return null;
+        }
+        $decoded = json_decode($raw, true);
+
+        return json_last_error() === JSON_ERROR_NONE ? $decoded : null;
     }
 
     private function publicUserSummary(?User $user): ?array
