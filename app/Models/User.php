@@ -22,6 +22,7 @@ class User extends Model
         'last_active_at',
         'withdraw_enabled',
         'deposit_enabled',
+        'receive_promotion_email',
     ];
 
     protected function casts(): array
@@ -30,6 +31,7 @@ class User extends Model
             'last_active_at' => 'datetime',
             'withdraw_enabled' => 'boolean',
             'deposit_enabled' => 'boolean',
+            'receive_promotion_email' => 'boolean',
         ];
     }
 

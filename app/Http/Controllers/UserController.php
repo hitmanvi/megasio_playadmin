@@ -102,6 +102,7 @@ class UserController extends Controller
                 'status' => $user->status,
                 'withdraw_enabled' => (bool) $user->withdraw_enabled,
                 'deposit_enabled' => (bool) $user->deposit_enabled,
+                'receive_promotion_email' => (bool) $user->receive_promotion_email,
                 'tags' => $user->tags,
                 'email' => $user->email,
                 'phone' => $user->phone,
@@ -368,18 +369,20 @@ class UserController extends Controller
     }
 
     /**
-     * Partial update by users.id (e.g. withdraw_enabled, deposit_enabled).
+     * Partial update by users.id (e.g. withdraw_enabled, deposit_enabled, receive_promotion_email).
      */
     public function update(Request $request, User $user): JsonResponse
     {
         $request->validate([
             'withdraw_enabled' => 'nullable|boolean',
             'deposit_enabled' => 'nullable|boolean',
+            'receive_promotion_email' => 'nullable|boolean',
         ]);
 
         $user->update($request->only([
             'withdraw_enabled',
             'deposit_enabled',
+            'receive_promotion_email',
         ]));
 
         return $this->responseItem($user->fresh());

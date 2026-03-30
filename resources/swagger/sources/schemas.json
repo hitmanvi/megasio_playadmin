@@ -42,6 +42,11 @@
                 ],
                 "default": "active"
             },
+            "receive_promotion_email": {
+                "type": "boolean",
+                "description": "Whether the user accepts promotional email",
+                "nullable": true
+            },
             "ban_reason": {
                 "type": "string",
                 "description": "Reason for banning the user",
@@ -116,6 +121,10 @@
                     },
                     "deposit_enabled": {
                         "type": "boolean"
+                    },
+                    "receive_promotion_email": {
+                        "type": "boolean",
+                        "description": "Whether the user accepts promotional email"
                     },
                     "tags": {
                         "type": "array",

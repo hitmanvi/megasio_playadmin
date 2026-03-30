@@ -293,7 +293,7 @@
                 "Users"
             ],
             "summary": "Update user flags",
-            "description": "Partial update by users.id: withdraw_enabled, deposit_enabled",
+            "description": "Partial update by users.id: withdraw_enabled, deposit_enabled, receive_promotion_email",
             "security": [
                 {
                     "sanctum": []
@@ -322,6 +322,10 @@
                                 },
                                 "deposit_enabled": {
                                     "type": "boolean"
+                                },
+                                "receive_promotion_email": {
+                                    "type": "boolean",
+                                    "description": "Whether the user accepts promotional email"
                                 }
                             }
                         }
