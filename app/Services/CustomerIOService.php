@@ -56,32 +56,26 @@ class CustomerIOService
             return;
         }
 
-        $userId = $user->getKey();
-        $siteId = $this->siteId;
-        $apiKey = $this->apiKey;
+        $fresh = User::query()->with('vip')->find($user->getKey());
+        if (!$fresh || $fresh->uid === null || $fresh->uid === '') {
+            return;
+        }
 
-        dispatch(function () use ($userId, $siteId, $apiKey) {
-            $fresh = User::query()->with('vip')->find($userId);
-            if (!$fresh || $fresh->uid === null || $fresh->uid === '') {
-                return;
-            }
+        $pathId = rawurlencode((string) $fresh->uid);
+        $exp = $fresh->vip ? (float) $fresh->vip->exp : 0.0;
+        $vipLevel = VipLevel::calculateLevelFromExp($exp);
 
-            $pathId = rawurlencode((string) $fresh->uid);
-            $exp = $fresh->vip ? (float) $fresh->vip->exp : 0.0;
-            $vipLevel = VipLevel::calculateLevelFromExp($exp);
+        Http::withBasicAuth($this->siteId, $this->apiKey)
+            ->put(
+                'https://track.customer.io/api/v1/customers/' . $pathId,
+                [
+                    'email' => $fresh->email,
+                    'created_at' => $fresh->created_at?->unix(),
+                    'vip' => $vipLevel,
+                ]
+            );
 
-            Http::withBasicAuth($siteId, $apiKey)
-                ->put(
-                    'https://track.customer.io/api/v1/customers/' . $pathId,
-                    [
-                        'email' => $fresh->email,
-                        'created_at' => $fresh->created_at?->unix(),
-                        'vip' => $vipLevel,
-                    ]
-                );
-
-            app(CustomerIOService::class)->sendEvent($fresh, 'sign_up', $fresh->created_at?->unix());
-        });
+        $this->sendEvent($fresh, 'sign_up', $fresh->created_at?->unix());
     }
 
     /**
@@ -93,29 +87,23 @@ class CustomerIOService
             return;
         }
 
-        $userId = $user->getKey();
-        $siteId = $this->siteId;
-        $apiKey = $this->apiKey;
+        $fresh = User::query()->find($user->getKey());
+        if (!$fresh || $fresh->uid === null || $fresh->uid === '') {
+            return;
+        }
 
-        dispatch(function () use ($userId, $siteId, $apiKey) {
-            $fresh = User::query()->find($userId);
-            if (!$fresh || $fresh->uid === null || $fresh->uid === '') {
-                return;
-            }
+        $email = $fresh->email;
+        if ($email === null || trim((string) $email) === '') {
+            return;
+        }
 
-            $email = $fresh->email;
-            if ($email === null || trim((string) $email) === '') {
-                return;
-            }
+        $pathId = rawurlencode((string) $fresh->uid);
 
-            $pathId = rawurlencode((string) $fresh->uid);
-
-            Http::withBasicAuth($siteId, $apiKey)
-                ->put(
-                    'https://track.customer.io/api/v1/customers/' . $pathId,
-                    ['email' => $email]
-                );
-        });
+        Http::withBasicAuth($this->siteId, $this->apiKey)
+            ->put(
+                'https://track.customer.io/api/v1/customers/' . $pathId,
+                ['email' => $email]
+            );
     }
 
     public function update(User $user, array $data): void
@@ -124,24 +112,18 @@ class CustomerIOService
             return;
         }
 
-        $userId = $user->getKey();
-        $siteId = $this->siteId;
-        $apiKey = $this->apiKey;
+        $fresh = User::query()->find($user->getKey());
+        if (!$fresh || $fresh->uid === null || $fresh->uid === '') {
+            return;
+        }
 
-        dispatch(function () use ($userId, $data, $siteId, $apiKey) {
-            $fresh = User::query()->find($userId);
-            if (!$fresh || $fresh->uid === null || $fresh->uid === '') {
-                return;
-            }
+        $pathId = rawurlencode((string) $fresh->uid);
 
-            $pathId = rawurlencode((string) $fresh->uid);
-
-            Http::withBasicAuth($siteId, $apiKey)
-                ->put(
-                    'https://track.customer.io/api/v1/customers/' . $pathId,
-                    $data
-                );
-        });
+        Http::withBasicAuth($this->siteId, $this->apiKey)
+            ->put(
+                'https://track.customer.io/api/v1/customers/' . $pathId,
+                $data
+            );
     }
 
     public function deleteCustomer(User $user): void
@@ -172,32 +154,26 @@ class CustomerIOService
             $timestamp = time();
         }
 
-        $userId = $user->getKey();
-        $siteId = $this->siteId;
-        $apiKey = $this->apiKey;
+        $fresh = User::query()->find($user->getKey());
+        if (!$fresh || $fresh->uid === null || $fresh->uid === '') {
+            return;
+        }
 
-        dispatch(function () use ($userId, $event, $timestamp, $siteId, $apiKey, $data) {
-            $fresh = User::query()->find($userId);
-            if (!$fresh || $fresh->uid === null || $fresh->uid === '') {
-                return;
-            }
+        $pathId = rawurlencode((string) $fresh->uid);
 
-            $pathId = rawurlencode((string) $fresh->uid);
+        $payload = [
+            'name' => $event,
+            'timestamp' => $timestamp,
+        ];
+        if ($data !== null && $data !== []) {
+            $payload['data'] = $data;
+        }
 
-            $payload = [
-                'name' => $event,
-                'timestamp' => $timestamp,
-            ];
-            if ($data !== null && $data !== []) {
-                $payload['data'] = $data;
-            }
-
-            Http::withBasicAuth($siteId, $apiKey)
-                ->post(
-                    'https://track.customer.io/api/v1/customers/' . $pathId . '/events',
-                    $payload
-                );
-        })->onQueue('low');
+        Http::withBasicAuth($this->siteId, $this->apiKey)
+            ->post(
+                'https://track.customer.io/api/v1/customers/' . $pathId . '/events',
+                $payload
+            );
     }
 
     public function unsubscribe(User $user): void
