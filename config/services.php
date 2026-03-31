@@ -52,4 +52,9 @@ return [
         'api_key' => env('PLAY_API_ADMIN_API_KEY', ''),
     ],
 
+    'customer_io' => [
+        'enabled' => env('CUSTOMER_IO_ENABLED', false),
+        'site_id' => env('CUSTOMER_IO_SITE_ID'),
+        'api_key' => env('CUSTOMER_IO_API_KEY'),
+    ],
 ];

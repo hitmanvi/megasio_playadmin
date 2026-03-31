@@ -11,6 +11,7 @@ use App\Models\UserMeta;
 use App\Models\UserPaymentExtraInfo;
 use App\Models\WeeklyCashback;
 use App\Models\Withdraw;
+use App\Services\CustomerIOService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -385,7 +386,13 @@ class UserController extends Controller
             'receive_promotion_email',
         ]));
 
-        return $this->responseItem($user->fresh());
+        $user->refresh();
+
+        if ($request->has('receive_promotion_email')) {
+            app(CustomerIOService::class)->syncReceivePromotionEmail($user);
+        }
+
+        return $this->responseItem($user);
     }
 
     /**
