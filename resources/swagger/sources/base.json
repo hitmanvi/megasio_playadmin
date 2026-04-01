@@ -95,6 +95,10 @@
             "description": "System settings management endpoints"
         },
         {
+            "name": "Site links",
+            "description": "Site link (key/url) management endpoints"
+        },
+        {
             "name": "Bundles",
             "description": "Bundle management endpoints"
         },

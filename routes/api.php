@@ -23,6 +23,7 @@ use App\Http\Controllers\UserPaymentExtraInfoController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\KycController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SiteLinkController;
 use App\Http\Controllers\BonusTaskController;
 use App\Http\Controllers\WeeklyCashbackController;
 use App\Http\Controllers\BundleController;
@@ -179,6 +180,12 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('settings/{setting}', [SettingController::class, 'show']);
            Route::put('settings/{setting}', [SettingController::class, 'update']);
            Route::delete('settings/{setting}', [SettingController::class, 'destroy']);
+
+           Route::get('site-links', [SiteLinkController::class, 'index']);
+           Route::post('site-links', [SiteLinkController::class, 'store']);
+           Route::get('site-links/{site_link}', [SiteLinkController::class, 'show']);
+           Route::put('site-links/{site_link}', [SiteLinkController::class, 'update']);
+           Route::delete('site-links/{site_link}', [SiteLinkController::class, 'destroy']);
            
            // Bundles routes
            Route::get('bundles', [BundleController::class, 'index']);
