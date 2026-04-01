@@ -280,6 +280,22 @@
                                 }
                             }
                         }
+                    },
+                    "bonus_task_last_bonus_pending_active_by_currency": {
+                        "type": "array",
+                        "description": "SUM(bonus_tasks.last_bonus) where status is pending or active, grouped by currency",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "currency": {
+                                    "type": "string"
+                                },
+                                "total": {
+                                    "type": "string",
+                                    "description": "Decimal sum as string"
+                                }
+                            }
+                        }
                     }
                 }
             },

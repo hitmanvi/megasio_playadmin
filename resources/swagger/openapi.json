@@ -302,6 +302,22 @@
                                         }
                                     }
                                 }
+                            },
+                            "bonus_task_last_bonus_pending_active_by_currency": {
+                                "type": "array",
+                                "description": "SUM(bonus_tasks.last_bonus) where status is pending or active, grouped by currency",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "currency": {
+                                            "type": "string"
+                                        },
+                                        "total": {
+                                            "type": "string",
+                                            "description": "Decimal sum as string"
+                                        }
+                                    }
+                                }
                             }
                         }
                     },
@@ -17193,7 +17209,7 @@
                     "Users"
                 ],
                 "summary": "Get user detail",
-                "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter, invite_count, invitation_reward deposit bonus starter/advanced counts), payment_extra_info (counts by type + duplicate_across_user), user_meta (latest register_info / latest_info JSON from user_metas), finance (balances, total deposit/withdraw by currency), VIP from user_vips + level config, bonus (reward totals by category from transactions). Path uses users.uid (not numeric id).",
+                "description": "Admin user detail: activity, profile (email/phone/KYC/birthdate), referral (agent, agent_link, inviter, invite_count, invitation_reward deposit bonus starter/advanced counts), payment_extra_info (counts by type + duplicate_across_user), user_meta (latest register_info / latest_info JSON from user_metas), finance (balances, total deposit/withdraw by currency, bonus_tasks pending+active last_bonus sum by currency), VIP from user_vips + level config, bonus (reward totals by category from transactions). Path uses users.uid (not numeric id).",
                 "security": [
                     {
                         "sanctum": []

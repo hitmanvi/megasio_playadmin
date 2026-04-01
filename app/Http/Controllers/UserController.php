@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BonusTask;
 use App\Models\Deposit;
 use App\Models\Invitation;
 use App\Models\InvitationReward;
@@ -51,6 +52,14 @@ class UserController extends Controller
             ->where('status', Withdraw::STATUS_COMPLETED)
             ->selectRaw('currency, SUM(COALESCE(actual_amount, amount)) as total')
             ->groupBy('currency')
+            ->get();
+
+        $bonusTaskPendingActiveLastBonus = BonusTask::query()
+            ->where('user_id', $user->id)
+            ->whereIn('status', [BonusTask::STATUS_PENDING, BonusTask::STATUS_ACTIVE])
+            ->selectRaw('currency, SUM(COALESCE(last_bonus, 0)) as total')
+            ->groupBy('currency')
+            ->orderBy('currency')
             ->get();
 
         $paymentExtraInfoByType = UserPaymentExtraInfo::query()
@@ -149,6 +158,10 @@ class UserController extends Controller
                 ])->values()->all(),
                 'total_withdraw_by_currency' => $withdrawTotals->map(fn ($row) => [
                     'currency' => $row->currency,
+                    'total' => (string) $row->total,
+                ])->values()->all(),
+                'bonus_by_currency' => $bonusTaskPendingActiveLastBonus->map(fn ($row) => [
+                    'currency' => $row->currency ?? '',
                     'total' => (string) $row->total,
                 ])->values()->all(),
             ],
