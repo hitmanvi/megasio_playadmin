@@ -5,7 +5,7 @@
                 "Site links"
             ],
             "summary": "List site links",
-            "description": "Paginated site_links; optional partial filter by key",
+            "description": "Paginated site_links; optional filter by key (partial) and enabled (exact)",
             "security": [
                 {
                     "sanctum": []
@@ -19,6 +19,15 @@
                     "required": false,
                     "schema": {
                         "type": "string"
+                    }
+                },
+                {
+                    "name": "enabled",
+                    "in": "query",
+                    "description": "Filter by enabled flag",
+                    "required": false,
+                    "schema": {
+                        "type": "boolean"
                     }
                 },
                 {
@@ -142,6 +151,10 @@
                                     "type": "string",
                                     "maxLength": 2048,
                                     "default": ""
+                                },
+                                "enabled": {
+                                    "type": "boolean",
+                                    "default": true
                                 },
                                 "deletable": {
                                     "type": "boolean",
@@ -272,7 +285,7 @@
                 "Site links"
             ],
             "summary": "Update site link",
-            "description": "Partial update: key, url, deletable (all optional)",
+            "description": "Partial update: key, url, enabled, deletable (all optional)",
             "security": [
                 {
                     "sanctum": []
@@ -303,6 +316,9 @@
                                 "url": {
                                     "type": "string",
                                     "maxLength": 2048
+                                },
+                                "enabled": {
+                                    "type": "boolean"
                                 },
                                 "deletable": {
                                     "type": "boolean"

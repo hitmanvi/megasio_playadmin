@@ -9,12 +9,14 @@ class SiteLink extends Model
     protected $fillable = [
         'key',
         'url',
+        'enabled',
         'deletable',
     ];
 
     protected function casts(): array
     {
         return [
+            'enabled' => 'boolean',
             'deletable' => 'boolean',
         ];
     }

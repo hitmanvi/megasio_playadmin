@@ -856,6 +856,10 @@
                 "description": "Target URL",
                 "maxLength": 2048
             },
+            "enabled": {
+                "type": "boolean",
+                "description": "Whether the link is active for clients"
+            },
             "deletable": {
                 "type": "boolean",
                 "description": "If false, DELETE is rejected (protected row)"

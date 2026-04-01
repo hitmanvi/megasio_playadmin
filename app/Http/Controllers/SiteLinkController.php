@@ -13,6 +13,7 @@ class SiteLinkController extends Controller
     {
         $request->validate([
             'key' => 'nullable|string',
+            'enabled' => 'nullable|boolean',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
@@ -21,6 +22,10 @@ class SiteLinkController extends Controller
 
         if ($request->filled('key')) {
             $query->where('key', 'like', '%'.$request->string('key').'%');
+        }
+
+        if ($request->has('enabled')) {
+            $query->where('enabled', $request->boolean('enabled'));
         }
 
         return $this->responseListWithPaginator(
@@ -34,12 +39,14 @@ class SiteLinkController extends Controller
         $validated = $request->validate([
             'key' => ['required', 'string', 'max:64', Rule::unique(SiteLink::class, 'key')],
             'url' => 'nullable|string|max:2048',
+            'enabled' => 'nullable|boolean',
             'deletable' => 'nullable|boolean',
         ]);
 
         $link = SiteLink::create([
             'key' => $validated['key'],
             'url' => $validated['url'] ?? '',
+            'enabled' => $validated['enabled'] ?? true,
             'deletable' => $validated['deletable'] ?? true,
         ]);
 
@@ -61,6 +68,7 @@ class SiteLinkController extends Controller
                 Rule::unique(SiteLink::class, 'key')->ignore($siteLink->id),
             ],
             'url' => 'sometimes|nullable|string|max:2048',
+            'enabled' => 'sometimes|boolean',
             'deletable' => 'sometimes|boolean',
         ]);
 
