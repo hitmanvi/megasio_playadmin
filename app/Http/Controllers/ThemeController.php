@@ -97,7 +97,7 @@ class ThemeController extends Controller
             'icon' => 'nullable|string|max:255',
             'enabled' => 'nullable|boolean',
             'sort_id' => 'nullable|integer|min:0',
-            'translations' => 'required|array',
+            'translations' => 'nullable|array',
             'translations.*' => 'string|max:255',
         ]);
 
@@ -114,7 +114,9 @@ class ThemeController extends Controller
             $theme->update($updateData);
         }
 
-        $theme->setNames($request->translations);
+        if ($request->has('translations') && $request->translations) {
+            $theme->setNames($request->translations);
+        }
         $theme->load('translations');
 
         return $this->responseItem($this->withExtraTranslations($theme));
