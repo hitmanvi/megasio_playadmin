@@ -885,8 +885,9 @@
             },
             "name": {
                 "type": "string",
-                "description": "Theme name",
-                "maxLength": 255
+                "description": "Theme name (base column; localized names are in translations)",
+                "maxLength": 255,
+                "nullable": true
             },
             "icon": {
                 "type": "string",
@@ -901,6 +902,18 @@
             "sort_id": {
                 "type": "integer",
                 "description": "Sort order"
+            },
+            "translations": {
+                "type": "object",
+                "description": "All translations for the theme name (locale -> string)",
+                "additionalProperties": {
+                    "type": "string"
+                },
+                "example": {
+                    "en": "Classic",
+                    "zh-CN": "经典",
+                    "ja": "クラシック"
+                }
             },
             "created_at": {
                 "type": "string",

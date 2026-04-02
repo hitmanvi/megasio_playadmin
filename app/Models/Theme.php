@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Translatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Theme extends Model
 {
+    use Translatable;
+
     protected $table = 'megasio_play_api.themes';
     /**
      * The attributes that are mass assignable.
@@ -60,6 +63,34 @@ class Theme extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_id', 'asc')->orderBy('id', 'asc');
+    }
+
+    /**
+     * Scope to filter by name (themes.name column).
+     */
+    public function scopeByName($query, $name)
+    {
+        return $query->where('name', 'like', "%{$name}%");
+    }
+
+    public function getName(?string $locale = null): ?string
+    {
+        return $this->getTranslatedAttribute('name', $locale);
+    }
+
+    public function setName(string $name, ?string $locale = null): void
+    {
+        $this->setTranslation('name', $name, $locale);
+    }
+
+    public function getAllNames()
+    {
+        return $this->getTranslations('name');
+    }
+
+    public function setNames(array $names): void
+    {
+        $this->setTranslations('name', $names);
     }
 
     /**

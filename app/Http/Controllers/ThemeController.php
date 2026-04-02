@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Theme;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ThemeController extends Controller
 {
@@ -22,29 +22,28 @@ class ThemeController extends Controller
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
 
-        $query = Theme::query();
+        $query = Theme::with('translations');
 
-        // Filter by ids if provided
         if ($request->has('ids') && $request->ids) {
             $query->whereIn('id', $request->ids);
         }
 
-        // Filter by name if provided
         if ($request->has('name') && $request->name) {
-            $query->where('name', 'like', "%{$request->name}%");
+            $query->byName($request->name);
         }
 
-        // Filter by enabled status if provided
         if ($request->has('enabled')) {
             $query->where('enabled', $request->boolean('enabled'));
         }
 
-        // Order by sort_id
         $query->ordered();
 
-        // Pagination
         $perPage = $request->get('per_page', 15);
         $themes = $query->paginate($perPage);
+
+        $themes->getCollection()->transform(function ($theme) {
+            return $this->withExtraTranslations($theme);
+        });
 
         return $this->responseListWithPaginator($themes, null);
     }
@@ -54,26 +53,24 @@ class ThemeController extends Controller
      */
     public function show(Theme $theme): JsonResponse
     {
-        return $this->responseItem($theme);
+        $theme->load('translations');
+
+        return $this->responseItem($this->withExtraTranslations($theme));
     }
 
     /**
-     * Create a new theme
+     * Create a new theme with translations
      */
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
             'icon' => 'nullable|string|max:255',
             'enabled' => 'nullable|boolean',
             'sort_id' => 'nullable|integer|min:0',
+            'translations' => 'required|array',
+            'translations.*' => 'string|max:255',
         ]);
-
-        // Check if theme with same name already exists
-        $existingTheme = Theme::where('name', $request->name)->first();
-        if ($existingTheme) {
-            return $this->error([400, 'Theme with this name already exists']);
-        }
 
         $theme = Theme::create($request->only([
             'name',
@@ -82,11 +79,14 @@ class ThemeController extends Controller
             'sort_id',
         ]));
 
-        return $this->responseItem($theme);
+        $theme->setNames($request->translations);
+        $theme->load('translations');
+
+        return $this->responseItem($this->withExtraTranslations($theme));
     }
 
     /**
-     * Update theme
+     * Update theme with translations support
      */
     public function update(Request $request, Theme $theme): JsonResponse
     {
@@ -95,26 +95,36 @@ class ThemeController extends Controller
             'icon' => 'nullable|string|max:255',
             'enabled' => 'nullable|boolean',
             'sort_id' => 'nullable|integer|min:0',
+            'translations' => 'required|array',
+            'translations.*' => 'string|max:255',
         ]);
 
-        // Check name uniqueness if name is being updated
-        if ($request->has('name') && $request->name !== $theme->name) {
-            $existingTheme = Theme::where('name', $request->name)
-                ->where('id', '!=', $theme->id)
-                ->first();
-            if ($existingTheme) {
-                return $this->error([400, 'Theme with this name already exists']);
-            }
-        }
-
-        $theme->update($request->only([
+        $updateData = $request->only([
             'name',
             'icon',
             'enabled',
             'sort_id',
-        ]));
+        ]);
 
-        return $this->responseItem($theme);
+        $updateData = array_filter($updateData, fn ($value) => $value !== null);
+
+        if ($updateData !== []) {
+            $theme->update($updateData);
+        }
+
+        $theme->setNames($request->translations);
+        $theme->load('translations');
+
+        return $this->responseItem($this->withExtraTranslations($theme));
+    }
+
+    /**
+     * Expose name translations as a locale => string map (same shape as GameCategory).
+     */
+    protected function withExtraTranslations(Theme $theme): Theme
+    {
+        $theme->setRelation('translations', $theme->getAllNames());
+
+        return $theme;
     }
 }
-

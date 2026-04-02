@@ -5,7 +5,7 @@
                 "Themes"
             ],
             "summary": "Get themes list",
-            "description": "Get paginated list of themes with optional filtering",
+            "description": "Get paginated list of themes with optional filtering; each item includes translations (locale -> name)",
             "security": [
                 {
                     "sanctum": []
@@ -154,7 +154,7 @@
                 "Themes"
             ],
             "summary": "Create theme",
-            "description": "Create a new theme",
+            "description": "Create a new theme with name translations (same pattern as game categories)",
             "security": [
                 {
                     "sanctum": []
@@ -167,13 +167,14 @@
                         "schema": {
                             "type": "object",
                             "required": [
-                                "name"
+                                "translations"
                             ],
                             "properties": {
                                 "name": {
                                     "type": "string",
-                                    "description": "Theme name",
-                                    "maxLength": 255
+                                    "description": "Optional base theme name",
+                                    "maxLength": 255,
+                                    "nullable": true
                                 },
                                 "icon": {
                                     "type": "string",
@@ -191,6 +192,18 @@
                                     "description": "Sort order",
                                     "minimum": 0,
                                     "nullable": true
+                                },
+                                "translations": {
+                                    "type": "object",
+                                    "description": "Translations for the theme name",
+                                    "additionalProperties": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "example": {
+                                        "en": "Classic",
+                                        "zh-CN": "经典"
+                                    }
                                 }
                             }
                         }
@@ -217,16 +230,6 @@
                                         "$ref": "#/components/schemas/Theme"
                                     }
                                 }
-                            }
-                        }
-                    }
-                },
-                "400": {
-                    "description": "Theme with this name already exists",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ErrorResponse"
                             }
                         }
                     }
@@ -260,7 +263,7 @@
                 "Themes"
             ],
             "summary": "Get theme details",
-            "description": "Get detailed information about a specific theme",
+            "description": "Get detailed information about a specific theme including translations",
             "security": [
                 {
                     "sanctum": []
@@ -328,7 +331,7 @@
                 "Themes"
             ],
             "summary": "Update theme",
-            "description": "Update theme information",
+            "description": "Update theme; translations replaces all name translations for the theme (same as game categories)",
             "security": [
                 {
                     "sanctum": []
@@ -346,30 +349,45 @@
                 }
             ],
             "requestBody": {
-                "required": false,
+                "required": true,
                 "content": {
                     "application/json": {
                         "schema": {
                             "type": "object",
+                            "required": [
+                                "translations"
+                            ],
                             "properties": {
                                 "name": {
                                     "type": "string",
-                                    "description": "Theme name",
-                                    "maxLength": 255
+                                    "description": "Base theme name",
+                                    "maxLength": 255,
+                                    "nullable": true
                                 },
                                 "icon": {
                                     "type": "string",
                                     "description": "Theme icon",
-                                    "maxLength": 255
+                                    "maxLength": 255,
+                                    "nullable": true
                                 },
                                 "enabled": {
                                     "type": "boolean",
-                                    "description": "Whether theme is enabled"
+                                    "description": "Whether theme is enabled",
+                                    "nullable": true
                                 },
                                 "sort_id": {
                                     "type": "integer",
                                     "description": "Sort order",
-                                    "minimum": 0
+                                    "minimum": 0,
+                                    "nullable": true
+                                },
+                                "translations": {
+                                    "type": "object",
+                                    "description": "Full set of name translations",
+                                    "additionalProperties": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    }
                                 }
                             }
                         }
@@ -396,16 +414,6 @@
                                         "$ref": "#/components/schemas/Theme"
                                     }
                                 }
-                            }
-                        }
-                    }
-                },
-                "400": {
-                    "description": "Theme with this name already exists",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ErrorResponse"
                             }
                         }
                     }
