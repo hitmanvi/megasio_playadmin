@@ -71,11 +71,8 @@ class PendingReviewSummaryController extends Controller
         return $this->responseItem([
             'withdraw_pending_count' => $withdrawPendingCount,
             'kyc_pending_review_count' => $kycPendingReviewCount,
-            'withdraw_pending_max_id' => $withdrawPendingMaxId,
-            'kyc_pending_max_id' => $kycPendingMaxId,
             'has_new_withdraw_pending' => $hasNewWithdraw,
             'has_new_kyc_pending' => $hasNewKyc,
-            'last_snapshot' => $lastSnapshot,
         ]);
     }
 
