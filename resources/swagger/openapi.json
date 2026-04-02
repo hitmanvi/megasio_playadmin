@@ -1709,6 +1709,86 @@
                     }
                 }
             },
+            "PendingReviewLastSnapshot": {
+                "type": "object",
+                "description": "Max id among pending rows stored before this request (baseline for has_new_*)",
+                "properties": {
+                    "withdraw_pending_max_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "description": "Previous max(withdraws.id) where status=PENDING; null if queue was empty"
+                    },
+                    "kyc_pending_max_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "description": "Previous max(kycs.id) among pending review statuses; null if queue was empty"
+                    },
+                    "recorded_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true,
+                        "description": "ISO-8601 when that snapshot was written"
+                    }
+                }
+            },
+            "PendingReviewSummary": {
+                "type": "object",
+                "description": "Payload in data for GET /pending-review-summary",
+                "properties": {
+                    "withdraw_pending_count": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Withdraws with status=PENDING"
+                    },
+                    "kyc_pending_review_count": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "KYC in pending, advanced_pending, or enhanced_pending"
+                    },
+                    "withdraw_pending_max_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "description": "Current max(withdraws.id) in PENDING queue"
+                    },
+                    "kyc_pending_max_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "description": "Current max(kycs.id) in pending review statuses"
+                    },
+                    "has_new_withdraw_pending": {
+                        "type": "boolean",
+                        "description": "True when a prior snapshot existed and the PENDING queue gained a higher id or went from empty to non-empty"
+                    },
+                    "has_new_kyc_pending": {
+                        "type": "boolean",
+                        "description": "True when a prior snapshot existed and the KYC pending queue gained a higher id or went from empty to non-empty"
+                    },
+                    "last_snapshot": {
+                        "nullable": true,
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PendingReviewLastSnapshot"
+                            }
+                        ]
+                    }
+                }
+            },
+            "PendingReviewSummaryResponse": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "errmsg": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/PendingReviewSummary"
+                    }
+                }
+            },
             "PaymentMethod": {
                 "type": "object",
                 "properties": {
@@ -13292,6 +13372,42 @@
                     },
                     "422": {
                         "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pending-review-summary": {
+            "get": {
+                "tags": [
+                    "Admin Authentication"
+                ],
+                "summary": "Pending withdraw and KYC review counts",
+                "description": "Returns counts and max id of latest row in each pending queue: withdraws status=PENDING, KYC statuses pending/advanced_pending/enhanced_pending. Per-admin cache stores the previous max(id) per queue; has_new_* is true only if a snapshot already existed and the current max id is greater than before, or the queue was empty and now has rows. First request (no cache): has_new_* false. Response then writes the current max ids as the new snapshot.",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PendingReviewSummaryResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "content": {
                             "application/json": {
                                 "schema": {

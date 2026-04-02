@@ -1,0 +1,38 @@
+{
+    "/pending-review-summary": {
+        "get": {
+            "tags": [
+                "Admin Authentication"
+            ],
+            "summary": "Pending withdraw and KYC review counts",
+            "description": "Returns counts and max id of latest row in each pending queue: withdraws status=PENDING, KYC statuses pending/advanced_pending/enhanced_pending. Per-admin cache stores the previous max(id) per queue; has_new_* is true only if a snapshot already existed and the current max id is greater than before, or the queue was empty and now has rows. First request (no cache): has_new_* false. Response then writes the current max ids as the new snapshot.",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PendingReviewSummaryResponse"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

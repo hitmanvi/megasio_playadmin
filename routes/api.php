@@ -9,6 +9,7 @@ use App\Http\Controllers\GameGroupController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderArchiveController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\PendingReviewSummaryController;
 use App\Http\Controllers\PaymentMethodFieldConfigController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\GameCategoryController;
@@ -48,6 +49,7 @@ Route::post('login', [AdminAuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AdminAuthController::class, 'logout']);
     Route::get('mine', [AdminAuthController::class, 'mine']);
+    Route::get('pending-review-summary', PendingReviewSummaryController::class);
     Route::get('site-config', [SiteConfigController::class, 'index']);
     Route::put('password', [AdminAuthController::class, 'updatePassword']);
     Route::post('two-factor/bind', [AdminAuthController::class, 'bindTwoFactor']);
