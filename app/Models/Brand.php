@@ -37,6 +37,7 @@ class Brand extends Model
             'restricted_region' => 'array',
             'enabled' => 'boolean',
             'maintain_auto' => 'boolean',
+            'maintain_week_day' => 'array',
         ];
     }
 

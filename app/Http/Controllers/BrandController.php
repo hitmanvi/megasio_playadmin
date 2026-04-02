@@ -78,7 +78,8 @@ class BrandController extends Controller
             'maintain_start' => 'nullable',
             'maintain_end' => 'nullable',
             'maintain_auto' => 'nullable|boolean',
-            'maintain_week_day' => 'nullable|integer|min:0|max:6',
+            'maintain_week_day' => 'nullable|array',
+            'maintain_week_day.*' => 'integer|min:0|max:6',
             'icon' => 'nullable|string|max:255',
         ]);
 
@@ -103,7 +104,8 @@ class BrandController extends Controller
             'maintain_start' => 'nullable',
             'maintain_end' => 'nullable',
             'maintain_auto' => 'nullable|boolean',
-            'maintain_week_day' => 'nullable|integer|min:0|max:6',
+            'maintain_week_day' => 'nullable|array',
+            'maintain_week_day.*' => 'integer|min:0|max:6',
             'icon' => 'nullable|string|max:255',
         ]);
 

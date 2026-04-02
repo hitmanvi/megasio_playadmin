@@ -209,10 +209,13 @@
                                     "description": "Whether maintenance is automatic"
                                 },
                                 "maintain_week_day": {
-                                    "type": "integer",
-                                    "description": "Maintenance day of week (0=Sunday, 1=Monday, ..., 6=Saturday)",
-                                    "minimum": 0,
-                                    "maximum": 6
+                                    "type": "array",
+                                    "description": "Maintenance weekdays (0=Sunday … 6=Saturday)",
+                                    "items": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 6
+                                    }
                                 },
                                 "icon": {
                                     "type": "string",
@@ -481,10 +484,13 @@
                                     "description": "Whether maintenance is automatic"
                                 },
                                 "maintain_week_day": {
-                                    "type": "integer",
-                                    "description": "Maintenance day of week (0=Sunday, 1=Monday, ..., 6=Saturday)",
-                                    "minimum": 0,
-                                    "maximum": 6
+                                    "type": "array",
+                                    "description": "Maintenance weekdays (0=Sunday … 6=Saturday)",
+                                    "items": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 6
+                                    }
                                 },
                                 "icon": {
                                     "type": "string",
