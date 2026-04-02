@@ -38,7 +38,7 @@ class WithdrawController extends Controller
         $query = Withdraw::with([
             'payment_method',
             'user' => function ($query) {
-                $query->with(['firstDeposit', 'kyc'])
+                $query->with(['firstDeposit', 'kyc', 'tags'])
                     ->withCount(['disputedDeposits']);
             },
         ]);
