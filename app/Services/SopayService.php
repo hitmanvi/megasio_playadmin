@@ -37,7 +37,7 @@ class SopayService
         $params = ['method'=> 'payments'];
         $params = $this->sign($params);
 
-        $url  = $this->endpoint . '/api/v1/payments/list';
+        $url  = $this->endpoint . '/api/payments/list';
         Log::debug('Sopay getPayments request', ['url' => $url, 'params_keys' => array_keys($params)]);
 
         $resp = Http::get($url, $params);
@@ -53,7 +53,7 @@ class SopayService
         $params = ['method'=> 'coins'];
         $params = $this->sign($params);
 
-        $url  = $this->endpoint . '/api/v1/coins';
+        $url  = $this->endpoint . '/api/coins';
         Log::debug('Sopay getCoins request', ['url' => $url, 'params_keys' => array_keys($params)]);
 
         $resp = Http::get($url, $params);
@@ -88,7 +88,7 @@ class SopayService
         }
         $params = $this->sign($params);
 
-        $url = $this->endpoint . '/api/v1/orders/withdraw';
+        $url = $this->endpoint . '/api/orders/withdraw';
         Log::debug('Sopay withdraw request', ['url' => $url, 'params' => $params]);
 
         $resp = Http::post($url, $params);
