@@ -14,7 +14,7 @@ class UploadController extends Controller
         }
         $path = $file->storePubliclyAs('/' . date('Ymd') , date('His') . random_int(1, 1000). '.' . $file->getClientOriginalExtension(), $options );
 
-        $path = config('filesystems.disks.s3.url') . $path;
+        $path = config('filesystems.disks.s3.url') . '/' . $path;
 
         return $this->responseItem($path);
     }
