@@ -1862,6 +1862,18 @@
                 "description": "Synchronization time",
                 "nullable": true
             },
+            "sync_min_amount": {
+                "type": "string",
+                "description": "Minimum amount from third-party sync",
+                "nullable": true,
+                "format": "decimal"
+            },
+            "sync_max_amount": {
+                "type": "string",
+                "description": "Maximum amount from third-party sync",
+                "nullable": true,
+                "format": "decimal"
+            },
             "notes": {
                 "type": "string",
                 "description": "Notes",

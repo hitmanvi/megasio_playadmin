@@ -162,6 +162,8 @@ class SyncPaymentMethodsCommand extends Command
             $data = [
                 'key' => $paymentData['id'],
                 'name' => $paymentData['type'],
+                'sync_min_amount' => $paymentData['min_amount'],
+                'sync_max_amount' => $paymentData['max_amount'],
                 'currency' => $currency,
                 'currency_type' => $currency,
                 'type' => $type,
@@ -170,7 +172,7 @@ class SyncPaymentMethodsCommand extends Command
                 'synced_at' => now(),
             ];
 
-            // Store payment_info in notes as JSON
+            // Store payment_info in notes as JSON 
             if (!empty($paymentData['payment_info'])) {
                 $data['notes'] = json_encode($paymentData['payment_info'], JSON_UNESCAPED_UNICODE);
             }
@@ -407,6 +409,11 @@ class SyncPaymentMethodsCommand extends Command
      */
     protected function syncCryptoCoinRecord(array $coinData, string $type, int &$created, int &$updated, int &$errors): void
     {
+        if ($type === 'withdraw') {
+            $syncMinAmount = $coinData['min_withdraw'] ?? null;
+        } else {
+            $syncMinAmount = $coinData['min_deposit'] ?? null;
+        }
         try {
             // Find existing payment method by key and type
             $paymentMethod = PaymentMethod::where('key', $coinData['id'])
@@ -424,6 +431,7 @@ class SyncPaymentMethodsCommand extends Command
                 'is_fiat' => false,
                 'enabled' => true,
                 'synced_at' => now(),
+                'sync_min_amount' => $syncMinAmount,
             ];
 
             // Store crypto info in crypto_info as JSON

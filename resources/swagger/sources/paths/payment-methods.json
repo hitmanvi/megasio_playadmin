@@ -184,6 +184,18 @@
                                     "minimum": 0,
                                     "nullable": true
                                 },
+                                "sync_min_amount": {
+                                    "type": "number",
+                                    "description": "Minimum amount from third-party sync",
+                                    "minimum": 0,
+                                    "nullable": true
+                                },
+                                "sync_max_amount": {
+                                    "type": "number",
+                                    "description": "Maximum amount from third-party sync",
+                                    "minimum": 0,
+                                    "nullable": true
+                                },
                                 "default_amount": {
                                     "type": "number",
                                     "description": "Default amount",
@@ -468,6 +480,18 @@
                                     "type": "number",
                                     "description": "Minimum amount supported",
                                     "minimum": 0
+                                },
+                                "sync_min_amount": {
+                                    "type": "number",
+                                    "description": "Minimum amount from third-party sync",
+                                    "minimum": 0,
+                                    "nullable": true
+                                },
+                                "sync_max_amount": {
+                                    "type": "number",
+                                    "description": "Maximum amount from third-party sync",
+                                    "minimum": 0,
+                                    "nullable": true
                                 },
                                 "default_amount": {
                                     "type": "number",
