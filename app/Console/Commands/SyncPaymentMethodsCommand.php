@@ -168,7 +168,6 @@ class SyncPaymentMethodsCommand extends Command
                 'currency_type' => $currency,
                 'type' => $type,
                 'is_fiat' => true,
-                'enabled' => true,
                 'synced_at' => now(),
             ];
 
