@@ -428,7 +428,6 @@ class SyncPaymentMethodsCommand extends Command
                 'currency_type' => $coinData['coin_type'] ?? null,
                 'type' => $type,
                 'is_fiat' => false,
-                'enabled' => true,
                 'synced_at' => now(),
                 'sync_min_amount' => $syncMinAmount,
             ];
