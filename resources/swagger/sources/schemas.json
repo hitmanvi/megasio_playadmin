@@ -1359,6 +1359,10 @@
                 "type": "boolean",
                 "description": "Whether game group is enabled"
             },
+            "visible": {
+                "type": "boolean",
+                "description": "Whether game group is visible (e.g. in client listings)"
+            },
             "translations": {
                 "type": "object",
                 "description": "All translations for the game group name in {locale: value} format",

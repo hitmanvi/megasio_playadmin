@@ -18,6 +18,7 @@ class GameGroup extends Model
         'app_limit',
         'web_limit',
         'enabled',
+        'visible',
     ];
 
     protected function casts(): array
@@ -27,6 +28,7 @@ class GameGroup extends Model
             'app_limit' => 'integer',
             'web_limit' => 'integer',
             'enabled' => 'boolean',
+            'visible' => 'boolean',
         ];
     }
 
@@ -102,6 +104,14 @@ class GameGroup extends Model
     }
 
     /**
+     * Scope to filter by visibility.
+     */
+    public function scopeByVisible($query, $visible)
+    {
+        return $query->where('visible', $visible);
+    }
+
+    /**
      * Scope to filter by enabled game groups.
      */
     public function scopeEnabled($query)
@@ -144,6 +154,7 @@ class GameGroup extends Model
                 'app_limit' => null,
                 'web_limit' => null,
                 'enabled' => true,
+                'visible' => true,
             ]);
             $group->setTranslation('name', self::NAME_SUPPORT_BONUS, 'en');
         }

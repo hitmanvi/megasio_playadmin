@@ -31,6 +31,15 @@
                     }
                 },
                 {
+                    "name": "visible",
+                    "in": "query",
+                    "description": "Filter game groups by visibility",
+                    "required": false,
+                    "schema": {
+                        "type": "boolean"
+                    }
+                },
+                {
                     "name": "page",
                     "in": "query",
                     "description": "Page number",
@@ -187,6 +196,10 @@
                                 "enabled": {
                                     "type": "boolean",
                                     "description": "Whether game group is enabled"
+                                },
+                                "visible": {
+                                    "type": "boolean",
+                                    "description": "Whether game group is visible (e.g. in client listings)"
                                 },
                                 "translations": {
                                     "type": "object",
@@ -383,6 +396,10 @@
                                 "enabled": {
                                     "type": "boolean",
                                     "description": "Whether game group is enabled"
+                                },
+                                "visible": {
+                                    "type": "boolean",
+                                    "description": "Whether game group is visible (e.g. in client listings)"
                                 },
                                 "translations": {
                                     "type": "object",

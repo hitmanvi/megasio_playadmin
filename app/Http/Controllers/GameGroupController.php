@@ -19,6 +19,7 @@ class GameGroupController extends Controller
         $request->validate([
             'category' => 'nullable|string',
             'enabled' => 'nullable|boolean',
+            'visible' => 'nullable|boolean',
             'page' => 'nullable|integer|min:1',
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
@@ -32,6 +33,10 @@ class GameGroupController extends Controller
 
         if ($request->has('enabled')) {
             $query->byEnabled($request->boolean('enabled'));
+        }
+
+        if ($request->has('visible')) {
+            $query->byVisible($request->boolean('visible'));
         }
 
         // Order by sort_id
@@ -70,6 +75,7 @@ class GameGroupController extends Controller
             'app_limit' => 'nullable|integer|min:0',
             'web_limit' => 'nullable|integer|min:0',
             'enabled' => 'nullable|boolean',
+            'visible' => 'nullable|boolean',
             'translations' => 'nullable|array',
             'translations.*' => 'string|max:255',
         ]);
@@ -81,6 +87,7 @@ class GameGroupController extends Controller
             'app_limit',
             'web_limit',
             'enabled',
+            'visible',
         ]));
 
         // Set translations if provided
@@ -105,6 +112,7 @@ class GameGroupController extends Controller
             'app_limit' => 'nullable|integer|min:0',
             'web_limit' => 'nullable|integer|min:0',
             'enabled' => 'nullable|boolean',
+            'visible' => 'nullable|boolean',
             'translations' => 'nullable|array',
             'translations.*' => 'string|max:255',
         ]);
@@ -117,6 +125,7 @@ class GameGroupController extends Controller
             'app_limit',
             'web_limit',
             'enabled',
+            'visible',
         ]);
 
         // Remove null values
