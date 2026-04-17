@@ -645,6 +645,16 @@
             }
         }
     },
+    "PromotionCodeCodeExists": {
+        "type": "object",
+        "description": "Payload in data for GET /promotion-codes/code-exists",
+        "properties": {
+            "exists": {
+                "type": "boolean",
+                "description": "True if another row uses this code (after trim); exclude_id excludes that promotion_codes.id"
+            }
+        }
+    },
     "PromotionCodeClaim": {
         "type": "object",
         "description": "User claim row for a promotion code",
@@ -898,6 +908,13 @@
             "updated_at": {
                 "type": "string",
                 "format": "date-time"
+            },
+            "claims": {
+                "type": "array",
+                "description": "Loaded on GET detail only; claims ordered by id descending",
+                "items": {
+                    "$ref": "#/components/schemas/PromotionCodeClaim"
+                }
             }
         }
     },

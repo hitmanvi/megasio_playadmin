@@ -30,6 +30,41 @@ class PromotionCodeController extends Controller
     }
 
     /**
+     * Whether promotion_codes.code already exists (exact match after trim). Optional exclude_id ignores that row (e.g. when editing).
+     */
+    public function codeExists(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'code' => 'required|string|max:255',
+            'exclude_id' => 'nullable|integer|min:1',
+        ]);
+
+        $code = trim($validated['code']);
+        $query = PromotionCode::query()->where('code', $code);
+
+        if (! empty($validated['exclude_id'])) {
+            $query->where('id', '!=', (int) $validated['exclude_id']);
+        }
+
+        return $this->responseItem([
+            'exists' => $query->exists(),
+        ]);
+    }
+
+    /**
+     * Single promotion code with claims (newest claims first) and claim users loaded.
+     */
+    public function show(PromotionCode $promotionCode): JsonResponse
+    {
+        $promotionCode->load([
+            'claims' => static fn ($q) => $q->orderByDesc('id'),
+            'claims.user',
+        ]);
+
+        return $this->responseItem($promotionCode);
+    }
+
+    /**
      * Create a promotion code. claimed_count is always 0; status may be active or inactive (default active).
      * When uids is non-empty and target_type is not all, creates pending promotion_code_claims for those users (by users.uid).
      */

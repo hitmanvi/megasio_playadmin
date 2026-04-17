@@ -169,8 +169,10 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::post('airdrops', [AirdropController::class, 'store']);
            Route::get('promotion-codes/options/type', [PromotionCodeController::class, 'typeOptions']);
            Route::get('promotion-codes/options/status', [PromotionCodeController::class, 'statusOptions']);
+           Route::get('promotion-codes/code-exists', [PromotionCodeController::class, 'codeExists']);
            Route::get('promotion-codes', [PromotionCodeController::class, 'index']);
            Route::post('promotion-codes', [PromotionCodeController::class, 'store']);
+           Route::get('promotion-codes/{promotionCode}', [PromotionCodeController::class, 'show']);
            Route::put('promotion-codes/{promotionCode}', [PromotionCodeController::class, 'update']);
            Route::get('promotion-code-claims', [PromotionCodeClaimController::class, 'index']);
            Route::delete('promotion-code-claims/{promotionCodeClaim}', [PromotionCodeClaimController::class, 'destroy']);

@@ -105,6 +105,87 @@
             }
         }
     },
+    "/promotion-codes/code-exists": {
+        "get": {
+            "tags": [
+                "Promotion Codes"
+            ],
+            "summary": "Check if promotion code string exists",
+            "description": "Exact match on promotion_codes.code (trimmed). Optional exclude_id skips that promotion_codes.id (e.g. edit form).",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "code",
+                    "in": "query",
+                    "required": true,
+                    "description": "Code string to check",
+                    "schema": {
+                        "type": "string",
+                        "maxLength": 255
+                    }
+                },
+                {
+                    "name": "exclude_id",
+                    "in": "query",
+                    "required": false,
+                    "description": "promotion_codes.id to ignore (treat as available for that row)",
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "exists flag",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/PromotionCodeCodeExists"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "422": {
+                    "description": "Validation error (e.g. missing code)",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
     "/promotion-codes": {
         "get": {
             "tags": [
@@ -330,6 +411,75 @@
         }
     },
     "/promotion-codes/{promotionCode}": {
+        "get": {
+            "tags": [
+                "Promotion Codes"
+            ],
+            "summary": "Get promotion code detail",
+            "description": "Returns the promotion code with claims (newest first) and each claim user",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "promotionCode",
+                    "in": "path",
+                    "required": true,
+                    "description": "promotion_codes.id",
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Promotion code with claims",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/PromotionCode"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Promotion code not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "put": {
             "tags": [
                 "Promotion Codes"
