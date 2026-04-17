@@ -645,6 +645,86 @@
             }
         }
     },
+    "PromotionCodeFilterOptions": {
+        "type": "object",
+        "description": "Payload in data for GET /promotion-codes/options",
+        "properties": {
+            "type": {
+                "type": "array",
+                "description": "bonus_type string values",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "status": {
+                "type": "array",
+                "description": "status filter values (includes virtual expired)",
+                "items": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "PromotionCode": {
+        "type": "object",
+        "description": "Redeem / promotion code definition",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "name": {
+                "type": "string"
+            },
+            "code": {
+                "type": "string"
+            },
+            "times": {
+                "type": "integer",
+                "description": "Max claim times"
+            },
+            "claimed_count": {
+                "type": "integer"
+            },
+            "bonus_type": {
+                "type": "string",
+                "example": "bonus_task"
+            },
+            "bonus_config": {
+                "type": "object",
+                "nullable": true,
+                "additionalProperties": true
+            },
+            "expired_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            },
+            "target_type": {
+                "type": "string",
+                "enum": [
+                    "all",
+                    "users"
+                ]
+            },
+            "status": {
+                "type": "string",
+                "description": "Column value: active, inactive, or exhausted (not expired; use expired_at for time-based expiry)",
+                "enum": [
+                    "active",
+                    "inactive",
+                    "exhausted"
+                ]
+            },
+            "created_at": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "updated_at": {
+                "type": "string",
+                "format": "date-time"
+            }
+        }
+    },
     "WeeklyCashback": {
         "type": "object",
         "description": "User weekly cashback period record; list may include loaded user",

@@ -28,6 +28,7 @@ use App\Http\Controllers\SiteLinkController;
 use App\Http\Controllers\BonusTaskController;
 use App\Http\Controllers\WeeklyCashbackController;
 use App\Http\Controllers\AirdropController;
+use App\Http\Controllers\PromotionCodeController;
 use App\Http\Controllers\BundleController;
 use App\Http\Controllers\BundlePurchaseController;
 use App\Http\Controllers\RedeemController;
@@ -165,6 +166,8 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('weekly-cashbacks', [WeeklyCashbackController::class, 'index']);
            Route::get('airdrops', [AirdropController::class, 'index']);
            Route::post('airdrops', [AirdropController::class, 'store']);
+           Route::get('promotion-codes/options', [PromotionCodeController::class, 'options']);
+           Route::get('promotion-codes', [PromotionCodeController::class, 'index']);
            
            // Currencies routes
            Route::get('currencies', [CurrencyController::class, 'index']);

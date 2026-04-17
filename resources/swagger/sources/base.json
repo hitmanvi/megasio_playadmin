@@ -157,6 +157,10 @@
         {
             "name": "Airdrops",
             "description": "User airdrop grant records"
+        },
+        {
+            "name": "Promotion Codes",
+            "description": "Promotion / redeem code management"
         }
     ]
 }
