@@ -168,6 +168,8 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::post('airdrops', [AirdropController::class, 'store']);
            Route::get('promotion-codes/options', [PromotionCodeController::class, 'options']);
            Route::get('promotion-codes', [PromotionCodeController::class, 'index']);
+           Route::post('promotion-codes', [PromotionCodeController::class, 'store']);
+           Route::put('promotion-codes/{promotionCode}', [PromotionCodeController::class, 'update']);
            
            // Currencies routes
            Route::get('currencies', [CurrencyController::class, 'index']);

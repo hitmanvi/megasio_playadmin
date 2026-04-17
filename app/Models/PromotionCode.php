@@ -38,6 +38,44 @@ class PromotionCode extends Model
     }
 
     /**
+     * @return list<string>
+     */
+    public static function targetTypes(): array
+    {
+        return [
+            self::TARGET_TYPE_ALL,
+            self::TARGET_TYPE_USERS,
+        ];
+    }
+
+    /**
+     * Status values allowed when creating a new code (not exhausted; that is derived from usage).
+     *
+     * @return list<string>
+     */
+    public static function creatableStatuses(): array
+    {
+        return [
+            self::STATUS_ACTIVE,
+            self::STATUS_INACTIVE,
+        ];
+    }
+
+    /**
+     * Status column values allowed when updating an existing code.
+     *
+     * @return list<string>
+     */
+    public static function updatableStatuses(): array
+    {
+        return [
+            self::STATUS_ACTIVE,
+            self::STATUS_INACTIVE,
+            self::STATUS_EXHAUSTED,
+        ];
+    }
+
+    /**
      * List filter status values (includes virtual "expired" for expired_at filter).
      *
      * @return list<string>

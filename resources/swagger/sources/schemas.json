@@ -665,6 +665,146 @@
             }
         }
     },
+    "PromotionCodeCreateRequest": {
+        "type": "object",
+        "required": [
+            "name",
+            "code",
+            "times",
+            "bonus_type",
+            "target_type"
+        ],
+        "properties": {
+            "name": {
+                "type": "string",
+                "maxLength": 255
+            },
+            "code": {
+                "type": "string",
+                "maxLength": 255,
+                "description": "Redeem code string; must be unique"
+            },
+            "times": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Maximum number of claims"
+            },
+            "bonus_type": {
+                "type": "string",
+                "enum": [
+                    "bonus_task"
+                ]
+            },
+            "bonus_config": {
+                "type": "object",
+                "nullable": true,
+                "additionalProperties": true,
+                "description": "Type-specific payload (e.g. bonus task ids)"
+            },
+            "expired_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "description": "When the code stops being redeemable (optional)"
+            },
+            "target_type": {
+                "type": "string",
+                "enum": [
+                    "all",
+                    "users"
+                ]
+            },
+            "status": {
+                "type": "string",
+                "enum": [
+                    "active",
+                    "inactive"
+                ],
+                "description": "Defaults to active if omitted"
+            },
+            "uids": {
+                "type": "array",
+                "maxItems": 5000,
+                "items": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "description": "users.uid values; must be empty when target_type is all. When target_type is users and uids is non-empty, creates pending claims for each resolved user"
+            },
+            "uid_valid_days": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 36500,
+                "description": "When set with non-empty uids, each new claim expired_at = now + this many days (app timezone). Omit or null for no per-claim expiry"
+            }
+        }
+    },
+    "PromotionCodeUpdateRequest": {
+        "type": "object",
+        "description": "Partial update; all fields optional. uids: new users get a pending claim; existing claims for this code get expired_at refreshed (uid_valid_days or null)",
+        "properties": {
+            "name": {
+                "type": "string",
+                "maxLength": 255
+            },
+            "code": {
+                "type": "string",
+                "maxLength": 255,
+                "description": "Must remain unique if changed"
+            },
+            "times": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Must be at least claimed_count"
+            },
+            "bonus_type": {
+                "type": "string",
+                "enum": [
+                    "bonus_task"
+                ]
+            },
+            "bonus_config": {
+                "type": "object",
+                "nullable": true,
+                "additionalProperties": true
+            },
+            "expired_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            },
+            "target_type": {
+                "type": "string",
+                "enum": [
+                    "all",
+                    "users"
+                ]
+            },
+            "status": {
+                "type": "string",
+                "enum": [
+                    "active",
+                    "inactive",
+                    "exhausted"
+                ]
+            },
+            "uids": {
+                "type": "array",
+                "maxItems": 5000,
+                "items": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "description": "New uids get pending claims; if a claim already exists for this code, expired_at is updated to match uid_valid_days"
+            },
+            "uid_valid_days": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 36500,
+                "description": "When set with non-empty uids, claim expired_at = now + this many days (new rows and updates)"
+            }
+        }
+    },
     "PromotionCode": {
         "type": "object",
         "description": "Redeem / promotion code definition",

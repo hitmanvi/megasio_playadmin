@@ -18,10 +18,12 @@ class PromotionCodeClaim extends Model
         'promotion_code_id',
         'status',
         'claimed_at',
+        'expired_at',
     ];
 
     protected $casts = [
         'claimed_at' => 'datetime',
+        'expired_at' => 'datetime',
     ];
 
     public function promotionCode(): BelongsTo

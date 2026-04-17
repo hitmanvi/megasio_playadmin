@@ -687,6 +687,146 @@
                     }
                 }
             },
+            "PromotionCodeCreateRequest": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "code",
+                    "times",
+                    "bonus_type",
+                    "target_type"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "code": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "description": "Redeem code string; must be unique"
+                    },
+                    "times": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "description": "Maximum number of claims"
+                    },
+                    "bonus_type": {
+                        "type": "string",
+                        "enum": [
+                            "bonus_task"
+                        ]
+                    },
+                    "bonus_config": {
+                        "type": "object",
+                        "nullable": true,
+                        "additionalProperties": true,
+                        "description": "Type-specific payload (e.g. bonus task ids)"
+                    },
+                    "expired_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true,
+                        "description": "When the code stops being redeemable (optional)"
+                    },
+                    "target_type": {
+                        "type": "string",
+                        "enum": [
+                            "all",
+                            "users"
+                        ]
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "active",
+                            "inactive"
+                        ],
+                        "description": "Defaults to active if omitted"
+                    },
+                    "uids": {
+                        "type": "array",
+                        "maxItems": 5000,
+                        "items": {
+                            "type": "string",
+                            "maxLength": 255
+                        },
+                        "description": "users.uid values; must be empty when target_type is all. When target_type is users and uids is non-empty, creates pending claims for each resolved user"
+                    },
+                    "uid_valid_days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 36500,
+                        "description": "When set with non-empty uids, each new claim expired_at = now + this many days (app timezone). Omit or null for no per-claim expiry"
+                    }
+                }
+            },
+            "PromotionCodeUpdateRequest": {
+                "type": "object",
+                "description": "Partial update; all fields optional. uids: new users get a pending claim; existing claims for this code get expired_at refreshed (uid_valid_days or null)",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "code": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "description": "Must remain unique if changed"
+                    },
+                    "times": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "description": "Must be at least claimed_count"
+                    },
+                    "bonus_type": {
+                        "type": "string",
+                        "enum": [
+                            "bonus_task"
+                        ]
+                    },
+                    "bonus_config": {
+                        "type": "object",
+                        "nullable": true,
+                        "additionalProperties": true
+                    },
+                    "expired_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "target_type": {
+                        "type": "string",
+                        "enum": [
+                            "all",
+                            "users"
+                        ]
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "active",
+                            "inactive",
+                            "exhausted"
+                        ]
+                    },
+                    "uids": {
+                        "type": "array",
+                        "maxItems": 5000,
+                        "items": {
+                            "type": "string",
+                            "maxLength": 255
+                        },
+                        "description": "New uids get pending claims; if a claim already exists for this code, expired_at is updated to match uid_valid_days"
+                    },
+                    "uid_valid_days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 36500,
+                        "description": "When set with non-empty uids, claim expired_at = now + this many days (new rows and updates)"
+                    }
+                }
+            },
             "PromotionCode": {
                 "type": "object",
                 "description": "Redeem / promotion code definition",
@@ -14102,6 +14242,164 @@
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Promotion Codes"
+                ],
+                "summary": "Create promotion code",
+                "description": "Creates a code with claimed_count 0. status may be active or inactive (default active). code must be unique. If uids is non-empty and target_type is not all, inserts one pending promotion_code_claim per resolved users.uid; optional uid_valid_days sets each new claim expired_at to now + that many days.",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PromotionCodeCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created promotion code",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errmsg": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PromotionCode"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error (e.g. duplicate code)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/promotion-codes/{promotionCode}": {
+            "put": {
+                "tags": [
+                    "Promotion Codes"
+                ],
+                "summary": "Update promotion code",
+                "description": "Partial update. If uids is provided: creates pending claims for new users, or updates expired_at on existing claims for this code; must not be used when target_type is all. uid_valid_days sets expired_at to now + that many days (omit/null clears to null).",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "promotionCode",
+                        "in": "path",
+                        "required": true,
+                        "description": "promotion_codes.id",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PromotionCodeUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated promotion code",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errmsg": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PromotionCode"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Promotion code not found",
                         "content": {
                             "application/json": {
                                 "schema": {
