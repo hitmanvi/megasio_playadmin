@@ -72,7 +72,7 @@ class PromotionCodeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => ['required', 'string', 'max:255', Rule::unique('megasio_play_api.promotion_codes', 'code')],
+            'code' => ['required', 'string', 'max:255'],
             'times' => 'required|integer|min:1',
             'bonus_type' => ['required', 'string', Rule::in(PromotionCode::bonusTypes())],
             'bonus_config' => 'nullable|array',
