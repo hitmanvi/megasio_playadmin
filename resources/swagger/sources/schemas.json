@@ -645,6 +645,62 @@
             }
         }
     },
+    "PromotionCodeClaim": {
+        "type": "object",
+        "description": "User claim row for a promotion code",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "user_id": {
+                "type": "integer"
+            },
+            "promotion_code_id": {
+                "type": "integer"
+            },
+            "status": {
+                "type": "string",
+                "enum": [
+                    "pending",
+                    "completed"
+                ]
+            },
+            "claimed_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            },
+            "expired_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+            },
+            "user": {
+                "nullable": true,
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/User"
+                    }
+                ]
+            },
+            "promotion_code": {
+                "nullable": true,
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/PromotionCode"
+                    }
+                ]
+            },
+            "created_at": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "updated_at": {
+                "type": "string",
+                "format": "date-time"
+            }
+        }
+    },
     "PromotionCodeCreateRequest": {
         "type": "object",
         "required": [

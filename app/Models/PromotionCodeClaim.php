@@ -13,6 +13,17 @@ class PromotionCodeClaim extends Model
 
     public const STATUS_COMPLETED = 'completed';
 
+    /**
+     * @return list<string>
+     */
+    public static function statuses(): array
+    {
+        return [
+            self::STATUS_PENDING,
+            self::STATUS_COMPLETED,
+        ];
+    }
+
     protected $fillable = [
         'user_id',
         'promotion_code_id',
