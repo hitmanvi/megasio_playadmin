@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Events\BalanceChanged;
+use App\Models\Airdrop;
 use App\Models\Balance;
-use Illuminate\Support\Facades\DB;
+use App\Models\Rollover;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 
 class BalanceService
 {
@@ -159,6 +161,69 @@ class BalanceService
                 'transaction' => $transaction,
             ];
         });
+    }
+
+    /**
+     * Apply an airdrop row: adjust available balance, optionally log transaction, optionally create rollover (1x on credited amount).
+     * New rollover is active only when the user has no other active rollover for the same currency; otherwise pending.
+     */
+    public function applyForAirdrop(Airdrop $airdrop): array
+    {
+        $userId = $airdrop->user_id;
+        $currency = $airdrop->currency;
+        $amountStr = (string) $airdrop->amount;
+
+        $this->createDefaultBalance($userId, $currency);
+
+        $cmp = (int) bccomp($amountStr, '0', 8);
+
+        if ($cmp > 0) {
+            $balance = $this->increment($userId, $currency, (float) $amountStr);
+        } elseif ($cmp < 0) {
+            $balance = $this->decrement($userId, $currency, abs((float) $amountStr));
+        } else {
+            $balance = $this->getBalance($userId, $currency)
+                ?? $this->createDefaultBalance($userId, $currency);
+        }
+
+        $transaction = null;
+        if ($cmp !== 0) {
+            $transaction = $this->transactionService->createTransaction(
+                $userId,
+                $currency,
+                (float) $amountStr,
+                (float) $balance->available,
+                Transaction::TYPE_AIRDROP,
+                (string) $airdrop->id,
+                'Airdrop'
+            );
+        }
+
+        $rollover = null;
+        if ($airdrop->create_rollover && $cmp > 0) {
+            $requiredWager = bcmul($amountStr, '1', 8);
+            $hasOtherActive = Rollover::query()
+                ->where('user_id', $userId)
+                ->where('currency', $currency)
+                ->where('status', Rollover::STATUS_ACTIVE)
+                ->exists();
+            $rollover = Rollover::create([
+                'user_id' => $userId,
+                'source_type' => Rollover::SOURCE_TYPE_AIRDROP,
+                'related_id' => $airdrop->id,
+                'currency' => $currency,
+                'amount' => $amountStr,
+                'required_wager' => $requiredWager,
+                'current_wager' => '0',
+                'status' => $hasOtherActive ? Rollover::STATUS_PENDING : Rollover::STATUS_ACTIVE,
+            ]);
+        }
+
+        return [
+            'balance' => $balance,
+            'transaction' => $transaction,
+            'rollover' => $rollover,
+        ];
     }
 
 }

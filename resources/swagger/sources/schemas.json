@@ -566,6 +566,85 @@
             }
         }
     },
+    "Airdrop": {
+        "type": "object",
+        "description": "Per-user airdrop grant row",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "user_id": {
+                "type": "integer"
+            },
+            "user": {
+                "nullable": true,
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/User"
+                    }
+                ]
+            },
+            "amount": {
+                "type": "string",
+                "format": "decimal",
+                "description": "Airdrop amount (may be negative)"
+            },
+            "currency": {
+                "type": "string",
+                "maxLength": 16
+            },
+            "create_rollover": {
+                "type": "boolean",
+                "description": "Whether rollover should be created for this grant"
+            },
+            "remark": {
+                "type": "string",
+                "nullable": true
+            },
+            "created_at": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "updated_at": {
+                "type": "string",
+                "format": "date-time"
+            }
+        }
+    },
+    "AirdropSkippedAccount": {
+        "type": "object",
+        "properties": {
+            "account": {
+                "type": "string",
+                "description": "Account value from the request (uid or email)"
+            },
+            "reason": {
+                "type": "string",
+                "description": "e.g. user_not_found"
+            }
+        }
+    },
+    "AirdropBatchCreateResult": {
+        "type": "object",
+        "description": "Payload in data for POST /airdrops (batch create)",
+        "properties": {
+            "created_count": {
+                "type": "integer"
+            },
+            "skipped": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/AirdropSkippedAccount"
+                }
+            },
+            "items": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Airdrop"
+                }
+            }
+        }
+    },
     "WeeklyCashback": {
         "type": "object",
         "description": "User weekly cashback period record; list may include loaded user",
@@ -768,7 +847,8 @@
                     "BONUS_TASK_REWARD",
                     "INVITATION_REWARD",
                     "VIP_LEVEL_UP_REWARD",
-                    "WEEKLY_CASHBACK"
+                    "WEEKLY_CASHBACK",
+                    "AIRDROP"
                 ]
             },
             "status": {

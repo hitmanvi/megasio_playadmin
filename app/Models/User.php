@@ -200,5 +200,13 @@ class User extends Model
     {
         return $this->hasOne(UserVip::class, 'user_id');
     }
+
+    /**
+     * Airdrop rows for this user (one row per airdrop grant).
+     */
+    public function airdrops(): HasMany
+    {
+        return $this->hasMany(Airdrop::class);
+    }
 }
 

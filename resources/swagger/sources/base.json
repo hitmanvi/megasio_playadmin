@@ -153,6 +153,10 @@
         {
             "name": "Weekly Cashback",
             "description": "Weekly cashback records"
+        },
+        {
+            "name": "Airdrops",
+            "description": "User airdrop grant records"
         }
     ]
 }

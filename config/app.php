@@ -124,4 +124,11 @@ return [
     ],
 
     'frontend_url' => env('APP_FRONTEND_URL', 'http://localhost'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default ledger currency (e.g. airdrops when currency omitted)
+    |--------------------------------------------------------------------------
+    */
+    'currency' => env('APP_CURRENCY', 'USD'),
 ];

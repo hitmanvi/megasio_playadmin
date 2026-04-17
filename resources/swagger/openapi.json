@@ -588,6 +588,85 @@
                     }
                 }
             },
+            "Airdrop": {
+                "type": "object",
+                "description": "Per-user airdrop grant row",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "user": {
+                        "nullable": true,
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        ]
+                    },
+                    "amount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "description": "Airdrop amount (may be negative)"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "maxLength": 16
+                    },
+                    "create_rollover": {
+                        "type": "boolean",
+                        "description": "Whether rollover should be created for this grant"
+                    },
+                    "remark": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "AirdropSkippedAccount": {
+                "type": "object",
+                "properties": {
+                    "account": {
+                        "type": "string",
+                        "description": "Account value from the request (uid or email)"
+                    },
+                    "reason": {
+                        "type": "string",
+                        "description": "e.g. user_not_found"
+                    }
+                }
+            },
+            "AirdropBatchCreateResult": {
+                "type": "object",
+                "description": "Payload in data for POST /airdrops (batch create)",
+                "properties": {
+                    "created_count": {
+                        "type": "integer"
+                    },
+                    "skipped": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AirdropSkippedAccount"
+                        }
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Airdrop"
+                        }
+                    }
+                }
+            },
             "WeeklyCashback": {
                 "type": "object",
                 "description": "User weekly cashback period record; list may include loaded user",
@@ -790,7 +869,8 @@
                             "BONUS_TASK_REWARD",
                             "INVITATION_REWARD",
                             "VIP_LEVEL_UP_REWARD",
-                            "WEEKLY_CASHBACK"
+                            "WEEKLY_CASHBACK",
+                            "AIRDROP"
                         ]
                     },
                     "status": {
@@ -3290,6 +3370,10 @@
         {
             "name": "Weekly Cashback",
             "description": "Weekly cashback records"
+        },
+        {
+            "name": "Airdrops",
+            "description": "User airdrop grant records"
         }
     ],
     "paths": {
@@ -4401,6 +4485,252 @@
                     },
                     "404": {
                         "description": "未找到",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/airdrops": {
+            "get": {
+                "tags": [
+                    "Airdrops"
+                ],
+                "summary": "List airdrops",
+                "description": "Paginated airdrops; optional account filter (exact match on users.uid OR users.email); optional create_rollover",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "account",
+                        "in": "query",
+                        "description": "Recipient lookup: exact match on users.uid OR users.email",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 255
+                        }
+                    },
+                    {
+                        "name": "create_rollover",
+                        "in": "query",
+                        "description": "Filter by rollover flag (present in query to apply)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Airdrops list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errmsg": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Airdrop"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                }
+                                            }
+                                        },
+                                        "extra": {
+                                            "type": "null"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Airdrops"
+                ],
+                "summary": "Batch create airdrops",
+                "description": "Creates one airdrop row per resolved user; dedupes trimmed accounts. Optional tag_id attaches that tag with syncWithoutDetaching.",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "account_type",
+                                    "accounts",
+                                    "amount"
+                                ],
+                                "properties": {
+                                    "account_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "uid",
+                                            "email"
+                                        ],
+                                        "description": "How accounts[] is resolved on users"
+                                    },
+                                    "accounts": {
+                                        "type": "array",
+                                        "minItems": 1,
+                                        "maxItems": 5000,
+                                        "items": {
+                                            "type": "string",
+                                            "maxLength": 255
+                                        },
+                                        "description": "User uid or email list (per account_type)"
+                                    },
+                                    "amount": {
+                                        "type": "number",
+                                        "description": "Airdrop amount per user (may be negative)"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "maxLength": 16,
+                                        "description": "Optional; defaults to config app.currency (falls back to USD if unset)",
+                                        "nullable": true
+                                    },
+                                    "create_rollover": {
+                                        "type": "boolean",
+                                        "description": "Whether rollover should be created for each grant",
+                                        "default": false
+                                    },
+                                    "tag_id": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "description": "Optional tag id (tags.id); attached to each created recipient"
+                                    },
+                                    "remark": {
+                                        "type": "string",
+                                        "maxLength": 2000,
+                                        "nullable": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Batch result (partial success allowed: see skipped)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errmsg": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/AirdropBatchCreateResult"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or invalid tag id",
                         "content": {
                             "application/json": {
                                 "schema": {

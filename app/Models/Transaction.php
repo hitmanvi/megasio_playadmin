@@ -50,6 +50,7 @@ class Transaction extends Model
     const TYPE_INVITATION_REWARD = 'INVITATION_REWARD';
     const TYPE_VIP_LEVEL_UP_REWARD = 'VIP_LEVEL_UP_REWARD';
     const TYPE_WEEKLY_CASHBACK = 'WEEKLY_CASHBACK';
+    const TYPE_AIRDROP = 'AIRDROP';
 
     /**
      * Transaction status constants.
@@ -88,6 +89,7 @@ class Transaction extends Model
             self::TYPE_INVITATION_REWARD,
             self::TYPE_VIP_LEVEL_UP_REWARD,
             self::TYPE_WEEKLY_CASHBACK,
+            self::TYPE_AIRDROP,
         ];
     }
 
@@ -233,6 +235,23 @@ class Transaction extends Model
 
                     // 找不到返回 null
                     return null;
+                }
+                break;
+
+            case self::TYPE_AIRDROP:
+                $airdrop = Airdrop::find($this->related_entity_id);
+                if ($airdrop) {
+                    return [
+                        'type' => 'airdrop',
+                        'data' => [
+                            'id' => $airdrop->id,
+                            'amount' => (float) $airdrop->amount,
+                            'currency' => $airdrop->currency,
+                            'create_rollover' => $airdrop->create_rollover,
+                            'remark' => $airdrop->remark,
+                            'created_at' => $airdrop->created_at?->format('Y-m-d H:i:s'),
+                        ],
+                    ];
                 }
                 break;
         }
