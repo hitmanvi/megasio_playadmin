@@ -173,6 +173,7 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::post('promotion-codes', [PromotionCodeController::class, 'store']);
            Route::put('promotion-codes/{promotionCode}', [PromotionCodeController::class, 'update']);
            Route::get('promotion-code-claims', [PromotionCodeClaimController::class, 'index']);
+           Route::delete('promotion-code-claims/{promotionCodeClaim}', [PromotionCodeClaimController::class, 'destroy']);
            
            // Currencies routes
            Route::get('currencies', [CurrencyController::class, 'index']);

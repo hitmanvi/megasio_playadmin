@@ -139,5 +139,86 @@
                 }
             }
         }
+    },
+    "/promotion-code-claims/{promotionCodeClaim}": {
+        "delete": {
+            "tags": [
+                "Promotion Codes"
+            ],
+            "summary": "Delete promotion code claim",
+            "description": "Removes the claim only if status is pending; completed claims return 422",
+            "security": [
+                {
+                    "sanctum": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "promotionCodeClaim",
+                    "in": "path",
+                    "required": true,
+                    "description": "promotion_code_claims.id",
+                    "schema": {
+                        "type": "integer",
+                        "minimum": 1
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Deleted",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "errmsg": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "data": {
+                                        "type": "null"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "description": "Claim not found",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                },
+                "422": {
+                    "description": "Claim is not pending (cannot delete)",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Err;
 use App\Models\PromotionCodeClaim;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -54,5 +55,19 @@ class PromotionCodeClaimController extends Controller
         $items = $query->paginate($perPage);
 
         return $this->responseListWithPaginator($items, null);
+    }
+
+    /**
+     * Delete a claim; only allowed when status is pending.
+     */
+    public function destroy(PromotionCodeClaim $promotionCodeClaim): JsonResponse
+    {
+        if ($promotionCodeClaim->status !== PromotionCodeClaim::STATUS_PENDING) {
+            return $this->error(Err::INVALID_PARAMS);
+        }
+
+        $promotionCodeClaim->delete();
+
+        return $this->responseItem(null);
     }
 }
