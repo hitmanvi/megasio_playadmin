@@ -645,26 +645,6 @@
             }
         }
     },
-    "PromotionCodeFilterOptions": {
-        "type": "object",
-        "description": "Payload in data for GET /promotion-codes/options",
-        "properties": {
-            "type": {
-                "type": "array",
-                "description": "bonus_type string values",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "status": {
-                "type": "array",
-                "description": "status filter values (includes virtual expired)",
-                "items": {
-                    "type": "string"
-                }
-            }
-        }
-    },
     "PromotionCodeCreateRequest": {
         "type": "object",
         "required": [

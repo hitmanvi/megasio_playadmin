@@ -667,26 +667,6 @@
                     }
                 }
             },
-            "PromotionCodeFilterOptions": {
-                "type": "object",
-                "description": "Payload in data for GET /promotion-codes/options",
-                "properties": {
-                    "type": {
-                        "type": "array",
-                        "description": "bonus_type string values",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "status": {
-                        "type": "array",
-                        "description": "status filter values (includes virtual expired)",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "PromotionCodeCreateRequest": {
                 "type": "object",
                 "required": [
@@ -14057,13 +14037,13 @@
                 }
             }
         },
-        "/promotion-codes/options": {
+        "/promotion-codes/options/type": {
             "get": {
                 "tags": [
                     "Promotion Codes"
                 ],
-                "summary": "Promotion code filter options",
-                "description": "Returns bonus_type options (type) and list status filter options (status)",
+                "summary": "Promotion code bonus_type options",
+                "description": "Returns bonus_type string values for list filters; data is the array directly",
                 "security": [
                     {
                         "sanctum": []
@@ -14071,7 +14051,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "types and statuses for filters",
+                        "description": "bonus_type options",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -14086,7 +14066,64 @@
                                             "example": ""
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/PromotionCodeFilterOptions"
+                                            "type": "array",
+                                            "description": "bonus_type values (e.g. bonus_task)",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/promotion-codes/options/status": {
+            "get": {
+                "tags": [
+                    "Promotion Codes"
+                ],
+                "summary": "Promotion code status filter options",
+                "description": "Returns status filter string values for list filters; data is the array directly (includes virtual expired)",
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "status options",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errmsg": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "description": "active, inactive, exhausted, expired",
+                                            "items": {
+                                                "type": "string"
+                                            }
                                         }
                                     }
                                 }

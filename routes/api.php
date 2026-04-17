@@ -166,7 +166,8 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('weekly-cashbacks', [WeeklyCashbackController::class, 'index']);
            Route::get('airdrops', [AirdropController::class, 'index']);
            Route::post('airdrops', [AirdropController::class, 'store']);
-           Route::get('promotion-codes/options', [PromotionCodeController::class, 'options']);
+           Route::get('promotion-codes/options/type', [PromotionCodeController::class, 'typeOptions']);
+           Route::get('promotion-codes/options/status', [PromotionCodeController::class, 'statusOptions']);
            Route::get('promotion-codes', [PromotionCodeController::class, 'index']);
            Route::post('promotion-codes', [PromotionCodeController::class, 'store']);
            Route::put('promotion-codes/{promotionCode}', [PromotionCodeController::class, 'update']);

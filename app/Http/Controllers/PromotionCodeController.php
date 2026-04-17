@@ -14,14 +14,19 @@ use Illuminate\Validation\ValidationException;
 class PromotionCodeController extends Controller
 {
     /**
-     * Filter option lists: bonus_type values and status filter values (string arrays, no labels).
+     * bonus_type filter values as a plain string array in data (no wrapper object).
      */
-    public function options(): JsonResponse
+    public function typeOptions(): JsonResponse
     {
-        return $this->responseItem([
-            'type' => PromotionCode::bonusTypes(),
-            'status' => PromotionCode::statusFilterValues(),
-        ]);
+        return $this->responseItem(PromotionCode::bonusTypes());
+    }
+
+    /**
+     * Status filter values as a plain string array in data (no wrapper; includes virtual expired).
+     */
+    public function statusOptions(): JsonResponse
+    {
+        return $this->responseItem(PromotionCode::statusFilterValues());
     }
 
     /**
