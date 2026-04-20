@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (\Exception $e) {
             Log::error($e->getMessage());
             $resp = [
-                'code'   => 500,
+                'code'   => 10000,
                 'errmsg' => $e->getMessage(),
                 'data'   => null,
             ];
