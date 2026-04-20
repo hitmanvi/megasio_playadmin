@@ -142,6 +142,7 @@ class PromotionCodeController extends Controller
 
         DB::transaction(function () use ($validated, $uids, $uidValidDays, $promotionCode) {
             foreach ([
+                'status',
                 'times',
                 'bonus_config',
                 'expired_at',
