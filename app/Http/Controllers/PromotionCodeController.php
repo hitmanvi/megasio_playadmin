@@ -125,6 +125,7 @@ class PromotionCodeController extends Controller
         $minTimes = max(1, (int) $promotionCode->claimed_count);
 
         $validated = $request->validate([
+            'status' => ['sometimes', 'required', 'string', Rule::in(PromotionCode::updatableStatuses())],
             'times' => ['sometimes', 'required', 'integer', 'min:'.$minTimes],
             'bonus_config' => 'nullable|array',
             'expired_at' => 'nullable|date',
