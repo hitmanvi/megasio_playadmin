@@ -918,6 +918,82 @@
             }
         }
     },
+    "CustomerIoCampaignPromotionCode": {
+        "type": "object",
+        "description": "Links a Customer.io campaign id to a promotion_codes row (unique pair)",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "campaign_id": {
+                "type": "string",
+                "maxLength": 64,
+                "description": "Customer.io Campaign ID"
+            },
+            "promotion_code_id": {
+                "type": "integer"
+            },
+            "remark": {
+                "type": "string",
+                "nullable": true
+            },
+            "promotion_code": {
+                "nullable": true,
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/PromotionCode"
+                    }
+                ]
+            },
+            "created_at": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "updated_at": {
+                "type": "string",
+                "format": "date-time"
+            }
+        }
+    },
+    "CustomerIoCampaignPromotionCodeStoreRequest": {
+        "type": "object",
+        "required": [
+            "campaign_id",
+            "promotion_code_id"
+        ],
+        "properties": {
+            "campaign_id": {
+                "type": "string",
+                "maxLength": 64
+            },
+            "promotion_code_id": {
+                "type": "integer",
+                "minimum": 1
+            },
+            "remark": {
+                "type": "string",
+                "nullable": true
+            }
+        }
+    },
+    "CustomerIoCampaignPromotionCodeUpdateRequest": {
+        "type": "object",
+        "description": "Partial update; campaign_id + promotion_code_id pair must stay unique",
+        "properties": {
+            "campaign_id": {
+                "type": "string",
+                "maxLength": 64
+            },
+            "promotion_code_id": {
+                "type": "integer",
+                "minimum": 1
+            },
+            "remark": {
+                "type": "string",
+                "nullable": true
+            }
+        }
+    },
     "WeeklyCashback": {
         "type": "object",
         "description": "User weekly cashback period record; list may include loaded user",

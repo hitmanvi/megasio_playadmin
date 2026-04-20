@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Err;
 use App\Models\SiteLink;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class SiteLinkController extends Controller
 {
@@ -37,11 +37,15 @@ class SiteLinkController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'key' => ['required', 'string', 'max:64', Rule::unique(SiteLink::class, 'key')],
+            'key' => 'required|string|max:64',
             'url' => 'nullable|string|max:2048',
             'enabled' => 'nullable|boolean',
             'deletable' => 'nullable|boolean',
         ]);
+
+        if (SiteLink::query()->where('key', $validated['key'])->exists()) {
+            return $this->error(Err::INVALID_PARAMS);
+        }
 
         $link = SiteLink::create([
             'key' => $validated['key'],
@@ -61,16 +65,16 @@ class SiteLinkController extends Controller
     public function update(Request $request, SiteLink $siteLink): JsonResponse
     {
         $validated = $request->validate([
-            'key' => [
-                'sometimes',
-                'string',
-                'max:64',
-                Rule::unique(SiteLink::class, 'key')->ignore($siteLink->id),
-            ],
+            'key' => 'sometimes|string|max:64',
             'url' => 'sometimes|nullable|string|max:2048',
             'enabled' => 'sometimes|boolean',
             'deletable' => 'sometimes|boolean',
         ]);
+
+        if (array_key_exists('key', $validated)
+            && SiteLink::query()->where('key', $validated['key'])->where('id', '!=', $siteLink->id)->exists()) {
+            return $this->error(Err::INVALID_PARAMS);
+        }
 
         $siteLink->update($validated);
 

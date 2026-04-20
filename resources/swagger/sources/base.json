@@ -161,6 +161,10 @@
         {
             "name": "Promotion Codes",
             "description": "Promotion / redeem code management"
+        },
+        {
+            "name": "Customer.io Campaign Links",
+            "description": "Customer.io campaign IDs linked to promotion codes"
         }
     ]
 }
