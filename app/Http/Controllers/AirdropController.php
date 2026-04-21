@@ -7,6 +7,7 @@ use App\Models\Airdrop;
 use App\Models\Tag;
 use App\Models\User;
 use App\Services\BalanceService;
+use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -111,6 +112,7 @@ class AirdropController extends Controller
         $skipped = [];
 
         $balanceService = new BalanceService();
+        $notificationService = app(NotificationService::class);
 
         DB::transaction(function () use (
             $orderedAccounts,
@@ -150,6 +152,17 @@ class AirdropController extends Controller
                 $created[] = $airdrop->load('user');
             }
         });
+
+        foreach ($created as $airdrop) {
+            if ((int) bccomp((string) $airdrop->amount, '0', 8) > 0) {
+                $notificationService->createAirdropNotification(
+                    $airdrop->user_id,
+                    (float) $airdrop->amount,
+                    $airdrop->currency,
+                    $airdrop->id
+                );
+            }
+        }
 
         return $this->responseItem([
             'created_count' => count($created),
