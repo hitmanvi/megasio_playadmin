@@ -15,6 +15,7 @@ class SiteConfigController extends Controller
 
         return $this->responseItem([
             'frontend_url' => $url ?? '',
+            'customer_io_webhook_url' => config('services.customer_io.webhook_url'),
         ]);
     }
 }

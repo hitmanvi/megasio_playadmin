@@ -56,5 +56,6 @@ return [
         'enabled' => env('CUSTOMER_IO_ENABLED', false),
         'site_id' => env('CUSTOMER_IO_SITE_ID'),
         'api_key' => env('CUSTOMER_IO_API_KEY'),
+        'webhook_url' => env('CUSTOMER_IO_WEBHOOK_URL'),
     ],
 ];
