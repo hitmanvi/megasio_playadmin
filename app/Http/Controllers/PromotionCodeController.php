@@ -82,6 +82,7 @@ class PromotionCodeController extends Controller
             'uids' => 'nullable|array|max:5000',
             'uids.*' => 'required|string|max:255',
             'uid_valid_days' => 'nullable|integer|min:1|max:36500',
+            'remark' => 'nullable|string|max:2000',
         ]);
 
         $uids = $this->uniqueUidsList($validated['uids'] ?? []);
@@ -99,6 +100,7 @@ class PromotionCodeController extends Controller
                 'expired_at' => isset($validated['expired_at']) ? $validated['expired_at'] : null,
                 'target_type' => $validated['target_type'],
                 'status' => $validated['status'] ?? PromotionCode::STATUS_ACTIVE,
+                'remark' => array_key_exists('remark', $validated) ? $validated['remark'] : null,
             ]);
 
             $this->appendPendingClaimsForUids($promotionCode, $uids, $uidValidDays);
@@ -124,6 +126,7 @@ class PromotionCodeController extends Controller
             'uids' => 'nullable|array|max:5000',
             'uids.*' => 'required|string|max:255',
             'uid_valid_days' => 'nullable|integer|min:1|max:36500',
+            'remark' => 'nullable|string|max:2000',
         ]);
 
         $uids = $this->uniqueUidsList($validated['uids'] ?? []);
@@ -136,6 +139,7 @@ class PromotionCodeController extends Controller
                 'times',
                 'bonus_config',
                 'expired_at',
+                'remark',
             ] as $key) {
                 if (! array_key_exists($key, $validated)) {
                     continue;

@@ -804,6 +804,12 @@
                         "minimum": 1,
                         "maximum": 36500,
                         "description": "When set with non-empty uids, each new claim expired_at = now + this many days (app timezone). Omit or null for no per-claim expiry"
+                    },
+                    "remark": {
+                        "type": "string",
+                        "maxLength": 2000,
+                        "nullable": true,
+                        "description": "Admin / internal remark"
                     }
                 }
             },
@@ -870,6 +876,12 @@
                         "minimum": 1,
                         "maximum": 36500,
                         "description": "When set with non-empty uids, claim expired_at = now + this many days (new rows and updates)"
+                    },
+                    "remark": {
+                        "type": "string",
+                        "maxLength": 2000,
+                        "nullable": true,
+                        "description": "Admin / internal remark"
                     }
                 }
             },
@@ -922,6 +934,12 @@
                             "inactive",
                             "exhausted"
                         ]
+                    },
+                    "remark": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Admin / internal remark",
+                        "maxLength": 2000
                     },
                     "created_at": {
                         "type": "string",
