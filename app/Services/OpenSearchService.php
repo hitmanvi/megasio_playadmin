@@ -6,6 +6,7 @@ use App\Models\Deposit;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 use OpenSearch\Client;
 use OpenSearch\ClientBuilder;
 use Throwable;
@@ -95,22 +96,19 @@ class OpenSearchService
         // AWS OpenSearch: https URL 无端口时 opensearch-php 会错误使用 9200，需显式加 :443
         $hosts = array_map([$this, 'normalizeHost'], $hosts);
 
-        $params = [
-            'hosts' => $hosts,
-        ];
-
-        if (($username = config('opensearch.username')) && ($password = config('opensearch.password'))) {
-            $params['basicAuthentication'] = [$username, $password];
-        }
-
         $builder = ClientBuilder::create();
-        $builder->setHosts($params['hosts']);
+        $builder->setHosts($hosts);
 
-        if (isset($params['basicAuthentication'])) {
-            $builder->setBasicAuthentication(
-                $params['basicAuthentication'][0],
-                $params['basicAuthentication'][1]
-            );
+        if (config('opensearch.use_iam', true)) {
+            $region = config('opensearch.aws_region');
+            if (empty($region)) {
+                throw new InvalidArgumentException(
+                    'OpenSearch IAM auth requires OPENSEARCH_AWS_REGION or AWS_DEFAULT_REGION.'
+                );
+            }
+            $builder->setSigV4Region($region);
+            $builder->setSigV4CredentialProvider(true);
+            $builder->setSigV4Service(config('opensearch.sigv4_service', 'es'));
         }
 
         // if ($logger = Log::getLogger()) {

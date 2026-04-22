@@ -16,9 +16,26 @@ return [
 
     'hosts' => array_filter(explode(',', env('OPENSEARCH_HOSTS', 'http://localhost:9200'))),
 
-    'username' => env('OPENSEARCH_USERNAME'),
+    /*
+    |--------------------------------------------------------------------------
+    | AWS IAM (SigV4)
+    |--------------------------------------------------------------------------
+    |
+    | 连接托管 OpenSearch / OpenSearch Serverless 时使用 IAM 签名，无需用户名密码。
+    | 凭证使用 aws/aws-sdk-php 默认链（实例角色、AWS_* 环境变量、配置文件等）。
+    | 本地无鉴权集群请设置 OPENSEARCH_USE_IAM=false。
+    |
+    */
 
-    'password' => env('OPENSEARCH_PASSWORD'),
+    'use_iam' => env('OPENSEARCH_USE_IAM', true),
+
+    /** 与集群所在区域一致，例如 ap-northeast-1 */
+    'aws_region' => env('OPENSEARCH_AWS_REGION', env('AWS_DEFAULT_REGION')),
+
+    /**
+     * SigV4 服务名：托管域名为 es；OpenSearch Serverless 为 aoss。
+     */
+    'sigv4_service' => env('OPENSEARCH_SIGV4_SERVICE', 'es'),
 
     /*
     |--------------------------------------------------------------------------

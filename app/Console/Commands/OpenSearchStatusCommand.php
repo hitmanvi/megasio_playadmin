@@ -20,12 +20,14 @@ class OpenSearchStatusCommand extends Command
     {
         $enabled = (bool) config('opensearch.enabled', false);
         $hosts = config('opensearch.hosts', []);
-        $hasAuth = (bool) (config('opensearch.username') && config('opensearch.password'));
+        $useIam = (bool) config('opensearch.use_iam', true);
 
         $payload = [
             'enabled' => $enabled,
             'hosts' => $hosts,
-            'auth_configured' => $hasAuth,
+            'use_iam' => $useIam,
+            'aws_region' => config('opensearch.aws_region'),
+            'sigv4_service' => config('opensearch.sigv4_service', 'es'),
             'index_prefix' => config('opensearch.index_prefix'),
             'connect_timeout' => config('opensearch.connect_timeout'),
             'request_timeout' => config('opensearch.request_timeout'),
@@ -119,7 +121,11 @@ class OpenSearchStatusCommand extends Command
 
         $this->line('OPENSEARCH_ENABLED: ' . ($payload['enabled'] ? 'true' : 'false'));
         $this->line('Hosts: ' . implode(', ', $payload['hosts'] ?: ['(empty)']));
-        $this->line('Basic auth configured: ' . ($payload['auth_configured'] ? 'yes' : 'no'));
+        $this->line('IAM (SigV4): ' . ($payload['use_iam'] ? 'yes' : 'no'));
+        if ($payload['use_iam']) {
+            $this->line('  region: ' . ((string) ($payload['aws_region'] ?? '') ?: '(unset)'));
+            $this->line('  service: ' . (string) ($payload['sigv4_service'] ?? 'es'));
+        }
         $this->line('index_prefix: ' . (string) ($payload['index_prefix'] ?? ''));
         $this->line(sprintf(
             'Timeouts: connect=%ds, request=%ds',
