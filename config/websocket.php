@@ -14,7 +14,7 @@ return [
 
     'pubsub' => [
         'broadcast' => env('WEBSOCKET_PUBSUB_BROADCAST_CHANNEL', 'megasio:broadcast'),
-        'private_prefix' => env('WEBSOCKET_PUBSUB_PRIVATE_PREFIX', 'megasio:user'),
+        'private_prefix' => env('WEBSOCKET_PUBSUB_PRIVATE_PREFIX', 'megasio:private'),
     ],
 
 ];
