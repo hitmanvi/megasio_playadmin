@@ -88,14 +88,6 @@ class PromotionCodeController extends Controller
 
         $uidValidDays = $this->uidValidDaysFromValidated($validated);
 
-        $this->assertUidValidDaysWithUids($uidValidDays, $uids);
-
-        if ($validated['target_type'] === PromotionCode::TARGET_TYPE_ALL && count($uids) > 0) {
-            throw ValidationException::withMessages([
-                'uids' => ['The uids field must be empty when target_type is all.'],
-            ]);
-        }
-
         $promotionCode = DB::transaction(function () use ($validated, $uids, $uidValidDays) {
             $promotionCode = PromotionCode::create([
                 'name' => $validated['name'],
@@ -137,8 +129,6 @@ class PromotionCodeController extends Controller
         $uids = $this->uniqueUidsList($validated['uids'] ?? []);
 
         $uidValidDays = $this->uidValidDaysFromValidated($validated);
-
-        $this->assertUidValidDaysWithUids($uidValidDays, $uids);
 
         DB::transaction(function () use ($validated, $uids, $uidValidDays, $promotionCode) {
             foreach ([
@@ -259,18 +249,6 @@ class PromotionCodeController extends Controller
         }
 
         return array_keys($seen);
-    }
-
-    /**
-     * uid_valid_days only allowed when uids will create claims (non-empty after normalize).
-     */
-    private function assertUidValidDaysWithUids(?int $uidValidDays, array $uids): void
-    {
-        if ($uidValidDays !== null && count($uids) === 0) {
-            throw ValidationException::withMessages([
-                'uid_valid_days' => ['The uid_valid_days field requires a non-empty uids list.'],
-            ]);
-        }
     }
 
     /**
