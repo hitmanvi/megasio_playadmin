@@ -72,6 +72,11 @@ class AgentLinkController extends Controller
             'status' => 'nullable|string|in:active,inactive',
             'facebook_config' => 'nullable|array',
             'kochava_config' => 'nullable|array',
+            'tiktok_config' => 'nullable|array',
+            'tiktok_config.pixel_code' => 'nullable|string|max:255',
+            'tiktok_config.access_token' => 'nullable|string|max:1024',
+            'tiktok_config.test_event_code' => 'nullable|string|max:255',
+            'tiktok_config.event_source' => 'nullable|string|max:50',
         ]);
 
         $agent = Agent::find($validated['agent_id']);
@@ -118,6 +123,11 @@ class AgentLinkController extends Controller
             'status' => 'nullable|string|in:active,inactive',
             'facebook_config' => 'nullable|array',
             'kochava_config' => 'nullable|array',
+            'tiktok_config' => 'nullable|array',
+            'tiktok_config.pixel_code' => 'nullable|string|max:255',
+            'tiktok_config.access_token' => 'nullable|string|max:1024',
+            'tiktok_config.test_event_code' => 'nullable|string|max:255',
+            'tiktok_config.event_source' => 'nullable|string|max:50',
         ]);
 
         $agentLink->update($validated);

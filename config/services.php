@@ -58,4 +58,8 @@ return [
         'api_key' => env('CUSTOMER_IO_API_KEY'),
         'webhook_url' => env('CUSTOMER_IO_WEBHOOK_URL'),
     ],
+
+    'tiktok_events' => [
+        'event_source' => env('TIKTOK_EVENTS_EVENT_SOURCE', 'web'),
+    ],
 ];

@@ -13,11 +13,13 @@ class AgentLink extends Model
         'status',
         'facebook_config',
         'kochava_config',
+        'tiktok_config',
     ];
 
     protected $casts = [
         'facebook_config' => 'array',
         'kochava_config' => 'array',
+        'tiktok_config' => 'array',
     ];
 
     const STATUS_ACTIVE = 'active';
