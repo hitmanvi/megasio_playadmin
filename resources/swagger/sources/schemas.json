@@ -3321,6 +3321,11 @@
         "type": "object",
         "description": "单个渠道（如 web、ios）下的 TikTok Events 参数",
         "properties": {
+            "enabled": {
+                "type": "boolean",
+                "nullable": true,
+                "description": "是否启用该渠道的 TikTok Events"
+            },
             "pixel_code": {
                 "type": "string",
                 "nullable": true
@@ -3346,6 +3351,13 @@
         "description": "按渠道分组（如 web、ios）；用于 Facebook Conversions、Kochava 等，子对象字段由各集成自行定义",
         "additionalProperties": {
             "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "nullable": true,
+                    "description": "是否启用该渠道的此集成"
+                }
+            },
             "additionalProperties": true
         }
     },
