@@ -173,36 +173,13 @@
                                     "default": "active"
                                 },
                                 "facebook_config": {
-                                    "type": "object",
-                                    "nullable": true
+                                    "$ref": "#/components/schemas/AgentLinkPartnerConfigByChannel"
                                 },
                                 "kochava_config": {
-                                    "type": "object",
-                                    "nullable": true
+                                    "$ref": "#/components/schemas/AgentLinkPartnerConfigByChannel"
                                 },
                                 "tiktok_config": {
-                                    "type": "object",
-                                    "nullable": true,
-                                    "description": "TikTok Events 配置",
-                                    "properties": {
-                                        "pixel_code": {
-                                            "type": "string",
-                                            "nullable": true
-                                        },
-                                        "access_token": {
-                                            "type": "string",
-                                            "nullable": true
-                                        },
-                                        "test_event_code": {
-                                            "type": "string",
-                                            "nullable": true
-                                        },
-                                        "event_source": {
-                                            "type": "string",
-                                            "nullable": true,
-                                            "description": "未传时服务默认使用 services.tiktok_events.event_source（默认 web）"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/AgentLinkTikTokConfigByChannel"
                                 }
                             }
                         }
@@ -365,36 +342,13 @@
                                     ]
                                 },
                                 "facebook_config": {
-                                    "type": "object",
-                                    "nullable": true
+                                    "$ref": "#/components/schemas/AgentLinkPartnerConfigByChannel"
                                 },
                                 "kochava_config": {
-                                    "type": "object",
-                                    "nullable": true
+                                    "$ref": "#/components/schemas/AgentLinkPartnerConfigByChannel"
                                 },
                                 "tiktok_config": {
-                                    "type": "object",
-                                    "nullable": true,
-                                    "description": "TikTok Events 配置",
-                                    "properties": {
-                                        "pixel_code": {
-                                            "type": "string",
-                                            "nullable": true
-                                        },
-                                        "access_token": {
-                                            "type": "string",
-                                            "nullable": true
-                                        },
-                                        "test_event_code": {
-                                            "type": "string",
-                                            "nullable": true
-                                        },
-                                        "event_source": {
-                                            "type": "string",
-                                            "nullable": true,
-                                            "description": "未传时服务默认使用 services.tiktok_events.event_source（默认 web）"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/AgentLinkTikTokConfigByChannel"
                                 }
                             }
                         }

@@ -3317,6 +3317,46 @@
             }
         }
     },
+    "AgentLinkTikTokChannelConfig": {
+        "type": "object",
+        "description": "单个渠道（如 web、ios）下的 TikTok Events 参数",
+        "properties": {
+            "pixel_code": {
+                "type": "string",
+                "nullable": true
+            },
+            "access_token": {
+                "type": "string",
+                "nullable": true
+            },
+            "test_event_code": {
+                "type": "string",
+                "nullable": true
+            },
+            "event_source": {
+                "type": "string",
+                "nullable": true,
+                "description": "未传时消费端可用 services.tiktok_events.event_source（默认 web）"
+            }
+        }
+    },
+    "AgentLinkPartnerConfigByChannel": {
+        "type": "object",
+        "nullable": true,
+        "description": "按渠道分组（如 web、ios）；用于 Facebook Conversions、Kochava 等，子对象字段由各集成自行定义",
+        "additionalProperties": {
+            "type": "object",
+            "additionalProperties": true
+        }
+    },
+    "AgentLinkTikTokConfigByChannel": {
+        "type": "object",
+        "nullable": true,
+        "description": "TikTok Events 配置，按渠道（如 web、ios）分组",
+        "additionalProperties": {
+            "$ref": "#/components/schemas/AgentLinkTikTokChannelConfig"
+        }
+    },
     "AgentLink": {
         "type": "object",
         "properties": {
@@ -3348,38 +3388,13 @@
                 "description": "状态"
             },
             "facebook_config": {
-                "type": "object",
-                "nullable": true,
-                "description": "Facebook Conversions 配置"
+                "$ref": "#/components/schemas/AgentLinkPartnerConfigByChannel"
             },
             "kochava_config": {
-                "type": "object",
-                "nullable": true,
-                "description": "Kochava 配置"
+                "$ref": "#/components/schemas/AgentLinkPartnerConfigByChannel"
             },
             "tiktok_config": {
-                "type": "object",
-                "nullable": true,
-                "description": "TikTok Events 配置",
-                "properties": {
-                    "pixel_code": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "access_token": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "test_event_code": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "event_source": {
-                        "type": "string",
-                        "nullable": true,
-                        "description": "未传时服务默认使用 services.tiktok_events.event_source（默认 web）"
-                    }
-                }
+                "$ref": "#/components/schemas/AgentLinkTikTokConfigByChannel"
             },
             "created_at": {
                 "type": "string",
