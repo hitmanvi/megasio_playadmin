@@ -71,18 +71,8 @@ class AgentLinkController extends Controller
             'name' => 'required|string|max:255',
             'status' => 'nullable|string|in:active,inactive',
             'facebook_config' => 'nullable|array',
-            'facebook_config.*' => 'nullable|array',
-            'facebook_config.*.enabled' => 'nullable|boolean',
             'kochava_config' => 'nullable|array',
-            'kochava_config.*' => 'nullable|array',
-            'kochava_config.*.enabled' => 'nullable|boolean',
             'tiktok_config' => 'nullable|array',
-            'tiktok_config.*' => 'nullable|array',
-            'tiktok_config.*.enabled' => 'nullable|boolean',
-            'tiktok_config.*.pixel_code' => 'nullable|string|max:255',
-            'tiktok_config.*.access_token' => 'nullable|string|max:1024',
-            'tiktok_config.*.test_event_code' => 'nullable|string|max:255',
-            'tiktok_config.*.event_source' => 'nullable|string|max:50',
         ]);
 
         $agent = Agent::find($validated['agent_id']);
@@ -128,18 +118,8 @@ class AgentLinkController extends Controller
             'promotion_code' => 'nullable|string|size:4|alpha',
             'status' => 'nullable|string|in:active,inactive',
             'facebook_config' => 'nullable|array',
-            'facebook_config.*' => 'nullable|array',
-            'facebook_config.*.enabled' => 'nullable|boolean',
             'kochava_config' => 'nullable|array',
-            'kochava_config.*' => 'nullable|array',
-            'kochava_config.*.enabled' => 'nullable|boolean',
             'tiktok_config' => 'nullable|array',
-            'tiktok_config.*' => 'nullable|array',
-            'tiktok_config.*.enabled' => 'nullable|boolean',
-            'tiktok_config.*.pixel_code' => 'nullable|string|max:255',
-            'tiktok_config.*.access_token' => 'nullable|string|max:1024',
-            'tiktok_config.*.test_event_code' => 'nullable|string|max:255',
-            'tiktok_config.*.event_source' => 'nullable|string|max:50',
         ]);
 
         $agentLink->update($validated);
